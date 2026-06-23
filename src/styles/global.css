@@ -16,14 +16,12 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
-/* Self-hosted fonts (privacy + tighter CSP — no external Google Fonts request).
-   Install:  npm i @fontsource/marcellus @fontsource/mukta
-   Then uncomment: */
-/* @import "@fontsource/marcellus/400.css"; */
-/* @import "@fontsource/mukta/300.css"; */
-/* @import "@fontsource/mukta/400.css"; */
-/* @import "@fontsource/mukta/600.css"; */
-/* @import "@fontsource/mukta/700.css"; */
+/* Self-hosted fonts (privacy + tighter CSP — no external Google Fonts request). */
+@import '@fontsource/marcellus/400.css';
+@import '@fontsource/mukta/300.css';
+@import '@fontsource/mukta/400.css';
+@import '@fontsource/mukta/600.css';
+@import '@fontsource/mukta/700.css';
 
 @theme {
   /* ---- Colour: the materials of Shirdi worship ------------------------- */
