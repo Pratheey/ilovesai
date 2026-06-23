@@ -1,0 +1,162 @@
+/* ===========================================================================
+   global.css  →  src/styles/global.css
+   Import this ONCE in your base layout:  import "../styles/global.css";
+
+   Design system for I LOVE SAI. Tailwind v4 reads these tokens and generates
+   utilities automatically: --color-marigold → bg-marigold / text-marigold,
+   --font-display → font-display, --text-h1 → text-h1, etc.
+
+   The palette is grounded in the materials of Shirdi worship — sandalwood paste,
+   marigold garlands, the ember of Baba's perpetual dhuni fire, kumkum, and
+   temple brass — rather than generic "devotional warmth". Adjust hex values to
+   taste, but keep the discipline: one bold accent (marigold), depth from kumkum,
+   fine detail from brass, warm ink for text. Never pure black.
+   =========================================================================== */
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Self-hosted fonts (privacy + tighter CSP — no external Google Fonts request).
+   Install:  npm i @fontsource/marcellus @fontsource/mukta
+   Then uncomment: */
+/* @import "@fontsource/marcellus/400.css"; */
+/* @import "@fontsource/mukta/300.css"; */
+/* @import "@fontsource/mukta/400.css"; */
+/* @import "@fontsource/mukta/600.css"; */
+/* @import "@fontsource/mukta/700.css"; */
+
+@theme {
+  /* ---- Colour: the materials of Shirdi worship ------------------------- */
+  --color-sandal:       #F3EAD8;  /* sandalwood-paste base / page background   */
+  --color-sandal-deep:  #E7D8BC;  /* secondary surface / cards                 */
+  --color-marigold:     #E58A1A;  /* garland saffron — PRIMARY accent          */
+  --color-ember:        #C2520E;  /* dhuni-flame burnt amber — hover / active  */
+  --color-kumkum:       #6B1E25;  /* deep maroon — headings, footer, depth     */
+  --color-kumkum-deep:  #4A141A;  /* darkest maroon — footer base              */
+  --color-brass:        #A9803C;  /* temple brass — fine dividers & detail     */
+  --color-ink:          #2A211B;  /* warm near-black — body text (NOT #000)    */
+  --color-ink-soft:     #5A4D42;  /* secondary text / captions                 */
+  --color-cream:        #FBF6EC;  /* lightest surface / panels on sandal       */
+
+  /* ---- Type ------------------------------------------------------------ */
+  --font-display: "Marcellus", Georgia, serif;            /* inscriptional, calm */
+  --font-body:    "Mukta", system-ui, sans-serif;         /* humanist + Devanagari */
+
+  /* Fluid type scale (clamps from mobile → desktop). Used as text-h1 … text-eyebrow */
+  --text-display:  clamp(2.75rem, 1.6rem + 5vw, 4.5rem);
+  --text-h1:       clamp(2.1rem, 1.4rem + 3vw, 3.25rem);
+  --text-h2:       clamp(1.6rem, 1.2rem + 1.8vw, 2.25rem);
+  --text-h3:       clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
+  --text-lead:     clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
+  --text-body:     1.0625rem;   /* 17px — comfortable for a broad age range     */
+  --text-small:    0.9375rem;
+  --text-eyebrow:  0.8125rem;   /* tracked uppercase label                      */
+
+  /* ---- Radius (modest, not pill-everything) ---------------------------- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+
+  /* ---- Shadows (warm-tinted, not neutral grey) ------------------------- */
+  --shadow-soft:  0 1px 2px rgba(42, 33, 27, 0.06),
+                  0 6px 20px rgba(107, 30, 37, 0.08);
+  --shadow-lift:  0 2px 6px rgba(42, 33, 27, 0.08),
+                  0 14px 40px rgba(107, 30, 37, 0.12);
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --spacing-gutter: 1.5rem;          /* page side padding on mobile           */
+  --breakpoint-3xl: 110rem;          /* adds a 3xl: variant                   */
+}
+
+/* ===========================================================================
+   Base layer — the quality floor. Keep this lean; component styles go in
+   their .astro files using utilities.
+   =========================================================================== */
+@layer base {
+  :root {
+    --measure: 68ch;               /* max line length for readable prose       */
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-sandal);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-kumkum);
+    line-height: 1.15;
+    font-weight: 400;          /* Marcellus has one weight; let size carry it   */
+    letter-spacing: 0.005em;
+    text-wrap: balance;
+  }
+
+  p { max-width: var(--measure); }
+
+  a {
+    color: var(--color-ember);
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: 1px;
+  }
+  a:hover { color: var(--color-kumkum); }
+
+  /* The eyebrow label — a real structural device, used sparingly */
+  .eyebrow {
+    font-size: var(--text-eyebrow);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-brass);
+    font-weight: 600;
+  }
+
+  /* Visible, on-brand keyboard focus — accessibility floor */
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Signature: the dhuni ember glow. Apply .dhuni-glow to a hero wrapper. */
+  .dhuni-glow {
+    position: relative;
+    isolation: isolate;
+  }
+  .dhuni-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      60% 55% at 50% 18%,
+      rgba(229, 138, 26, 0.22),
+      rgba(194, 82, 14, 0.10) 45%,
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
+  /* Honour reduced motion everywhere */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* Reminder: inside an .astro <style> block, add  @reference "../styles/global.css";
+   at the top if you use @apply, or Tailwind tokens won't resolve there. */
