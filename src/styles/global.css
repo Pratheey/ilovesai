@@ -13,8 +13,8 @@
    fine detail from brass, warm ink for text. Never pure black.
    =========================================================================== */
 
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 /* Self-hosted fonts (privacy + tighter CSP — no external Google Fonts request).
    Install:  npm i @fontsource/marcellus @fontsource/mukta
@@ -27,30 +27,30 @@
 
 @theme {
   /* ---- Colour: the materials of Shirdi worship ------------------------- */
-  --color-sandal:       #F3EAD8;  /* sandalwood-paste base / page background   */
-  --color-sandal-deep:  #E7D8BC;  /* secondary surface / cards                 */
-  --color-marigold:     #E58A1A;  /* garland saffron — PRIMARY accent          */
-  --color-ember:        #C2520E;  /* dhuni-flame burnt amber — hover / active  */
-  --color-kumkum:       #6B1E25;  /* deep maroon — headings, footer, depth     */
-  --color-kumkum-deep:  #4A141A;  /* darkest maroon — footer base              */
-  --color-brass:        #A9803C;  /* temple brass — fine dividers & detail     */
-  --color-ink:          #2A211B;  /* warm near-black — body text (NOT #000)    */
-  --color-ink-soft:     #5A4D42;  /* secondary text / captions                 */
-  --color-cream:        #FBF6EC;  /* lightest surface / panels on sandal       */
+  --color-sandal: #f3ead8; /* sandalwood-paste base / page background   */
+  --color-sandal-deep: #e7d8bc; /* secondary surface / cards                 */
+  --color-marigold: #e58a1a; /* garland saffron — PRIMARY accent          */
+  --color-ember: #c2520e; /* dhuni-flame burnt amber — hover / active  */
+  --color-kumkum: #6b1e25; /* deep maroon — headings, footer, depth     */
+  --color-kumkum-deep: #4a141a; /* darkest maroon — footer base              */
+  --color-brass: #a9803c; /* temple brass — fine dividers & detail     */
+  --color-ink: #2a211b; /* warm near-black — body text (NOT #000)    */
+  --color-ink-soft: #5a4d42; /* secondary text / captions                 */
+  --color-cream: #fbf6ec; /* lightest surface / panels on sandal       */
 
   /* ---- Type ------------------------------------------------------------ */
-  --font-display: "Marcellus", Georgia, serif;            /* inscriptional, calm */
-  --font-body:    "Mukta", system-ui, sans-serif;         /* humanist + Devanagari */
+  --font-display: 'Marcellus', Georgia, serif; /* inscriptional, calm */
+  --font-body: 'Mukta', system-ui, sans-serif; /* humanist + Devanagari */
 
   /* Fluid type scale (clamps from mobile → desktop). Used as text-h1 … text-eyebrow */
-  --text-display:  clamp(2.75rem, 1.6rem + 5vw, 4.5rem);
-  --text-h1:       clamp(2.1rem, 1.4rem + 3vw, 3.25rem);
-  --text-h2:       clamp(1.6rem, 1.2rem + 1.8vw, 2.25rem);
-  --text-h3:       clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
-  --text-lead:     clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
-  --text-body:     1.0625rem;   /* 17px — comfortable for a broad age range     */
-  --text-small:    0.9375rem;
-  --text-eyebrow:  0.8125rem;   /* tracked uppercase label                      */
+  --text-display: clamp(2.75rem, 1.6rem + 5vw, 4.5rem);
+  --text-h1: clamp(2.1rem, 1.4rem + 3vw, 3.25rem);
+  --text-h2: clamp(1.6rem, 1.2rem + 1.8vw, 2.25rem);
+  --text-h3: clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
+  --text-lead: clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
+  --text-body: 1.0625rem; /* 17px — comfortable for a broad age range     */
+  --text-small: 0.9375rem;
+  --text-eyebrow: 0.8125rem; /* tracked uppercase label                      */
 
   /* ---- Radius (modest, not pill-everything) ---------------------------- */
   --radius-sm: 0.25rem;
@@ -58,14 +58,12 @@
   --radius-lg: 0.875rem;
 
   /* ---- Shadows (warm-tinted, not neutral grey) ------------------------- */
-  --shadow-soft:  0 1px 2px rgba(42, 33, 27, 0.06),
-                  0 6px 20px rgba(107, 30, 37, 0.08);
-  --shadow-lift:  0 2px 6px rgba(42, 33, 27, 0.08),
-                  0 14px 40px rgba(107, 30, 37, 0.12);
+  --shadow-soft: 0 1px 2px rgba(42, 33, 27, 0.06), 0 6px 20px rgba(107, 30, 37, 0.08);
+  --shadow-lift: 0 2px 6px rgba(42, 33, 27, 0.08), 0 14px 40px rgba(107, 30, 37, 0.12);
 
   /* ---- Layout ---------------------------------------------------------- */
-  --spacing-gutter: 1.5rem;          /* page side padding on mobile           */
-  --breakpoint-3xl: 110rem;          /* adds a 3xl: variant                   */
+  --spacing-gutter: 1.5rem; /* page side padding on mobile           */
+  --breakpoint-3xl: 110rem; /* adds a 3xl: variant                   */
 }
 
 /* ===========================================================================
@@ -74,7 +72,7 @@
    =========================================================================== */
 @layer base {
   :root {
-    --measure: 68ch;               /* max line length for readable prose       */
+    --measure: 68ch; /* max line length for readable prose       */
   }
 
   html {
@@ -94,23 +92,30 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     color: var(--color-kumkum);
     line-height: 1.15;
-    font-weight: 400;          /* Marcellus has one weight; let size carry it   */
+    font-weight: 400; /* Marcellus has one weight; let size carry it   */
     letter-spacing: 0.005em;
     text-wrap: balance;
   }
 
-  p { max-width: var(--measure); }
+  p {
+    max-width: var(--measure);
+  }
 
   a {
     color: var(--color-ember);
     text-underline-offset: 0.18em;
     text-decoration-thickness: 1px;
   }
-  a:hover { color: var(--color-kumkum); }
+  a:hover {
+    color: var(--color-kumkum);
+  }
 
   /* The eyebrow label — a real structural device, used sparingly */
   .eyebrow {
@@ -134,14 +139,14 @@
     isolation: isolate;
   }
   .dhuni-glow::before {
-    content: "";
+    content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
     background: radial-gradient(
       60% 55% at 50% 18%,
       rgba(229, 138, 26, 0.22),
-      rgba(194, 82, 14, 0.10) 45%,
+      rgba(194, 82, 14, 0.1) 45%,
       transparent 72%
     );
     pointer-events: none;
@@ -149,8 +154,12 @@
 
   /* Honour reduced motion everywhere */
   @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.001ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;

@@ -1,0 +1,8 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+
+# prose docs — content, not code; don't reformat
+*.md
+.claude/agents/*.md
