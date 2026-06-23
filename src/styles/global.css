@@ -32,6 +32,7 @@
   --color-kumkum: #6b1e25; /* deep maroon — headings, footer, depth     */
   --color-kumkum-deep: #4a141a; /* darkest maroon — footer base              */
   --color-brass: #a9803c; /* temple brass — fine dividers & detail     */
+  --color-brass-text: #6e5327; /* darkened brass — AA-safe on sandal/cream  */
   --color-ink: #2a211b; /* warm near-black — body text (NOT #000)    */
   --color-ink-soft: #5a4d42; /* secondary text / captions                 */
   --color-cream: #fbf6ec; /* lightest surface / panels on sandal       */
@@ -120,7 +121,7 @@
     font-size: var(--text-eyebrow);
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: var(--color-brass);
+    color: var(--color-brass-text);
     font-weight: 600;
   }
 

@@ -1,0 +1,63 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+
+interface Slide {
+  image?: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  slides: Slide[];
+  ariaLabel?: string;
+}
+
+const { slides, ariaLabel = 'Featured moments' } = Astro.props;
+---
+
+<div role="region" aria-roledescription="carousel" aria-label={ariaLabel}>
+  <ul
+    tabindex="0"
+    aria-label={`Scroll to browse ${ariaLabel.toLowerCase()}`}
+    class="scroll-pl-gutter flex snap-x snap-mandatory gap-4 overflow-x-auto"
+  >
+    {
+      slides.map((slide, i) => (
+        <li id={`slide-${i + 1}`} class="scroll-ml-gutter w-full shrink-0 snap-start snap-always">
+          <figure>
+            <div class="shadow-lift aspect-video overflow-hidden rounded-lg">
+              {slide.image ? (
+                <img
+                  src={typeof slide.image === 'string' ? slide.image : slide.image.src}
+                  alt={slide.alt}
+                  class="h-full w-full object-cover"
+                />
+              ) : (
+                <PlaceholderImage label={slide.alt} />
+              )}
+            </div>
+            {slide.caption && (
+              <figcaption class="text-small text-ink-soft mt-2">{slide.caption}</figcaption>
+            )}
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    slides.length > 1 && (
+      <div class="mt-4 flex items-center justify-center gap-1">
+        {slides.map((slide, i) => (
+          <a
+            href={`#slide-${i + 1}`}
+            aria-label={`Go to slide ${i + 1} of ${slides.length}: ${slide.alt}`}
+            class="flex h-11 w-11 items-center justify-center"
+          >
+            <span class="bg-brass h-2.5 w-2.5 rounded-full" aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+    )
+  }
+</div>

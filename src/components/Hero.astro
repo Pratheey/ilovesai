@@ -1,0 +1,42 @@
+---
+import Carousel from './Carousel.astro';
+
+interface Slide {
+  image?: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  lead?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  slides: Slide[];
+}
+
+const { eyebrow, heading, lead, ctaLabel, ctaHref, slides } = Astro.props;
+---
+
+<section class="dhuni-glow bg-sandal py-16 sm:py-24">
+  <div class="px-gutter mx-auto max-w-6xl text-center">
+    {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+    <h1 class="text-display">{heading}</h1>
+    {lead && <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">{lead}</p>}
+    {
+      ctaLabel && ctaHref && (
+        <a
+          href={ctaHref}
+          class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+        >
+          {ctaLabel}
+        </a>
+      )
+    }
+  </div>
+
+  <div class="px-gutter mx-auto mt-12 max-w-5xl">
+    <Carousel slides={slides} ariaLabel="Featured moments" />
+  </div>
+</section>

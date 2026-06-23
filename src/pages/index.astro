@@ -1,11 +1,155 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import CTACard from '../components/CTACard.astro';
+import PlaceholderImage from '../components/PlaceholderImage.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const heroSlides = [
+  { alt: '[PLACEHOLDER: devotees gathered at a Sai Baba temple]' },
+  { alt: "[PLACEHOLDER: the dhuni — Baba's sacred fire]" },
+  { alt: '[PLACEHOLDER: marigold garlands at a Thursday aarti]' },
+];
+
+const projects = [
+  {
+    title: 'Carpentersville',
+    description: '[PLACEHOLDER: one-line description of the Carpentersville project]',
+    imageAlt: '[PLACEHOLDER: photo of the Carpentersville project]',
+  },
+  {
+    title: 'Aao Sai',
+    description: '[PLACEHOLDER: one-line description of the Aao Sai project]',
+    imageAlt: '[PLACEHOLDER: photo of the Aao Sai project]',
+  },
+  {
+    title: 'Walk for Sai',
+    description: '[PLACEHOLDER: one-line description of the Walk for Sai project]',
+    imageAlt: '[PLACEHOLDER: photo of the Walk for Sai project]',
+  },
+  {
+    title: 'Babanchi Shirdi',
+    description: '[PLACEHOLDER: one-line description of the Babanchi Shirdi project]',
+    imageAlt: '[PLACEHOLDER: photo of the Babanchi Shirdi project]',
+  },
+];
+
+const participateOptions = [
+  {
+    title: 'Donate',
+    description: '[PLACEHOLDER: one-line description of how donations are used]',
+    href: '#donate',
+    label: 'Donate',
+    imageAlt: '[PLACEHOLDER: photo representing giving]',
+  },
+  {
+    title: 'Serve',
+    description: '[PLACEHOLDER: one-line description of volunteering / seva opportunities]',
+    href: '#',
+    label: 'Learn more',
+    imageAlt: '[PLACEHOLDER: photo of devotees volunteering]',
+  },
+  {
+    title: 'Organise a local activity',
+    description: '[PLACEHOLDER: one-line description of organising a local activity]',
+    href: '#',
+    label: 'Learn more',
+    imageAlt: '[PLACEHOLDER: photo of a local gathering]',
+  },
+];
+
+const locations = ['India', 'UK', 'USA'];
 ---
 
-<Layout>
-  <Welcome />
-</Layout>
+<BaseLayout
+  title="I LOVE SAI — Home"
+  description="A global devotional and charitable movement centred on Shri Shirdi Sai Baba."
+>
+  <Hero
+    eyebrow="[PLACEHOLDER: e.g. 'I LOVE SAI']"
+    heading="Sabka Malik Ek"
+    lead="[PLACEHOLDER: one line tying 'one God for all' to harmony across faiths and the movement's vision]"
+    ctaLabel="Get Involved"
+    ctaHref="#participate"
+    slides={heroSlides}
+  />
+
+  <section id="projects" aria-labelledby="projects-heading" class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <h2 id="projects-heading" class="text-h2 text-center">Latest from our projects</h2>
+      <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          projects.map((project) => (
+            <ProjectCard
+              title={project.title}
+              description={project.description}
+              imageAlt={project.imageAlt}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="vision" aria-labelledby="vision-heading" class="bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2">
+      <div class="aspect-[4/3]">
+        <PlaceholderImage label="[PLACEHOLDER: photo conveying the movement's vision]" />
+      </div>
+      <div>
+        <h2 id="vision-heading" class="text-h2">Our Vision</h2>
+        <p class="text-lead text-ink-soft mt-3">[PLACEHOLDER: one line vision statement]</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-sandal pb-16 text-center sm:pb-24">
+    <div class="bg-marigold/30 mx-auto h-px w-24"></div>
+    <p class="eyebrow mt-4">[PLACEHOLDER: e.g. "Shraddha &amp; Saburi" — faith &amp; patience]</p>
+  </div>
+
+  <section
+    id="participate"
+    aria-labelledby="participate-heading"
+    class="bg-sandal-deep py-16 sm:py-24"
+  >
+    <div class="px-gutter mx-auto max-w-6xl">
+      <h2 id="participate-heading" class="text-h2 text-center">Ways to Participate</h2>
+      <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {
+          participateOptions.map((option) => (
+            <CTACard
+              title={option.title}
+              description={option.description}
+              href={option.href}
+              label={option.label}
+              imageAlt={option.imageAlt}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="where" aria-labelledby="where-heading" class="bg-cream py-12">
+    <div class="px-gutter mx-auto max-w-6xl text-center">
+      <h2 id="where-heading" class="eyebrow">Where We Are</h2>
+      <p class="text-body text-ink mt-3">{locations.join(' · ')}</p>
+    </div>
+  </section>
+
+  <section id="donate" aria-labelledby="donate-heading" class="bg-kumkum-deep py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-2xl text-center">
+      <h2 id="donate-heading" class="text-h2 text-cream">
+        [PLACEHOLDER: e.g. "Support the Mission"]
+      </h2>
+      <p class="text-sandal mt-3">[PLACEHOLDER: one line on where funds go]</p>
+      <a
+        href="/donate"
+        class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+      >
+        Donate Now
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = 'Photo placeholder' } = Astro.props;
+---
+
+<div
+  class="border-brass/40 bg-cream flex h-full w-full items-center justify-center rounded-lg border p-4"
+>
+  <span class="eyebrow text-center">{label}</span>
+</div>

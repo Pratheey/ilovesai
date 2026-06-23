@@ -9,4 +9,12 @@ export default [
   ...eslintPluginAstro.configs['flat/recommended'],
   ...eslintPluginAstro.configs['flat/jsx-a11y-recommended'],
   eslintConfigPrettier,
+  {
+    files: ['src/components/Carousel.astro'],
+    rules: {
+      // Focusable scroll container is the WAI "scrollable region" pattern (G202) —
+      // lets keyboard users page through with arrow keys without a real widget role.
+      'astro/jsx-a11y/no-noninteractive-tabindex': 'off',
+    },
+  },
 ];

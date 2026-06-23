@@ -1,0 +1,33 @@
+---
+const links = [
+  { href: '#projects', label: 'Projects' },
+  { href: '#vision', label: 'Our Vision' },
+  { href: '#participate', label: 'Ways to Participate' },
+  { href: '#where', label: 'Where We Are' },
+  { href: '#donate', label: 'Donate' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-kumkum-deep">
+  <div
+    class="px-gutter mx-auto flex max-w-6xl flex-col items-center gap-4 py-8 text-center sm:flex-row sm:justify-between sm:text-left"
+  >
+    <p class="text-small text-sandal">&copy; {year} I LOVE SAI. All rights reserved.</p>
+
+    <nav aria-label="Footer">
+      <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} class="text-small text-sandal hover:text-marigold">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</footer>

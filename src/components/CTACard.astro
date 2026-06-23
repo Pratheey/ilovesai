@@ -1,0 +1,38 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  label: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+}
+
+const { title, description, href, label, image, imageAlt } = Astro.props;
+---
+
+<a
+  href={href}
+  class="border-brass/30 bg-cream hover:shadow-lift flex flex-col overflow-hidden rounded-lg border transition-shadow"
+>
+  <div class="aspect-[4/3]">
+    {
+      image ? (
+        <img
+          src={typeof image === 'string' ? image : image.src}
+          alt={imageAlt ?? ''}
+          class="h-full w-full object-cover"
+        />
+      ) : (
+        <PlaceholderImage label={imageAlt ?? title} />
+      )
+    }
+  </div>
+  <div class="flex flex-1 flex-col p-5">
+    <h3 class="text-h3">{title}</h3>
+    <p class="text-body text-ink mt-1 flex-1">{description}</p>
+    <span class="text-small text-kumkum mt-4 font-semibold">{label} &rarr;</span>
+  </div>
+</a>
