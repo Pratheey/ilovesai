@@ -1,17 +1,32 @@
 ---
 import PlaceholderImage from './PlaceholderImage.astro';
+import { getLocation, type Region } from '../lib/locations';
 
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   href?: string;
   image?: ImageMetadata | string;
   imageAlt?: string;
+  location?: Region;
+  /** Heading level for the title — defaults to h3 (this card sits under an
+   * h2 section heading at most call sites). Set to h2 when the card grid is
+   * the only thing between it and the page's own h1. */
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { title, description, href, image, imageAlt } = Astro.props;
+const {
+  title,
+  description,
+  href,
+  image,
+  imageAlt,
+  location,
+  headingLevel: HeadingTag = 'h3',
+} = Astro.props;
 const Tag = href ? 'a' : 'div';
 const linkProps = href ? { href } : {};
+const locationLabel = location ? getLocation(location)?.label : undefined;
 ---
 
 <Tag
@@ -32,7 +47,8 @@ const linkProps = href ? { href } : {};
     }
   </div>
   <div class="p-5">
-    <h3 class="text-h3">{title}</h3>
-    <p class="text-body text-ink mt-1">{description}</p>
+    <p class="eyebrow mb-2">{locationLabel}</p>
+    <HeadingTag class="text-h3">{title}</HeadingTag>
+    {description && <p class="text-body text-ink mt-1 line-clamp-2">{description}</p>}
   </div>
 </Tag>

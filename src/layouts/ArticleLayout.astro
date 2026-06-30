@@ -1,0 +1,75 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title: string;
+  essence: string;
+  headings: Heading[];
+}
+
+const { title, essence, headings } = Astro.props;
+
+const tocItems = headings.filter((heading) => heading.depth === 2);
+const showToc = tocItems.length >= 3;
+---
+
+<BaseLayout title={`${title} — I LOVE SAI`} description={essence}>
+  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl text-center">
+      <h1 class="text-display">{title}</h1>
+      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">{essence}</p>
+    </div>
+  </section>
+
+  <div class="bg-cream px-gutter py-16 sm:py-24">
+    {
+      showToc ? (
+        <div class="mx-auto max-w-6xl lg:grid lg:grid-cols-[240px_1fr] lg:gap-12">
+          <aside>
+            <details class="mb-10 lg:hidden">
+              <summary class="eyebrow cursor-pointer">On This Page</summary>
+              <nav aria-label="Table of contents" class="border-brass/20 mt-3 border-l pl-4">
+                <ul class="flex flex-col gap-2">
+                  {tocItems.map((item) => (
+                    <li>
+                      <a href={`#${item.slug}`} class="text-body text-ink-soft hover:text-ember">
+                        {item.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </details>
+
+            <nav aria-label="Table of contents" class="hidden lg:sticky lg:top-24 lg:block">
+              <p class="eyebrow mb-3">On This Page</p>
+              <ul class="border-brass/20 flex flex-col gap-2 border-l pl-4">
+                {tocItems.map((item) => (
+                  <li>
+                    <a href={`#${item.slug}`} class="text-small text-ink-soft hover:text-ember">
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+
+          <div class="prose">
+            <slot />
+          </div>
+        </div>
+      ) : (
+        <div class="prose mx-auto max-w-[var(--measure)]">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>

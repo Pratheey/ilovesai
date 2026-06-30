@@ -1,0 +1,16 @@
+# Old WordPress URLs → new routes
+/mission/                              /about/movement                        301
+/about-us/                             /about                                  301
+/about-us/about-sai-baba/              /about/sai-baba                         301
+/about-us/about-shirdi/                /about/shirdi                          301
+/a-global-sai-movement/                /about/movement                        301
+/babas-grace/                          /about/movement                        301
+/our-projects/                         /projects                              301
+/aao-sai/                              /projects/aao-sai                      301
+/carpentersville-illinois/             /projects/carpentersville              301
+/walk-for-sai/                         /projects/walk-for-sai                 301
+/babanchi-shirdi-majhi-shirdi/         /projects/babanchi-shirdi-majhi-shirdi 301
+/get-involved/                         /get-involved                          301
+/organise-charitable-activities/       /get-involved?interest=project         301
+/contact-us/                           /contact                               301
+/registration/                         /get-involved                          301

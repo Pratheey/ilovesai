@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Carousel from '../../components/Carousel.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import EventCard from '../../components/EventCard.astro';
+import { locations, isPlaceholder, type Location } from '../../lib/locations';
+import { projects } from '../../lib/projects';
+import { events } from '../../lib/events';
+import { getGalleryImages } from '../../lib/gallery';
+
+export function getStaticPaths() {
+  return locations.map((location) => ({
+    params: { region: location.region.toLowerCase() },
+    props: { location },
+  }));
+}
+
+const { location } = Astro.props as { location: Location };
+
+const now = new Date();
+const regionProjects = projects.filter((project) => project.location === location.region);
+const regionEvents = events
+  .filter((event) => event.location === location.region && event.start >= now)
+  .sort((a, b) => a.start.getTime() - b.start.getTime());
+const galleryImages = getGalleryImages(location.region);
+---
+
+<BaseLayout
+  title={`${location.label} — I LOVE SAI`}
+  description={`I LOVE SAI's projects, events, and local contact in ${location.label}.`}
+>
+  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-4xl text-center">
+      <p class="eyebrow mb-4">{location.city}</p>
+      <h1 class="text-display">{location.label}</h1>
+      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
+        [PLACEHOLDER: one line about I LOVE SAI's work in {location.label}]
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="contact-heading" class="bg-cream py-12">
+    <div class="px-gutter mx-auto max-w-2xl text-center">
+      <h2 id="contact-heading" class="eyebrow">Local Contact</h2>
+      <p class="text-body text-ink mt-3 break-words">{location.contactName}</p>
+      {
+        location.email && (
+          <p class="text-body mt-1 break-words">
+            {isPlaceholder(location.email) ? (
+              <span class="text-ink-soft">{location.email}</span>
+            ) : (
+              <a href={`mailto:${location.email}`} class="text-kumkum hover:text-ember">
+                {location.email}
+              </a>
+            )}
+          </p>
+        )
+      }
+      {
+        location.phone && (
+          <p class="text-body mt-1">
+            {isPlaceholder(location.phone) ? (
+              <span class="text-ink-soft">{location.phone}</span>
+            ) : (
+              <a href={`tel:${location.phone}`} class="text-kumkum hover:text-ember">
+                {location.phone}
+              </a>
+            )}
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    galleryImages.length > 0 && (
+      <section aria-labelledby="gallery-heading" class="bg-sandal py-16 sm:py-24">
+        <div class="px-gutter mx-auto max-w-3xl">
+          <h2 id="gallery-heading" class="text-h2 text-center">
+            Photos from {location.label}
+          </h2>
+          <div class="mt-10">
+            <Carousel
+              slides={galleryImages.map((image) => ({ image: image.image, alt: image.imageAlt }))}
+              ariaLabel={`Photos from ${location.label}`}
+            />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    regionProjects.length > 0 && (
+      <section aria-labelledby="projects-heading" class="bg-cream py-16 sm:py-24">
+        <div class="px-gutter mx-auto max-w-6xl">
+          <h2 id="projects-heading" class="text-h2 text-center">
+            Projects in {location.label}
+          </h2>
+          <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {regionProjects.map((project) => (
+              <ProjectCard
+                title={project.title}
+                description={project.cardDescription}
+                href={`/projects/${project.slug}`}
+                imageAlt={project.imageAlt}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    regionEvents.length > 0 && (
+      <section aria-labelledby="events-heading" class="bg-sandal py-16 sm:py-24">
+        <div class="px-gutter mx-auto max-w-6xl">
+          <h2 id="events-heading" class="text-h2 text-center">
+            Upcoming Events in {location.label}
+          </h2>
+          <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {regionEvents.map((event) => (
+              <EventCard
+                title={event.title}
+                summary={event.summary}
+                href={`/events/${event.slug}`}
+                start={event.start}
+                location={event.location}
+                type={event.type}
+                image={event.image}
+                imageAlt={event.imageAlt}
+                headingLevel="h3"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <nav aria-label="More locations" class="bg-cream px-gutter py-12 text-center">
+    <a href="/locations" class="text-body text-ember hover:text-kumkum font-semibold">
+      Explore other locations &rarr;
+    </a>
+  </nav>
+</BaseLayout>

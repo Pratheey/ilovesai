@@ -1,0 +1,44 @@
+---
+import { getUpcomingEvents } from '../lib/events';
+import { getLocation } from '../lib/locations';
+
+interface Props {
+  count?: number;
+}
+
+const { count = 5 } = Astro.props;
+const events = getUpcomingEvents(count);
+
+// Hardcoded 'en' for now — switch to the page's locale once i18n routing exists.
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+});
+const timeFormatter = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+---
+
+{
+  events.length === 0 ? (
+    <p class="text-body text-ink-soft">No upcoming events right now — check back soon.</p>
+  ) : (
+    <ul class="border-brass/20 divide-brass/20 divide-y rounded-lg border">
+      {events.map((event) => (
+        <li>
+          <a
+            href={`/events/${event.slug}`}
+            class="hover:bg-cream flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          >
+            <div>
+              <h3 class="text-h3">{event.title}</h3>
+              <p class="text-small text-ink-soft mt-1">{getLocation(event.location)?.label}</p>
+            </div>
+            <p class="eyebrow shrink-0">
+              {dateFormatter.format(event.start)} &middot; {timeFormatter.format(event.start)}
+            </p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

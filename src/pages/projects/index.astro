@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { projects } from '../../lib/projects';
+---
+
+<BaseLayout
+  title="Our Projects — I LOVE SAI"
+  description="Ongoing projects and charitable activities from the I LOVE SAI community."
+>
+  <section class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <div class="mx-auto max-w-[var(--measure)] text-center">
+        <h1 class="text-display">Our Projects</h1>
+        <p class="text-lead text-ink-soft mt-4">[PLACEHOLDER: intro line for the Projects index]</p>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          projects.map((project) => (
+            <ProjectCard
+              title={project.title}
+              description={project.cardDescription}
+              href={`/projects/${project.slug}`}
+              imageAlt={project.imageAlt}
+              location={project.location}
+              headingLevel="h2"
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

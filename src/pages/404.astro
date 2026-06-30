@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found — I LOVE SAI" description="This page could not be found.">
+  <section class="bg-cream px-gutter py-24 sm:py-32">
+    <div class="mx-auto max-w-[var(--measure)] text-center">
+      <h1 class="text-display">We couldn't find that page</h1>
+      <p class="text-lead text-ink-soft mt-4">
+        It may have moved, or no longer exists. Here are a few places to start instead.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <a
+          href="/"
+          class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+        >
+          Back to Home
+        </a>
+        <a href="/projects" class="text-body text-kumkum hover:text-ember font-semibold"
+          >Our Projects</a
+        >
+        <a href="/contact" class="text-body text-kumkum hover:text-ember font-semibold"
+          >Contact Us</a
+        >
+      </div>
+    </div>
+  </section>
+</BaseLayout>

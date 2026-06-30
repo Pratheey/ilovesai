@@ -4,6 +4,8 @@ import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import CTACard from '../components/CTACard.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
+import { DONATE_URL } from '../lib/donate';
+import { locations } from '../lib/locations';
 
 const heroSlides = [
   { alt: '[PLACEHOLDER: devotees gathered at a Sai Baba temple]' },
@@ -57,8 +59,6 @@ const participateOptions = [
     imageAlt: '[PLACEHOLDER: photo of a local gathering]',
   },
 ];
-
-const locations = ['India', 'UK', 'USA'];
 ---
 
 <BaseLayout
@@ -134,7 +134,21 @@ const locations = ['India', 'UK', 'USA'];
   <section id="where" aria-labelledby="where-heading" class="bg-cream py-12">
     <div class="px-gutter mx-auto max-w-6xl text-center">
       <h2 id="where-heading" class="eyebrow">Where We Are</h2>
-      <p class="text-body text-ink mt-3">{locations.join(' · ')}</p>
+      <p class="text-body text-ink mt-3">
+        {
+          locations.map((location, i) => (
+            <>
+              {i > 0 && ' · '}
+              <a
+                href={`/locations/${location.region.toLowerCase()}`}
+                class="text-ink hover:text-ember"
+              >
+                {location.label}
+              </a>
+            </>
+          ))
+        }
+      </p>
     </div>
   </section>
 
@@ -145,10 +159,13 @@ const locations = ['India', 'UK', 'USA'];
       </h2>
       <p class="text-sandal mt-3">[PLACEHOLDER: one line on where funds go]</p>
       <a
-        href="/donate"
+        href={DONATE_URL}
+        target="_blank"
+        rel="noopener"
         class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
       >
         Donate Now
+        <span class="sr-only"> (opens in a new tab)</span>
       </a>
     </div>
   </section>

@@ -1,0 +1,168 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { actions } from 'astro:actions';
+import { env } from 'cloudflare:workers';
+import { locations, isPlaceholder } from '../lib/locations';
+
+const result = Astro.getActionResult(actions.contact);
+
+const turnstileSiteKey = env.TURNSTILE_SITE_KEY;
+
+if (turnstileSiteKey) {
+  Astro.csp?.insertScriptResource('https://challenges.cloudflare.com');
+  Astro.csp?.insertDirective('frame-src https://challenges.cloudflare.com');
+  Astro.csp?.insertDirective("connect-src 'self' https://challenges.cloudflare.com");
+}
+
+const inputClass =
+  'border-brass/40 text-body w-full min-h-11 rounded-md border bg-white px-4 py-2.5';
+---
+
+<BaseLayout
+  title="Contact — I LOVE SAI"
+  description="Reach I LOVE SAI's regional contacts, or send a message directly."
+>
+  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-4xl text-center">
+      <h1 class="text-display">Contact</h1>
+      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
+        [PLACEHOLDER: one line inviting visitors to reach out]
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="regions-heading" class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <h2 id="regions-heading" class="text-h2 text-center">Reach Us</h2>
+      <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        {
+          locations.map((location) => (
+            <div class="border-brass/30 bg-sandal rounded-lg border p-6 text-center">
+              <h3 class="text-h3">{location.label}</h3>
+              <p class="text-body text-ink mt-2 break-words">{location.contactName}</p>
+              {location.email && (
+                <p class="mt-1 break-words">
+                  {isPlaceholder(location.email) ? (
+                    <span class="text-body text-ink-soft">{location.email}</span>
+                  ) : (
+                    <a
+                      href={`mailto:${location.email}`}
+                      class="text-body text-kumkum hover:text-ember"
+                    >
+                      {location.email}
+                    </a>
+                  )}
+                </p>
+              )}
+              {location.phone && (
+                <p class="mt-1">
+                  {isPlaceholder(location.phone) ? (
+                    <span class="text-body text-ink-soft">{location.phone}</span>
+                  ) : (
+                    <a
+                      href={`tel:${location.phone}`}
+                      class="text-body text-kumkum hover:text-ember"
+                    >
+                      {location.phone}
+                    </a>
+                  )}
+                </p>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="form-heading" class="bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-2xl">
+      <h2 id="form-heading" class="text-h2 text-center">Send a Message</h2>
+
+      {
+        result?.data?.success && (
+          <p role="status" class="text-body text-ink bg-cream mt-8 rounded-md p-4 text-center">
+            Thank you — we'll be in touch soon.
+          </p>
+        )
+      }
+      {
+        result?.error && (
+          <p role="alert" class="text-body text-kumkum bg-cream mt-8 rounded-md p-4 text-center">
+            {result.error.message}
+          </p>
+        )
+      }
+
+      <p class="text-small text-ink-soft mt-10">
+        Fields marked <span class="text-kumkum">*</span> are required.
+      </p>
+
+      <form method="POST" action={actions.contact} class="mt-4 flex flex-col gap-6">
+        <div>
+          <label for="name" class="text-small text-ink-soft mb-1.5 block">
+            Name <span class="text-kumkum">*</span>
+          </label>
+          <input type="text" id="name" name="name" required class={inputClass} />
+        </div>
+
+        <div>
+          <label for="email" class="text-small text-ink-soft mb-1.5 block">
+            Email <span class="text-kumkum">*</span>
+          </label>
+          <input type="email" id="email" name="email" required class={inputClass} />
+        </div>
+
+        <div>
+          <label for="region" class="text-small text-ink-soft mb-1.5 block">
+            Region <span class="text-kumkum">*</span>
+          </label>
+          <select id="region" name="region" required class={inputClass}>
+            <option value="" disabled selected> Choose a region </option>
+            {locations.map((location) => <option value={location.region}>{location.label}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label for="message" class="text-small text-ink-soft mb-1.5 block">
+            Message <span class="text-kumkum">*</span>
+          </label>
+          <textarea id="message" name="message" rows="4" required class={inputClass}></textarea>
+        </div>
+
+        <div class="honeypot-field" aria-hidden="true">
+          <label for="_gotcha">Company</label>
+          <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
+        </div>
+
+        {turnstileSiteKey && <div class="cf-turnstile" data-sitekey={turnstileSiteKey} />}
+
+        <button
+          type="submit"
+          class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-2 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+        >
+          Submit
+        </button>
+      </form>
+
+      {
+        turnstileSiteKey && (
+          <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer />
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Off-screen, not display:none — some bots skip hidden fields entirely. */
+  .honeypot-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>

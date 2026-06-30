@@ -1,0 +1,19 @@
+---
+interface Props {
+  variant?: 'color' | 'white';
+  class?: string;
+}
+
+const { variant = 'color', class: cls } = Astro.props;
+
+const sources = {
+  color: { src: '/logos/logo-color.svg', width: 177, height: 70 },
+  white: { src: '/logos/logo-white.svg', width: 177, height: 70 },
+};
+const { src, width, height } = sources[variant];
+---
+
+<a href="/" aria-label="I Love Sai — home" class="inline-flex items-center">
+  {/* alt="" is safe only because this link's aria-label already names it */}
+  <img src={src} alt="" width={width} height={height} class={cls ?? 'h-11 w-auto'} />
+</a>

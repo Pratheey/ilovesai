@@ -1,0 +1,166 @@
+---
+import Logo from './Logo.astro';
+import { DONATE_URL } from '../lib/donate';
+
+const navLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/events', label: 'Events' },
+  { href: '/get-involved', label: 'Get Involved' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const quickLinks = [{ href: '/get-involved?project=aao-sai#form', label: 'Request Aao Sai' }];
+---
+
+<header class="border-brass/20 bg-sandal sticky top-0 z-20 border-b">
+  <div class="px-gutter mx-auto flex max-w-6xl items-center justify-between gap-4 py-4">
+    <Logo />
+
+    <nav aria-label="Primary" class="hidden items-center gap-6 lg:flex">
+      {
+        navLinks.map((link) => (
+          <a href={link.href} class="text-body text-ink hover:text-ember">
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden items-center gap-5 lg:flex">
+      {
+        quickLinks.map((link) => (
+          <a href={link.href} class="text-small text-ink-soft hover:text-ember">
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href={DONATE_URL}
+        target="_blank"
+        rel="noopener"
+        class="bg-marigold text-small text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center rounded-md px-5 py-2 font-semibold"
+      >
+        Donate
+        <span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </div>
+
+    <button
+      id="menu-open"
+      type="button"
+      class="border-brass/40 flex h-11 w-11 items-center justify-center rounded-md border lg:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        class="text-ink h-5 w-5"
+      >
+        <path d="M3 6h18M3 12h18M3 18h18"></path>
+      </svg>
+    </button>
+  </div>
+
+  <dialog id="mobile-menu" aria-label="Menu" class="menu-dialog">
+    <div class="px-gutter flex items-center justify-between py-4">
+      <Logo />
+      <button
+        id="menu-close"
+        type="button"
+        class="border-brass/40 flex h-11 w-11 items-center justify-center rounded-md border"
+        aria-label="Close menu"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          class="text-ink h-5 w-5"
+        >
+          <path d="M5 5l14 14M19 5L5 19"></path>
+        </svg>
+      </button>
+    </div>
+
+    <nav aria-label="Primary" class="px-gutter flex flex-col gap-1 py-4">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-h3 text-ink hover:text-ember flex min-h-11 items-center rounded-sm px-2 py-3"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="px-gutter border-brass/20 mt-auto flex flex-col gap-3 border-t py-6">
+      {
+        quickLinks.map((link) => (
+          <a href={link.href} class="text-body text-ink-soft hover:text-ember">
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href={DONATE_URL}
+        target="_blank"
+        rel="noopener"
+        class="bg-marigold text-body text-ink shadow-soft inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+      >
+        Donate
+        <span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </div>
+  </dialog>
+</header>
+
+<style>
+  .menu-dialog {
+    inset: 0;
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    padding: 0;
+    background: var(--color-sandal);
+  }
+  .menu-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .menu-dialog::backdrop {
+    background: rgba(42, 33, 27, 0.4);
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('mobile-menu');
+  const openButton = document.getElementById('menu-open');
+  const closeButton = document.getElementById('menu-close');
+
+  openButton?.addEventListener('click', () => {
+    if (dialog instanceof HTMLDialogElement) dialog.showModal();
+    openButton.setAttribute('aria-expanded', 'true');
+  });
+  closeButton?.addEventListener('click', () => {
+    if (dialog instanceof HTMLDialogElement) dialog.close();
+  });
+  // Covers both the explicit close button and the dialog's native
+  // Escape-to-close behavior, which doesn't fire a click on closeButton.
+  dialog?.addEventListener('close', () => {
+    openButton?.setAttribute('aria-expanded', 'false');
+  });
+</script>

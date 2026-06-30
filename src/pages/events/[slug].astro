@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PlaceholderImage from '../../components/PlaceholderImage.astro';
+import { eventTypeLabels } from '../../components/EventCard.astro';
+import { events } from '../../lib/events';
+import { getLocation } from '../../lib/locations';
+
+export function getStaticPaths() {
+  return events.map((event) => ({
+    params: { slug: event.slug },
+    props: { event },
+  }));
+}
+
+const { event } = Astro.props;
+const locationLabel = getLocation(event.location)?.label;
+
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+const timeFormatter = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+---
+
+<BaseLayout title={`${event.title} — I LOVE SAI`} description={event.summary}>
+  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-4xl text-center">
+      <p class="eyebrow mb-4">
+        {eventTypeLabels[event.type]} · {locationLabel}
+      </p>
+      <h1 class="text-display">{event.title}</h1>
+      <p class="text-lead text-ink-soft mt-4">
+        {dateFormatter.format(event.start)} &middot; {timeFormatter.format(event.start)}
+      </p>
+    </div>
+
+    <div class="px-gutter mx-auto mt-10 aspect-[16/9] max-w-4xl">
+      {
+        event.image ? (
+          <img
+            src={typeof event.image === 'string' ? event.image : event.image.src}
+            alt={event.imageAlt ?? ''}
+            class="h-full w-full rounded-lg object-cover"
+          />
+        ) : (
+          <PlaceholderImage label={event.imageAlt ?? event.title} />
+        )
+      }
+    </div>
+  </section>
+
+  {
+    event.body && event.body.length > 0 && (
+      <section class="bg-cream px-gutter py-16 sm:py-24">
+        <div class="mx-auto max-w-[var(--measure)]">
+          {event.body.map((paragraph) => (
+            <p class="text-body text-ink mt-4 first:mt-0">{paragraph}</p>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    event.registrationUrl && (
+      <section class="bg-kumkum-deep px-gutter py-16 text-center sm:py-24">
+        <a
+          href={event.registrationUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+        >
+          Register
+        </a>
+      </section>
+    )
+  }
+
+  <nav aria-label="More events" class="bg-cream px-gutter py-12 text-center">
+    <a href="/events" class="text-body text-ember hover:text-kumkum font-semibold">
+      Explore upcoming events &rarr;
+    </a>
+  </nav>
+</BaseLayout>

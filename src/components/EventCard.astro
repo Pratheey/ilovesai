@@ -1,0 +1,82 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+import { getLocation, type Region } from '../lib/locations';
+import type { EventType } from '../lib/events';
+
+export const eventTypeLabels: Record<EventType, string> = {
+  aarti: 'Aarti',
+  satsang: 'Satsang',
+  festival: 'Festival',
+  'aao-sai': 'Aao Sai',
+  charity: 'Charity',
+};
+
+interface Props {
+  title: string;
+  summary: string;
+  href: string;
+  start: Date;
+  location: Region;
+  type: EventType;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  /** 'h4' when nested under a month group's h3 (the events index); 'h3' when this
+   * card sits directly under a page-level h2 with no intermediate heading (e.g.
+   * a region page's "Upcoming Events" section). */
+  headingLevel?: 'h3' | 'h4';
+}
+
+const {
+  title,
+  summary,
+  href,
+  start,
+  location,
+  type,
+  image,
+  imageAlt,
+  headingLevel = 'h4',
+} = Astro.props;
+const Heading = headingLevel;
+
+const locationLabel = getLocation(location)?.label;
+
+// Hardcoded 'en' for now — switch to the page's locale once i18n routing exists.
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+});
+const timeFormatter = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+---
+
+<a
+  href={href}
+  data-type={type}
+  data-location={location}
+  class="event-card bg-sandal-deep shadow-soft hover:shadow-lift block overflow-hidden rounded-lg transition-shadow"
+>
+  <div class="aspect-[4/3]">
+    {
+      image ? (
+        <img
+          src={typeof image === 'string' ? image : image.src}
+          alt={imageAlt ?? ''}
+          class="h-full w-full object-cover"
+        />
+      ) : (
+        <PlaceholderImage label={imageAlt ?? title} />
+      )
+    }
+  </div>
+  <div class="p-5">
+    <p class="eyebrow mb-2">
+      {dateFormatter.format(start)} &middot; {timeFormatter.format(start)}
+    </p>
+    <Heading class="text-h3">{title}</Heading>
+    <p class="text-body text-ink mt-1 line-clamp-2">{summary}</p>
+    <p class="text-small text-ink-soft mt-2">
+      {eventTypeLabels[type]} · {locationLabel}
+    </p>
+  </div>
+</a>

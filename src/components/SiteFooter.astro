@@ -1,0 +1,45 @@
+---
+import Logo from './Logo.astro';
+import { locations } from '../lib/locations';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-kumkum-deep border-brass/30 border-t">
+  <div class="px-gutter mx-auto max-w-6xl py-12">
+    <div
+      class="flex flex-col items-center gap-8 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left"
+    >
+      <div>
+        <Logo variant="white" />
+        <p class="text-body text-sandal mt-4 max-w-xs">[PLACEHOLDER: one-line mission statement]</p>
+      </div>
+
+      <div class="text-body text-sandal flex flex-col gap-2">
+        <p>[PLACEHOLDER: real contact email]</p>
+        <p>
+          {
+            locations.map((location, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a
+                  href={`/locations/${location.region.toLowerCase()}`}
+                  class="text-sandal hover:text-marigold"
+                >
+                  {location.label}
+                </a>
+              </>
+            ))
+          }
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="border-brass/20 text-small text-sandal/80 mt-10 flex flex-col items-center gap-2 border-t pt-6 text-center sm:flex-row sm:justify-between sm:text-left"
+    >
+      <p>[PLACEHOLDER: registered charity name and registration number]</p>
+      <p>&copy; {year} I LOVE SAI. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

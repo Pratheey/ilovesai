@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const order = ['movement', 'sai-baba', 'shirdi'];
+const entries = await getCollection('about');
+const sorted = order
+  .map((slug) => entries.find((entry) => entry.id === slug))
+  .filter((entry) => entry !== undefined);
+---
+
+<BaseLayout
+  title="About — I LOVE SAI"
+  description="The mission, Sai Baba, and Shirdi — an introduction for newcomers."
+>
+  <section class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <div class="mx-auto max-w-[var(--measure)] text-center">
+        <h1 class="text-display">About</h1>
+        <p class="text-lead text-ink-soft mt-4">[PLACEHOLDER: intro line for the About hub]</p>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        {
+          sorted.map((entry) => (
+            <ProjectCard
+              title={entry.data.title}
+              description={entry.data.essence}
+              href={`/about/${entry.id}`}
+              headingLevel="h2"
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

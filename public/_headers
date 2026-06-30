@@ -1,0 +1,14 @@
+# Applies to static assets only — the SSR routes (get-involved, contact) get
+# the same headers from src/middleware.ts instead. Keep both in sync.
+# CSP itself is NOT set here — it's generated per-page by Astro's native
+# security.csp feature (astro.config.mjs) as a <meta> tag, since it needs to
+# hash Astro's own inlined scripts/styles. Setting a CSP header here too would
+# create a stricter intersection that blocks those hashes.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  Strict-Transport-Security: max-age=63072000; includeSubDomains

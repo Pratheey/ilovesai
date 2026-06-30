@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UpcomingEvents from '../../components/UpcomingEvents.astro';
+import EventCard, { eventTypeLabels } from '../../components/EventCard.astro';
+import { events, type Event, type EventType } from '../../lib/events';
+import { locations } from '../../lib/locations';
+
+const now = new Date();
+const upcoming = events
+  .filter((event) => event.start >= now)
+  .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+const monthFormatter = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
+
+const groups: { label: string; events: Event[] }[] = [];
+for (const event of upcoming) {
+  const label = monthFormatter.format(event.start);
+  const group = groups.find((g) => g.label === label);
+  if (group) {
+    group.events.push(event);
+  } else {
+    groups.push({ label, events: [event] });
+  }
+}
+
+const eventTypes = Object.keys(eventTypeLabels) as EventType[];
+---
+
+<BaseLayout
+  title="Events — I LOVE SAI"
+  description="Upcoming aartis, satsangs, festivals, and charity events."
+>
+  <section class="bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl text-center">
+      <h1 class="text-display">Events</h1>
+      <div class="mx-auto mt-12 max-w-3xl text-left">
+        <UpcomingEvents />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <h2 class="text-h2 text-center">All Upcoming Events</h2>
+
+      <div class="mx-auto mt-10 flex max-w-3xl flex-col gap-6 sm:flex-row sm:gap-10">
+        <fieldset>
+          <legend class="eyebrow mb-2">Type</legend>
+          <div class="flex flex-wrap gap-x-4 gap-y-1">
+            <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
+              <input type="radio" name="type-filter" value="all" checked class="accent-marigold" />
+              All
+            </label>
+            {
+              eventTypes.map((type) => (
+                <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
+                  <input type="radio" name="type-filter" value={type} class="accent-marigold" />
+                  {eventTypeLabels[type]}
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="eyebrow mb-2">Location</legend>
+          <div class="flex flex-wrap gap-x-4 gap-y-1">
+            <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
+              <input
+                type="radio"
+                name="location-filter"
+                value="all"
+                checked
+                class="accent-marigold"
+              />
+              All
+            </label>
+            {
+              locations.map((location) => (
+                <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
+                  <input
+                    type="radio"
+                    name="location-filter"
+                    value={location.region}
+                    class="accent-marigold"
+                  />
+                  {location.label}
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+      </div>
+
+      <p id="filter-status" class="sr-only" role="status" aria-live="polite"></p>
+
+      {
+        groups.length === 0 ? (
+          <p class="text-body text-ink-soft mx-auto mt-12 max-w-[var(--measure)] text-center">
+            No upcoming events right now — check back soon.
+          </p>
+        ) : (
+          <div class="mt-12 flex flex-col gap-12">
+            {groups.map((group) => (
+              <div data-month-group>
+                <h3 class="text-h3">{group.label}</h3>
+                <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.events.map((event) => (
+                    <EventCard
+                      title={event.title}
+                      summary={event.summary}
+                      href={`/events/${event.slug}`}
+                      start={event.start}
+                      location={event.location}
+                      type={event.type}
+                      image={event.image}
+                      imageAlt={event.imageAlt}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const cards = document.querySelectorAll<HTMLElement>('.event-card');
+  const monthGroups = document.querySelectorAll<HTMLElement>('[data-month-group]');
+  const filterStatus = document.getElementById('filter-status');
+
+  function applyFilters() {
+    const activeType =
+      document.querySelector<HTMLInputElement>('input[name="type-filter"]:checked')?.value ?? 'all';
+    const activeLocation =
+      document.querySelector<HTMLInputElement>('input[name="location-filter"]:checked')?.value ??
+      'all';
+
+    let visibleCount = 0;
+    cards.forEach((card) => {
+      const matchesType = activeType === 'all' || card.dataset.type === activeType;
+      const matchesLocation = activeLocation === 'all' || card.dataset.location === activeLocation;
+      card.hidden = !(matchesType && matchesLocation);
+      if (!card.hidden) visibleCount += 1;
+    });
+
+    monthGroups.forEach((group) => {
+      group.hidden = group.querySelector('.event-card:not([hidden])') === null;
+    });
+
+    if (filterStatus) {
+      filterStatus.textContent = `${visibleCount} event${visibleCount === 1 ? '' : 's'} shown`;
+    }
+  }
+
+  document
+    .querySelectorAll<HTMLInputElement>('input[name="type-filter"], input[name="location-filter"]')
+    .forEach((radio) => radio.addEventListener('change', applyFilters));
+</script>

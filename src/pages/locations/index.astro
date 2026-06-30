@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { locations, type Region } from '../../lib/locations';
+import { projects } from '../../lib/projects';
+import { events } from '../../lib/events';
+
+const now = new Date();
+
+function describeRegion(region: Region) {
+  const projectCount = projects.filter((project) => project.location === region).length;
+  const eventCount = events.filter(
+    (event) => event.location === region && event.start >= now,
+  ).length;
+
+  const parts: string[] = [];
+  if (projectCount > 0) parts.push(`${projectCount} project${projectCount === 1 ? '' : 's'}`);
+  if (eventCount > 0) {
+    parts.push(`${eventCount} upcoming event${eventCount === 1 ? '' : 's'}`);
+  }
+  return parts.length > 0 ? parts.join(' · ') : '[PLACEHOLDER: about this region]';
+}
+---
+
+<BaseLayout
+  title="Where We Are — I LOVE SAI"
+  description="I LOVE SAI's projects and events across India, the UK, and the USA."
+>
+  <section class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <div class="mx-auto max-w-[var(--measure)] text-center">
+        <h1 class="text-display">Where We Are</h1>
+        <p class="text-lead text-ink-soft mt-4">[PLACEHOLDER: intro line for the Locations hub]</p>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        {
+          locations.map((location) => (
+            <ProjectCard
+              title={location.label}
+              description={describeRegion(location.region)}
+              href={`/locations/${location.region.toLowerCase()}`}
+              headingLevel="h2"
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

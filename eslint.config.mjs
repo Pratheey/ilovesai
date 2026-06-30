@@ -4,7 +4,7 @@ import eslintPluginAstro from 'eslint-plugin-astro';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
-  { ignores: ['dist/**', '.astro/**', 'node_modules/**'] },
+  { ignores: ['dist/**', '.astro/**', 'node_modules/**', 'worker-configuration.d.ts'] },
   ...tseslint.configs.recommended,
   ...eslintPluginAstro.configs['flat/recommended'],
   ...eslintPluginAstro.configs['flat/jsx-a11y-recommended'],

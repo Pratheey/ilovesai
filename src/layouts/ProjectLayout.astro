@@ -1,0 +1,169 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PlaceholderImage from '../components/PlaceholderImage.astro';
+import PullQuote from '../components/PullQuote.astro';
+import { getLocation, type Region } from '../lib/locations';
+
+interface ProjectStep {
+  label: string;
+  body: string;
+}
+
+interface Props {
+  title: string;
+  essence: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  location?: Region;
+  quote?: { text: string; attribution: string };
+  intro?: string[];
+  steps?: ProjectStep[];
+  goodToKnowHeading?: string;
+  goodToKnow?: string[];
+  ctaHeading?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  /** True when ctaHref leaves the site (e.g. an external hosted checkout) —
+   * internal CTAs (e.g. to /get-involved) must not set this. */
+  ctaExternal?: boolean;
+  closingLine?: string;
+}
+
+const {
+  title,
+  essence,
+  image,
+  imageAlt,
+  location,
+  quote,
+  intro,
+  steps,
+  goodToKnowHeading = 'Good to Know',
+  goodToKnow,
+  ctaHeading = 'Get Involved',
+  ctaLabel,
+  ctaHref,
+  ctaExternal,
+  closingLine,
+} = Astro.props;
+
+const locationLabel = location ? getLocation(location)?.label : undefined;
+---
+
+<BaseLayout title={`${title} — I LOVE SAI`} description={essence}>
+  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <div class="mx-auto max-w-[var(--measure)] text-center">
+        {locationLabel && <p class="eyebrow mb-4">{locationLabel}</p>}
+        <h1 class="text-display">{title}</h1>
+        <p class="text-lead text-ink-soft mt-4">{essence}</p>
+        {intro?.map((paragraph) => <p class="text-body text-ink mt-4">{paragraph}</p>)}
+      </div>
+
+      <div class="mx-auto mt-10 aspect-[16/9] max-w-4xl">
+        {
+          image ? (
+            <img
+              src={typeof image === 'string' ? image : image.src}
+              alt={imageAlt ?? ''}
+              class="h-full w-full rounded-lg object-cover"
+            />
+          ) : (
+            <PlaceholderImage label={imageAlt ?? title} />
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    quote && (
+      <section aria-label="Quote" class="bg-sandal px-gutter pb-16 sm:pb-24">
+        <PullQuote text={quote.text} attribution={quote.attribution} />
+      </section>
+    )
+  }
+
+  {
+    steps && steps.length > 0 && (
+      <section
+        id="how-it-works"
+        aria-labelledby="how-it-works-heading"
+        class="bg-cream py-16 sm:py-24"
+      >
+        <div class="px-gutter mx-auto max-w-3xl">
+          <h2 id="how-it-works-heading" class="text-h2 text-center">
+            How It Works
+          </h2>
+          <ol class="mt-12 flex flex-col gap-10">
+            {steps.map((step, i) => (
+              <li class="relative flex gap-6">
+                {i < steps.length - 1 && (
+                  <span class="bg-brass/30 absolute top-12 left-6 h-10 w-px" aria-hidden="true" />
+                )}
+                <span class="bg-marigold text-ink font-display text-h3 relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
+                  {i + 1}
+                </span>
+                <div class="pt-1">
+                  <h3 class="text-h3">{step.label}</h3>
+                  <p class="text-body text-ink mt-1">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    goodToKnow && goodToKnow.length > 0 && (
+      <section aria-labelledby="good-to-know-heading" class="bg-sandal py-16 sm:py-24">
+        <div class="px-gutter mx-auto max-w-2xl">
+          <h2 id="good-to-know-heading" class="text-h2 text-center">
+            {goodToKnowHeading}
+          </h2>
+          <ul class="text-body text-ink mt-8 flex flex-col gap-3">
+            {goodToKnow.map((line) => (
+              <li class="flex gap-3">
+                <span
+                  class="bg-brass mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                  aria-hidden="true"
+                />
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    ctaLabel && ctaHref && (
+      <section aria-labelledby="cta-heading" class="bg-kumkum-deep py-16 sm:py-24">
+        <div class="px-gutter mx-auto max-w-2xl text-center">
+          <h2 id="cta-heading" class="text-h2 text-cream">
+            {ctaHeading}
+          </h2>
+          {closingLine && <p class="text-sandal mt-3">{closingLine}</p>}
+          <a
+            href={ctaHref}
+            target={ctaExternal ? '_blank' : undefined}
+            rel={ctaExternal ? 'noopener' : undefined}
+            class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+          >
+            {ctaLabel}
+            {ctaExternal && <span class="sr-only"> (opens in a new tab)</span>}
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <nav aria-label="More projects" class="bg-cream px-gutter py-12 text-center">
+    <a href="/projects" class="text-body text-ember hover:text-kumkum font-semibold">
+      Explore our other projects &rarr;
+    </a>
+  </nav>
+</BaseLayout>

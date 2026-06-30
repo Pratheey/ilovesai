@@ -105,6 +105,7 @@
 
   p {
     max-width: var(--measure);
+    margin-inline: auto;
   }
 
   a {
@@ -123,6 +124,28 @@
     letter-spacing: 0.18em;
     color: var(--color-brass-text);
     font-weight: 600;
+  }
+
+  /* Tailwind Typography on-system, not its generic slate defaults */
+  .prose {
+    --tw-prose-body: var(--color-ink);
+    --tw-prose-headings: var(--color-kumkum);
+    --tw-prose-lead: var(--color-ink-soft);
+    /* ember is hover-only everywhere else; as a resting link color on cream it fails AA (~3.4:1) */
+    --tw-prose-links: var(--color-kumkum);
+    --tw-prose-bold: var(--color-ink);
+    --tw-prose-counters: var(--color-brass-text);
+    --tw-prose-bullets: var(--color-brass-text);
+    --tw-prose-hr: var(--color-brass-text);
+    --tw-prose-quotes: var(--color-ink);
+    --tw-prose-quote-borders: var(--color-marigold);
+    --tw-prose-captions: var(--color-ink-soft);
+  }
+  .prose a:hover {
+    color: var(--color-ember);
+  }
+  .prose blockquote {
+    font-style: normal; /* Typography hardcodes italic; house style is not-italic */
   }
 
   /* Visible, on-brand keyboard focus — accessibility floor */
