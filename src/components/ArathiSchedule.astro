@@ -11,7 +11,7 @@ const hasTabs = temples.length > 1;
       data-arathi-tabs
       class="bg-kumkum-deep border-brass/25 rounded-xl border p-5 sm:p-6"
     >
-      <p class="text-marigold text-[0.72rem] font-semibold tracking-[0.18em] uppercase">
+      <p class="text-marigold text-eyebrow font-semibold tracking-[0.18em] uppercase">
         Today's Arathi
       </p>
       <p class="text-sandal mt-1 text-sm">Free and open to all.</p>
@@ -51,10 +51,19 @@ const hasTabs = temples.length > 1;
             <p class="text-sandal/70 mb-2 text-xs tracking-wide uppercase">{temple.location}</p>
           )}
           <ul class="bg-brass/25 grid grid-cols-2 gap-px overflow-hidden rounded-lg">
-            {temple.arathis.map((arathi) => (
-              <li class="bg-kumkum-deep flex flex-col gap-0.5 px-4 py-3">
+            {temple.arathis.map((arathi, i) => (
+              <li
+                class:list={[
+                  'bg-kumkum-deep flex flex-col gap-0.5 px-4 py-3',
+                  // An odd final cell would otherwise leave the brass backing
+                  // showing as a solid block — span it across both columns.
+                  temple.arathis.length % 2 === 1 &&
+                    i === temple.arathis.length - 1 &&
+                    'col-span-2',
+                ]}
+              >
                 {arathi.note && (
-                  <span class="text-sandal/80 text-[0.65rem] font-semibold tracking-[0.14em] uppercase">
+                  <span class="text-sandal/80 text-eyebrow font-semibold tracking-[0.14em] uppercase">
                     {arathi.note}
                   </span>
                 )}

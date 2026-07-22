@@ -33,7 +33,7 @@ export interface Temple {
 export const temples: Temple[] = [
   {
     id: 'primary',
-    name: '[PLACEHOLDER: primary temple name & city]',
+    name: '[PLACEHOLDER: temple name]',
     arathis: [
       { name: 'Kakad Arathi', time: '05:15', note: 'Dawn' },
       { name: 'Madhyan Arathi', time: '12:00', note: 'Noon' },
@@ -43,7 +43,7 @@ export const temples: Temple[] = [
   },
   {
     id: 'temple-2',
-    name: '[PLACEHOLDER: second temple name & city]',
+    name: '[PLACEHOLDER: 2nd temple]',
     arathis: [
       { name: 'Kakad Arathi', time: '06:00', note: 'Dawn' },
       { name: 'Madhyan Arathi', time: '12:00', note: 'Noon' },
