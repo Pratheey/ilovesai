@@ -230,3 +230,36 @@ After feedback, revisit scope and draw the actual launch line.
 - Per-region contact *for the front-door path* → **resolved**: front door is the single
   main guy, not region-routed. (Per-region details still wanted elsewhere — §F.)
 - DNS/deliverability unknown → **dissolved** by using the org-owned email.
+
+---
+
+## L. Follow-ups from the 2026-07-21 build + review session
+
+**Shipped & committed this session** (branch `wip-snapshot`, not yet pushed):
+B1/B2/B3 front-door rework, SSR→SSG cleanup, Bug #4 (homepage links), OG/Twitter/
+canonical meta + `robots.txt`, minimal CI, and the homepage **daily Arathi schedule**
+(temple tabs + per-temple city). Design + security reviews run and fixes applied.
+
+**Guiding priority (owner, 2026-07-21):** the site's #1 job is **getting people
+involved** — donate is secondary. Weight homepage hierarchy accordingly (arathi "come
+visit, it's free" as the soft first step → get involved → donate).
+
+**To-do (coding, no owner input needed):**
+- [ ] **Enrich `/donate`** with the real per-project impact copy that already exists in
+      `lib/projects.ts` (the `goodToKnow` / "What Your Support Funds" lists for
+      Carpentersville + Babanchi Shirdi). Turns a thin one-button page into something
+      that ties giving to concrete work. *(idea #3, owner: "implement later")*
+- [ ] **Cloudflare Web Analytics** — cookieless, no CSP change, already the host; the
+      only way to see if the front door actually converts (WhatsApp / donate clicks).
+      *(my recommendation — cheap, high-value.)*
+
+**Roadmap / maybe (needs a decision or a conversation):**
+- [ ] **Hindi / i18n** — biggest reach lever for the audience; Mukta already ships
+      Devanagari. Owner to discuss with others first. *(idea #5, "maybe")*
+- [ ] **Meet-the-team / "who we are" page** — trust + human connection for the
+      involved-first goal. *Under discussion* (privacy/consent of volunteers, scope,
+      page vs section). *(idea #4)*
+- [ ] **"We got you" + reduce single-point-of-failure intake** — set response
+      expectations after the WhatsApp/email buttons; consider a WhatsApp Business
+      auto-reply and/or a hosted fallback form → spreadsheet. *Under discussion.*
+      *(idea #7)*

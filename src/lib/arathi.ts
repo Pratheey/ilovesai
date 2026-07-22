@@ -1,5 +1,3 @@
-import type { Region } from './locations';
-
 export interface Arathi {
   /** Display name, e.g. "Kakad Arathi". */
   name: string;
@@ -16,10 +14,14 @@ export interface Arathi {
 export interface Temple {
   /** Stable slug — used to build the tab/panel element ids. Keep it unique. */
   id: string;
-  /** Display name, e.g. "Shirdi Sai Temple, Chicago". */
+  /** Display name, e.g. "Shirdi Sai Temple". */
   name: string;
-  /** Optional region tag, shown only when set (see ArathiSchedule.astro). */
-  location?: Region;
+  /**
+   * City + country, shown under the temple name. Keep it — with temples across
+   * India / UK / USA in different timezones, the city is what tells a visitor
+   * whose clock the times are on.
+   */
+  location?: string;
   /** This temple's daily arathi schedule, in order through the day. */
   arathis: Arathi[];
 }
@@ -34,6 +36,7 @@ export const temples: Temple[] = [
   {
     id: 'primary',
     name: '[PLACEHOLDER: temple name]',
+    location: '[PLACEHOLDER: city, country]',
     arathis: [
       { name: 'Kakad Arathi', time: '05:15', note: 'Dawn' },
       { name: 'Madhyan Arathi', time: '12:00', note: 'Noon' },
@@ -44,6 +47,7 @@ export const temples: Temple[] = [
   {
     id: 'temple-2',
     name: '[PLACEHOLDER: 2nd temple]',
+    location: '[PLACEHOLDER: city, country]',
     arathis: [
       { name: 'Kakad Arathi', time: '06:00', note: 'Dawn' },
       { name: 'Madhyan Arathi', time: '12:00', note: 'Noon' },
