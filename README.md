@@ -10,11 +10,11 @@ and build log: what's built, what's still a `[PLACEHOLDER]`, and why.
 
 ## Stack
 
-Astro 7 (static-first) · Tailwind CSS v4 (CSS-first config, tokens in
-`src/styles/global.css`) · Astro Actions + the Cloudflare adapter for the two
-form pages (`/get-involved`, `/contact`) · Cloudflare Pages hosting · Cloudflare
-Turnstile + Resend for form notifications · a hosted checkout (Donorbox) for
-donations — card data never touches this site.
+Astro 7 (static-first — every route is prerendered) · Tailwind CSS v4 (CSS-first
+config, tokens in `src/styles/global.css`) · Cloudflare Pages hosting. The site
+is the org's **front door**: `/get-involved` and `/contact` are plain WhatsApp +
+email links (no backend, no forms), and donations go to an **outbound hosted
+PayPal** page — card data never touches this site (PCI SAQ-A).
 
 ## Commands
 
@@ -32,8 +32,8 @@ Run `check`, `lint`, and `build` before considering any change done.
 
 ## Environment
 
-Secrets (`RESEND_API_KEY`, `EMAIL_FROM`, `TURNSTILE_SECRET_KEY`,
-`TURNSTILE_SITE_KEY`) are read at runtime via `cloudflare:workers`, not Vite's
-`.env`. Locally they go in `.dev.vars` (gitignored); see `.env.example` for the
-names. In production they're set as Cloudflare Pages environment
-variables/secrets — never committed.
+No server environment variables are currently required — the site is fully
+static (WhatsApp/email links + an outbound PayPal donate link). If a server-side
+integration returns later, document its variables in `.env.example`, keep real
+values in `.dev.vars` (gitignored) for local dev, and set them as Cloudflare
+Pages environment variables/secrets in production — never committed.

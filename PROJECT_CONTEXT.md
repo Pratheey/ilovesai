@@ -1,5 +1,15 @@
 # PROJECT_CONTEXT.md — I LOVE SAI
 
+> ⚠️ **PARTIALLY SUPERSEDED (2026-07-21).** This document was generated on
+> 2026-06-29, *before* the front-door rework. Sections describing **Astro Actions,
+> the contact/get-involved forms, Resend email (`RESEND_API_KEY`/`EMAIL_FROM`),
+> Cloudflare Turnstile (`TURNSTILE_*`), `src/middleware.ts`, and the "two SSR
+> routes"** no longer reflect the code — those were all removed and the site is now
+> **fully static** (get-involved/contact are WhatsApp + email links; donations are an
+> outbound **PayPal** link, not Donorbox). Do **not** re-introduce those secrets or
+> code paths from this doc. For current state see **`AI_HANDOFF.md`** and
+> **`PENDING.md`**, which are up to date.
+
 > **The complete engineering source of truth for the I LOVE SAI website rebuild.**
 > Written so that an engineer (human or AI) who has never seen this repository can
 > understand the entire project, its decisions, its current state, and continue
