@@ -193,21 +193,27 @@ a dead account becomes a one-line edit). Riders:
 
 ## H. Dashboard-only (can't be done from the repo)
 
-- [ ] **Cloudflare rate-limit rule** on SSR endpoints (§11.6) — **may become moot** if
-      `/get-involved` + `/contact` go SSG and no SSR form endpoints remain. Re-evaluate
-      after the SSR→SSG cleanup.
+- [ ] **Enable Cloudflare Web Analytics** for this site in the Cloudflare dashboard
+      (Web Analytics → add site), copy the token, and paste it into
+      `CLOUDFLARE_WEB_ANALYTICS_TOKEN` in `src/lib/analytics.ts`. The beacon + CSP
+      allowances are already wired and stay off until the token is set. *(added 2026-07-21)*
 - [ ] **HSTS preload** (currently HSTS without `preload`).
+- [x] ~~Cloudflare rate-limit rule on SSR endpoints~~ — **moot as of 2026-07-21:** the
+      SSR→SSG cleanup removed both form endpoints, so there are no SSR routes to
+      rate-limit. (The `_headers`/CSP still cover the now-static pages.)
 
 ---
 
 ## I. Deferred by design (confirm still deferred)
 
-- [ ] **Sanity CMS** — on hold until after a user-feedback round settles content
-      structure (and possibly forever — see §E).
-- [ ] Full **i18n** (`/[lang]/`; Mukta already covers Devanagari).
+- [ ] **Sanity CMS** — still on the roadmap, still deferred: on hold until after a
+      user-feedback round settles content structure (and possibly forever — see §E). The
+      `lib/*.ts` data-layer pattern is deliberately shaped for a contained swap to it.
+- [ ] Full **i18n** (`/[lang]/`; Mukta already covers Devanagari). See also §L (Hindi).
 - [ ] Events **calendar view**.
 - [ ] **Newsletter** backend.
-- [ ] **Analytics**.
+- [x] ~~Analytics~~ — **done 2026-07-21** (Cloudflare Web Analytics wired; owner enables
+      it in the dashboard — see §H and §L).
 - [ ] Broader **test suite** (beyond the optional security-critical pins in §D).
 
 ---
