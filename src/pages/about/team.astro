@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PlaceholderImage from '../../components/PlaceholderImage.astro';
+import { team } from '../../lib/team';
+---
+
+<BaseLayout
+  title="Meet the Team — I LOVE SAI"
+  description="The people who serve behind I LOVE SAI."
+>
+  <section class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <div class="mx-auto max-w-[var(--measure)] text-center">
+        <h1 class="text-display">Meet the Team</h1>
+        <p class="text-lead text-ink-soft mt-4">
+          [PLACEHOLDER: one warm line about the people who serve — who you'll meet when you get
+          involved.]
+        </p>
+      </div>
+
+      {
+        team.length > 0 && (
+          <ul class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+            {team.map((member) => (
+              <li class="text-center">
+                <div class="border-brass/20 mx-auto aspect-square max-w-[12rem] overflow-hidden rounded-lg border">
+                  {member.image ? (
+                    <img
+                      src={typeof member.image === 'string' ? member.image : member.image.src}
+                      alt={member.imageAlt ?? member.name}
+                      class="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <PlaceholderImage label={member.imageAlt ?? member.name} />
+                  )}
+                </div>
+                <h2 class="text-h3 mt-4">{member.name}</h2>
+                <p class="eyebrow mt-1">{member.role}</p>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
