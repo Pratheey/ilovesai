@@ -6,6 +6,7 @@ import CTACard from '../components/CTACard.astro';
 import ArathiSchedule from '../components/ArathiSchedule.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
 import { DONATE_PATH } from '../lib/donate';
+import { projects } from '../lib/projects';
 import { locations } from '../lib/locations';
 
 const heroSlides = [
@@ -14,49 +15,26 @@ const heroSlides = [
   { alt: '[PLACEHOLDER: marigold garlands at a Thursday aarti]' },
 ];
 
-const projects = [
-  {
-    title: 'Carpentersville',
-    description: '[PLACEHOLDER: one-line description of the Carpentersville project]',
-    imageAlt: '[PLACEHOLDER: photo of the Carpentersville project]',
-  },
-  {
-    title: 'Aao Sai',
-    description: '[PLACEHOLDER: one-line description of the Aao Sai project]',
-    imageAlt: '[PLACEHOLDER: photo of the Aao Sai project]',
-  },
-  {
-    title: 'Walk for Sai',
-    description: '[PLACEHOLDER: one-line description of the Walk for Sai project]',
-    imageAlt: '[PLACEHOLDER: photo of the Walk for Sai project]',
-  },
-  {
-    title: 'Babanchi Shirdi',
-    description: '[PLACEHOLDER: one-line description of the Babanchi Shirdi project]',
-    imageAlt: '[PLACEHOLDER: photo of the Babanchi Shirdi project]',
-  },
-];
-
 const participateOptions = [
   {
     title: 'Donate',
     description: '[PLACEHOLDER: one-line description of how donations are used]',
-    href: '#donate',
+    href: DONATE_PATH,
     label: 'Donate',
     imageAlt: '[PLACEHOLDER: photo representing giving]',
   },
   {
     title: 'Serve',
     description: '[PLACEHOLDER: one-line description of volunteering / seva opportunities]',
-    href: '#',
-    label: 'Learn more',
+    href: '/get-involved',
+    label: 'Get involved',
     imageAlt: '[PLACEHOLDER: photo of devotees volunteering]',
   },
   {
     title: 'Organise a local activity',
     description: '[PLACEHOLDER: one-line description of organising a local activity]',
-    href: '#',
-    label: 'Learn more',
+    href: '/get-involved',
+    label: 'Get involved',
     imageAlt: '[PLACEHOLDER: photo of a local gathering]',
   },
 ];
@@ -85,8 +63,10 @@ const participateOptions = [
           projects.map((project) => (
             <ProjectCard
               title={project.title}
-              description={project.description}
+              description={project.cardDescription}
+              href={`/projects/${project.slug}`}
               imageAlt={project.imageAlt}
+              location={project.location}
             />
           ))
         }
