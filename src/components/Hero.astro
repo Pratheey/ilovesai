@@ -17,21 +17,37 @@ interface Props {
 }
 
 const { eyebrow, heading, lead, ctaLabel, ctaHref, slides } = Astro.props;
+
+// When an `aside` slot is provided (e.g. the arathi table), the heading block stays
+// centered exactly as it does without one; the aside floats into the right margin on
+// wide screens (xl+, where there's room beside the centered text) and stacks directly
+// under the heading on smaller screens and mobile. Without an aside, nothing changes.
+const hasAside = Astro.slots.has('aside');
 ---
 
 <section class="dhuni-glow bg-sandal py-16 sm:py-24">
-  <div class="px-gutter mx-auto max-w-6xl text-center">
-    {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
-    <h1 class="text-display">{heading}</h1>
-    {lead && <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">{lead}</p>}
+  <div class="px-gutter relative mx-auto max-w-6xl">
+    <div class:list={['text-center', hasAside && 'mx-auto max-w-md']}>
+      {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+      <h1 class="text-display">{heading}</h1>
+      {lead && <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">{lead}</p>}
+      {
+        ctaLabel && ctaHref && (
+          <a
+            href={ctaHref}
+            class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+          >
+            {ctaLabel}
+          </a>
+        )
+      }
+    </div>
+
     {
-      ctaLabel && ctaHref && (
-        <a
-          href={ctaHref}
-          class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
-        >
-          {ctaLabel}
-        </a>
+      hasAside && (
+        <div class="mx-auto mt-10 w-full max-w-sm xl:absolute xl:top-1/2 xl:right-0 xl:mt-0 xl:max-w-[17rem] xl:-translate-y-1/2">
+          <slot name="aside" />
+        </div>
       )
     }
   </div>

@@ -2,10 +2,9 @@
 // the TypeScript program via tsconfig.json's "include" — this just merges into
 // its `Cloudflare.Env` interface, no explicit reference needed.
 declare namespace Cloudflare {
-  interface Env {
-    RESEND_API_KEY?: string;
-    EMAIL_FROM?: string;
-    TURNSTILE_SECRET_KEY?: string;
-    TURNSTILE_SITE_KEY?: string;
-  }
+  // No server env vars are currently required — the site is fully static
+  // (front door = WhatsApp/email links; donations = outbound PayPal link).
+  // Re-add secrets here if a server-side integration returns.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Env {}
 }

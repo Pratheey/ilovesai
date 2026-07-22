@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { DONATE_URL } from '../lib/donate';
+import { DONATE_PATH } from '../lib/donate';
 
 const navLinks = [
   { href: '/about', label: 'About' },
@@ -10,7 +10,7 @@ const navLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
-const quickLinks = [{ href: '/get-involved?project=aao-sai#form', label: 'Request Aao Sai' }];
+const quickLinks = [{ href: '/get-involved', label: 'Request Aao Sai' }];
 ---
 
 <header class="border-brass/20 bg-sandal sticky top-0 z-20 border-b">
@@ -36,13 +36,10 @@ const quickLinks = [{ href: '/get-involved?project=aao-sai#form', label: 'Reques
         ))
       }
       <a
-        href={DONATE_URL}
-        target="_blank"
-        rel="noopener"
+        href={DONATE_PATH}
         class="bg-marigold text-small text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center rounded-md px-5 py-2 font-semibold"
       >
         Donate
-        <span class="sr-only"> (opens in a new tab)</span>
       </a>
     </div>
 
@@ -113,13 +110,10 @@ const quickLinks = [{ href: '/get-involved?project=aao-sai#form', label: 'Reques
         ))
       }
       <a
-        href={DONATE_URL}
-        target="_blank"
-        rel="noopener"
+        href={DONATE_PATH}
         class="bg-marigold text-body text-ink shadow-soft inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
       >
         Donate
-        <span class="sr-only"> (opens in a new tab)</span>
       </a>
     </div>
   </dialog>

@@ -1,9 +1,16 @@
-# Applies to static assets only — the SSR routes (get-involved, contact) get
-# the same headers from src/middleware.ts instead. Keep both in sync.
-# CSP itself is NOT set here — it's generated per-page by Astro's native
-# security.csp feature (astro.config.mjs) as a <meta> tag, since it needs to
-# hash Astro's own inlined scripts/styles. Setting a CSP header here too would
-# create a stricter intersection that blocks those hashes.
+# The site is fully static (every route is prerendered), so this `/*` block
+# applies to every response Cloudflare Pages serves. There is no SSR route and
+# no middleware to keep in sync anymore.
+# The full script/style CSP is generated per-page by Astro's native security.csp
+# feature (astro.config.mjs) as a <meta> tag, because it must hash Astro's own
+# inlined scripts/styles — those hashes can't live in a static header.
+# The header CSP below is deliberately the *complementary* subset: only
+# directives that (a) a <meta> tag can't express (frame-ancestors) or (b) don't
+# govern scripts/styles (object-src, base-uri). It intentionally omits
+# default-src/script-src/style-src — putting those here would become the
+# fallback for the inline scripts and block Astro's hashed markup. So the two
+# policies compose instead of colliding, and frame-ancestors now covers the one
+# gap X-Frame-Options was carrying alone.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
@@ -12,3 +19,4 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   Strict-Transport-Security: max-age=63072000; includeSubDomains
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'

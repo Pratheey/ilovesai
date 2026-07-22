@@ -22,10 +22,10 @@ export default defineConfig({
   // scoped component styles) rather than always externalizing it, so a plain
   // `script-src/style-src 'self'` CSP blocks Astro's own markup. This computes
   // per-build hashes for that inlined output automatically and renders it into
-  // a <meta> CSP tag — see public/_headers and src/middleware.ts for the other
-  // security headers, which still apply via HTTP headers as before. The only
-  // real loss versus a header-based CSP is `frame-ancestors` (meta tags can't
-  // carry it) — X-Frame-Options: SAMEORIGIN in the headers covers that gap.
+  // a <meta> CSP tag — see public/_headers for the other security headers, which
+  // apply via HTTP headers. `frame-ancestors` can't ride in a <meta> tag, so
+  // public/_headers carries it as a complementary CSP header (plus X-Frame-
+  // Options: SAMEORIGIN as the legacy fallback).
   security: {
     csp: {
       directives: [

@@ -1,209 +1,39 @@
 ---
-export const prerender = false;
-
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CTACard from '../components/CTACard.astro';
-import { actions } from 'astro:actions';
-import { env } from 'cloudflare:workers';
-import { locations } from '../lib/locations';
-import { projects } from '../lib/projects';
-import { DONATE_URL } from '../lib/donate';
-
-const result = Astro.getActionResult(actions.getInvolved);
-
-const projectParam = Astro.url.searchParams.get('project');
-const interestParam = projectParam ? 'project' : Astro.url.searchParams.get('interest');
-
-const turnstileSiteKey = env.TURNSTILE_SITE_KEY;
-
-if (turnstileSiteKey) {
-  Astro.csp?.insertScriptResource('https://challenges.cloudflare.com');
-  Astro.csp?.insertDirective('frame-src https://challenges.cloudflare.com');
-  Astro.csp?.insertDirective("connect-src 'self' https://challenges.cloudflare.com");
-}
-
-const interestOptions = [
-  { value: 'volunteer', label: 'Volunteer' },
-  { value: 'donate', label: 'Donate' },
-  { value: 'general', label: 'General inquiry' },
-  { value: 'project', label: 'Get involved with a project' },
-] as const;
-
-const inputClass =
-  'border-brass/40 text-body w-full min-h-11 rounded-md border bg-white px-4 py-2.5';
+import FrontDoorButtons from '../components/FrontDoorButtons.astro';
+import { DONATE_PATH } from '../lib/donate';
 ---
 
 <BaseLayout
   title="Get Involved — I LOVE SAI"
-  description="Volunteer, donate, or organise a local activity with I LOVE SAI."
+  description="Reach I LOVE SAI on WhatsApp or by email to volunteer, host an Aao Sai, or help with a local activity."
 >
   <section class="dhuni-glow bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-4xl text-center">
+    <div class="px-gutter mx-auto max-w-3xl text-center">
       <h1 class="text-display">Get Involved</h1>
       <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        [PLACEHOLDER: one line inviting visitors to volunteer, donate, or organise]
+        [PLACEHOLDER: one warm line inviting visitors to reach out — volunteer, host an Aao Sai, or
+        help with a local activity.]
+      </p>
+      <FrontDoorButtons class="mt-10" />
+      <p class="text-small text-ink-soft mt-6">
+        A member of the team will personally welcome you and take it from there.
       </p>
     </div>
   </section>
 
-  <section aria-labelledby="paths-heading" class="bg-cream py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl">
-      <h2 id="paths-heading" class="text-h2 text-center">Ways to Participate</h2>
-      <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-        <CTACard
-          title="Donate"
-          description="[PLACEHOLDER: one-line description of how donations are used]"
-          href={DONATE_URL}
-          label="Donate"
-          external
-        />
-        <CTACard
-          title="Serve"
-          description="[PLACEHOLDER: one-line description of volunteering / seva opportunities]"
-          href="/get-involved?interest=volunteer#form"
-          label="Volunteer"
-        />
-        <CTACard
-          title="Organise / Host"
-          description="[PLACEHOLDER: one-line description of hosting Aao Sai or organising a local activity]"
-          href="/get-involved?interest=project#form"
-          label="Get Involved"
-        />
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="form-heading" class="bg-sandal py-16 sm:py-24">
-    <div id="form" class="px-gutter mx-auto max-w-2xl">
-      <h2 id="form-heading" class="text-h2 text-center">Share Your Details</h2>
-
-      {
-        result?.data?.success && (
-          <p role="status" class="text-body text-ink bg-cream mt-8 rounded-md p-4 text-center">
-            Thank you — we'll be in touch soon.
-          </p>
-        )
-      }
-      {
-        result?.error && (
-          <p role="alert" class="text-body text-kumkum bg-cream mt-8 rounded-md p-4 text-center">
-            {result.error.message}
-          </p>
-        )
-      }
-
-      <p class="text-small text-ink-soft mt-10">
-        Fields marked <span class="text-kumkum">*</span> are required.
+  <section aria-labelledby="donate-heading" class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-2xl text-center">
+      <h2 id="donate-heading" class="text-h2">Prefer to give?</h2>
+      <p class="text-body text-ink mt-3">
+        [PLACEHOLDER: one line on how donations support the mission.]
       </p>
-
-      <form method="POST" action={actions.getInvolved} class="mt-4 flex flex-col gap-6">
-        <div>
-          <label for="name" class="text-small text-ink-soft mb-1.5 block">
-            Name <span class="text-kumkum">*</span>
-          </label>
-          <input type="text" id="name" name="name" required class={inputClass} />
-        </div>
-
-        <div>
-          <label for="email" class="text-small text-ink-soft mb-1.5 block">
-            Email <span class="text-kumkum">*</span>
-          </label>
-          <input type="email" id="email" name="email" required class={inputClass} />
-        </div>
-
-        <div>
-          <label for="region" class="text-small text-ink-soft mb-1.5 block">
-            Region <span class="text-kumkum">*</span>
-          </label>
-          <select id="region" name="region" required class={inputClass}>
-            <option value="" disabled selected> Choose a region </option>
-            {locations.map((location) => <option value={location.region}>{location.label}</option>)}
-          </select>
-        </div>
-
-        <fieldset>
-          <legend class="text-small text-ink-soft mb-2">
-            I'm interested in <span class="text-kumkum">*</span>
-          </legend>
-          <div class="flex flex-col gap-2">
-            {
-              interestOptions.map((option) => (
-                <label class="text-body text-ink flex min-h-11 items-center gap-2">
-                  <input
-                    type="radio"
-                    name="interest"
-                    value={option.value}
-                    required
-                    checked={interestParam === option.value}
-                    class="accent-marigold"
-                  />
-                  {option.label}
-                </label>
-              ))
-            }
-          </div>
-        </fieldset>
-
-        <div class="project-picker">
-          <label for="projectSlug" class="text-small text-ink-soft mb-1.5 block">
-            Which project?
-          </label>
-          <select id="projectSlug" name="projectSlug" class={inputClass}>
-            {
-              projects.map((project) => (
-                <option value={project.slug} selected={projectParam === project.slug}>
-                  {project.title}
-                </option>
-              ))
-            }
-          </select>
-        </div>
-
-        <div>
-          <label for="message" class="text-small text-ink-soft mb-1.5 block">
-            Message <span class="text-ink-soft/70">(optional)</span>
-          </label>
-          <textarea id="message" name="message" rows="4" class={inputClass}></textarea>
-        </div>
-
-        <div class="honeypot-field" aria-hidden="true">
-          <label for="_gotcha">Company</label>
-          <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
-        </div>
-
-        {turnstileSiteKey && <div class="cf-turnstile" data-sitekey={turnstileSiteKey} />}
-
-        <button
-          type="submit"
-          class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-2 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
-        >
-          Submit
-        </button>
-      </form>
-
-      {
-        turnstileSiteKey && (
-          <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer />
-        )
-      }
+      <a
+        href={DONATE_PATH}
+        class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+      >
+        See ways to give
+      </a>
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .project-picker {
-    display: none;
-  }
-  form:has(input[name='interest'][value='project']:checked) .project-picker {
-    display: block;
-  }
-
-  /* Off-screen, not display:none — some bots skip hidden fields entirely. */
-  .honeypot-field {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
-</style>

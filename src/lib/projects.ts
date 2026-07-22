@@ -1,5 +1,5 @@
 import type { Region } from './locations';
-import { DONATE_URL } from './donate';
+import { DONATE_PATH } from './donate';
 
 export interface ProjectStep {
   label: string;
@@ -21,8 +21,8 @@ export interface Project {
   ctaHeading?: string;
   ctaLabel: string;
   ctaHref: string;
-  /** True when ctaHref leaves the site (the hosted checkout) — not set for
-   * projects whose CTA routes to /get-involved. */
+  /** True when ctaHref leaves the site — not set for projects whose CTA routes
+   * to an internal page like /get-involved or /donate. */
   ctaExternal?: boolean;
   closingLine?: string;
 }
@@ -64,7 +64,7 @@ export const projects: Project[] = [
       'The team provides all pooja materials; you provide simple food for guests.',
     ],
     ctaLabel: 'Request Aao Sai',
-    ctaHref: '/get-involved?project=aao-sai#form',
+    ctaHref: '/get-involved',
     closingLine: 'Know Sai, Know Life — No Sai, No Life',
   },
   {
@@ -87,8 +87,7 @@ export const projects: Project[] = [
       'Weekly food, grain, and clothing donations collected for local shelters — already happening every Thursday across Cook County and Illinois.',
     ],
     ctaLabel: 'Support This Project',
-    ctaHref: DONATE_URL,
-    ctaExternal: true,
+    ctaHref: DONATE_PATH,
     closingLine: 'Baba Malik',
   },
   {
@@ -135,8 +134,7 @@ export const projects: Project[] = [
       "Preserving historic structures that remain from Baba's own time in Shirdi.",
     ],
     ctaLabel: 'Support This Initiative',
-    ctaHref: DONATE_URL,
-    ctaExternal: true,
+    ctaHref: DONATE_PATH,
     closingLine:
       "With folded hands, we urge you all, to please protect, preserve and promote the sanctity, cleanliness and greenness of our beloved Baba's Shirdi.",
   },

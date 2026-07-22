@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { givingOptions } from '../lib/donate';
+---
+
+<BaseLayout
+  title="Donate — I LOVE SAI"
+  description="Support the seva and charitable work of I LOVE SAI through a secure donation."
+>
+  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-3xl text-center">
+      <h1 class="text-display">Donate</h1>
+      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
+        [PLACEHOLDER: one or two calm sentences on how giving sustains the seva — the events, the
+        care, and the work in Shirdi.]
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="ways-heading" class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-2xl">
+      <h2 id="ways-heading" class="text-h2 text-center">Ways to Give</h2>
+
+      <ul class="mt-10 flex flex-col gap-6">
+        {
+          givingOptions.map((option) => (
+            <li
+              id={option.id}
+              class="border-brass/30 bg-sandal flex flex-col gap-4 rounded-lg border p-6 sm:p-8"
+            >
+              <div>
+                <h3 class="text-h3">{option.title}</h3>
+                <p class="text-body text-ink mt-2">{option.blurb}</p>
+                {option.suggestedAmount && (
+                  <p class="text-small text-ink-soft mt-2">{option.suggestedAmount}</p>
+                )}
+              </div>
+              <a
+                href={option.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center self-start rounded-md px-6 py-3 font-semibold"
+              >
+                {option.ctaLabel}
+                <span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="text-small text-ink-soft mx-auto mt-10 max-w-[var(--measure)] text-center">
+        Giving is handled securely by PayPal — you enter your own amount there, and can give in your
+        local currency. You do not need a PayPal account. Any suggested amounts are a guide, not a
+        fixed price.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

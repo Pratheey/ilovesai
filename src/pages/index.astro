@@ -3,8 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import CTACard from '../components/CTACard.astro';
+import ArathiSchedule from '../components/ArathiSchedule.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
-import { DONATE_URL } from '../lib/donate';
+import { DONATE_PATH } from '../lib/donate';
 import { locations } from '../lib/locations';
 
 const heroSlides = [
@@ -72,7 +73,9 @@ const participateOptions = [
     ctaLabel="Get Involved"
     ctaHref="#participate"
     slides={heroSlides}
-  />
+  >
+    <ArathiSchedule slot="aside" />
+  </Hero>
 
   <section id="projects" aria-labelledby="projects-heading" class="bg-cream py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-6xl">
@@ -159,13 +162,10 @@ const participateOptions = [
       </h2>
       <p class="text-sandal mt-3">[PLACEHOLDER: one line on where funds go]</p>
       <a
-        href={DONATE_URL}
-        target="_blank"
-        rel="noopener"
+        href={DONATE_PATH}
         class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
       >
         Donate Now
-        <span class="sr-only"> (opens in a new tab)</span>
       </a>
     </div>
   </section>
