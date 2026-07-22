@@ -245,13 +245,12 @@ involved** — donate is secondary. Weight homepage hierarchy accordingly (arath
 visit, it's free" as the soft first step → get involved → donate).
 
 **To-do (coding, no owner input needed):**
-- [ ] **Enrich `/donate`** with the real per-project impact copy that already exists in
-      `lib/projects.ts` (the `goodToKnow` / "What Your Support Funds" lists for
-      Carpentersville + Babanchi Shirdi). Turns a thin one-button page into something
-      that ties giving to concrete work. *(idea #3, owner: "implement later")*
-- [ ] **Cloudflare Web Analytics** — cookieless, no CSP change, already the host; the
-      only way to see if the front door actually converts (WhatsApp / donate clicks).
-      *(my recommendation — cheap, high-value.)*
+- [x] **Enrich `/donate`** with real per-project impact copy from `lib/projects.ts`
+      ("Where your gift goes" section). *Done 2026-07-21.* *(idea #3)*
+- [x] **Cloudflare Web Analytics** — wired (cookieless, token-gated, conditional CSP so
+      the policy stays tight until enabled). *Done 2026-07-21.* **Owner step to activate:**
+      enable Web Analytics for this site in the Cloudflare dashboard, copy the token, and
+      paste it into `CLOUDFLARE_WEB_ANALYTICS_TOKEN` in `src/lib/analytics.ts`. *(idea #6/my rec)*
 
 **Roadmap / maybe (needs a decision or a conversation):**
 - [ ] **Hindi / i18n** — biggest reach lever for the audience; Mukta already ships
