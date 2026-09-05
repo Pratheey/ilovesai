@@ -67,6 +67,10 @@ _Answer:_
 Any group, chapter or regular gathering elsewhere.
 _Answer:_
 
+**2.9 The small line above the homepage headline.**
+The headline itself is already "Sabka Malik Ek". Above it sits a short label — the movement's name, or a few words setting it up. Two or three words at most.
+_Answer:_
+
 ---
 
 ## 3. Sai Baba — Source needed
@@ -120,6 +124,10 @@ _Source:_
 
 **4.5 Practical notes for a first-time pilgrim.**
 Getting there, best times, what to expect, how to behave respectfully, what to bring. This is experience, not scripture — anyone who has been can answer it.
+_Answer:_
+
+**4.6 Should the Shirdi page show a map?**
+There's a slot for one under the visiting notes. If yes, the useful thing is which exact spot it should centre on — the Samadhi Mandir, or the wider town.
 _Answer:_
 
 ---
