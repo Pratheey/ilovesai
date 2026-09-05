@@ -18,7 +18,14 @@ export const whatsappGreeting =
   "Hi, I found you through the I Love Sai website and I'd like to get involved.";
 
 // The org's own inbox — the safety-net channel for people who don't use WhatsApp.
-export const orgEmail = '[PLACEHOLDER: org contact email, e.g. hello@ilovesai.com]';
+export const orgEmail = 'usa@ilovesai.com';
+
+// How long a newcomer should expect to wait for a human reply. This is a promise
+// made on the org's behalf, so it must be a real, comfortably achievable window
+// set by the coordinator — never a guess. Phrase it to slot into "We usually
+// reply …", e.g. 'within two or three days'. While it's a placeholder the page
+// falls back to a warm line that promises nothing (see ResponseAssurance.astro).
+export const responseTimeframe = 'within 2–3 days';
 
 /** Click-to-chat link to the coordinator with the greeting pre-filled. */
 export function whatsappHref(): string {

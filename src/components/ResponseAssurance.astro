@@ -1,0 +1,80 @@
+---
+import { responseTimeframe, isPlaceholder } from '../lib/contact';
+
+// "What happens next" — shown under the front-door buttons.
+//
+// Intake is one coordinator answering personally, by design. So the failure mode
+// this block guards against is a newcomer hearing nothing for a week and quietly
+// giving up. It sets the sequence out plainly, states the reply window, and tells
+// people it's fine to chase. No backend, no auto-reply; those are a separate call.
+
+interface Props {
+  /** Point people at the regional contacts as a second route in. */
+  showRegionalFallback?: boolean;
+  class?: string;
+}
+const { showRegionalFallback = true, class: className } = Astro.props;
+
+// Only state a wait time once the coordinator has set a real, achievable one.
+const timeframeReady = !isPlaceholder(responseTimeframe);
+
+const steps = [
+  {
+    title: 'You send a message.',
+    detail: "There's no form to fill in and nothing to sign up for.",
+  },
+  {
+    title: 'Someone from the team replies.',
+    detail:
+      'Ask them whatever you want to know first: what we do, what it involves, how much time it takes.',
+  },
+  {
+    title: 'You meet the devotees near you.',
+    detail: "They'll tell you what's happening locally and when you'd be welcome to come along.",
+  },
+];
+---
+
+<section
+  aria-labelledby="what-happens-next"
+  class:list={['border-brass/30 bg-cream rounded-lg border p-6 text-left sm:p-8', className]}
+>
+  <h2 id="what-happens-next" class="text-h3">What happens next</h2>
+
+  <ol class="mt-6 space-y-5">
+    {
+      steps.map((step, i) => (
+        <li class="flex gap-4">
+          <span
+            aria-hidden="true"
+            class="border-brass/40 text-brass-text font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-base"
+          >
+            {i + 1}
+          </span>
+          <div>
+            <p class="text-body text-ink mx-0 font-semibold">{step.title}</p>
+            <p class="text-small text-ink-soft mx-0 mt-1">{step.detail}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="text-small text-ink-soft border-brass/20 mx-0 mt-6 border-t pt-5">
+    {
+      timeframeReady
+        ? `We usually reply ${responseTimeframe}. `
+        : "We're a small volunteer team, so a reply can take a few days. "
+    }
+    If it's been longer, please send another message. You can try the other button above{
+      showRegionalFallback ? ', or ' : '. '
+    }
+    {
+      showRegionalFallback && (
+        <a href="/contact#regions-heading" class="text-kumkum hover:text-ember">
+          your nearest regional contact
+        </a>
+      )
+    }{showRegionalFallback ? '. ' : ''}Things do occasionally get missed.
+  </p>
+</section>

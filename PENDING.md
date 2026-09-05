@@ -170,12 +170,17 @@ a dead account becomes a one-line edit). Riders:
       `[PLACEHOLDER: …]` (never lorem ipsum).
 - [ ] Real photography sitewide (currently `PlaceholderImage` everywhere; load via
       `astro:assets` `<Image>`).
-- [ ] **Real org email string** for B1 (`hello@` / `contact@` / `info@ilovesai…`?).
+- [x] ~~**Real org email string** for B1~~ — **done 2026-08-23:** front door uses
+      `usa@ilovesai.com` (owner's call). Revisit if a region-neutral inbox is ever created.
 - [ ] **Main guy's WhatsApp number** for B1.
-- [ ] **Social URLs** (Facebook/Reddit/Twitter-X/etc.) — audited, for B3.
+- [x] ~~**Social URLs**~~ — **done 2026-08-23:** Facebook, X, Pinterest supplied by owner and
+      wired into `lib/social.ts`. (No Reddit/Instagram/YouTube account given; icon artwork for
+      those three is retained in `SiteFooter.astro`, so adding one later is a one-line edit.)
 - [ ] Favicon set + **OG image** + apple-touch / maskable icons (needs design assets).
-- [ ] Real per-region contact details (still relevant — multi-location org, 70+ core
-      volunteers — even though the front-door contact path no longer routes by region).
+- [x] ~~Real per-region contact details~~ — **done 2026-08-23:** postal address, phone, and
+      email for India (Shirdi), UK (Harrow) and USA (Livingston) are in `lib/locations.ts` and
+      render on `/contact` and each `/locations/<region>`. Still missing: a **named human**
+      per region (`contactName` is now omitted rather than a placeholder, so nothing renders).
 
 ---
 
@@ -194,9 +199,20 @@ a dead account becomes a one-line edit). Riders:
 ## H. Dashboard-only (can't be done from the repo)
 
 - [ ] **Enable Cloudflare Web Analytics** for this site in the Cloudflare dashboard
-      (Web Analytics → add site), copy the token, and paste it into
-      `CLOUDFLARE_WEB_ANALYTICS_TOKEN` in `src/lib/analytics.ts`. The beacon + CSP
-      allowances are already wired and stay off until the token is set. *(added 2026-07-21)*
+      (Web Analytics → **Add a site** → **Manage site** → copy the token from the JS snippet),
+      and paste it into `CLOUDFLARE_WEB_ANALYTICS_TOKEN` in `src/lib/analytics.ts`. The beacon +
+      CSP allowances are already wired and stay off until the token is set. *(added 2026-07-21)*
+      **Role needed:** account **Administrator** or **Super Administrator** — the read-only
+      **Analytics** role can view data but not add a site. **Do not use the Pages project's
+      Metrics → Web Analytics toggle instead:** that auto-injects the beacon at the edge, which
+      our CSP will block, because the CSP only widens when the token constant above is set.
+      **Which hostname to register:** Cloudflare does *postfix* hostname matching, so a token
+      registered for `ilovesai.com` accepts data only from that apex and its subdomains. Until
+      the real domain is under our control, register the hostname the site is actually served
+      from (the Pages hostname, e.g. `ilovesai.pages.dev`); a token for it will not carry over
+      to `ilovesai.com` later, so expect to add a second site and swap the constant at launch.
+      Owning/proxying the domain is not required for this manual-beacon setup.
+      *(verified against Cloudflare docs 2026-08-23)*
 - [ ] **HSTS preload** (currently HSTS without `preload`).
 - [x] ~~Cloudflare rate-limit rule on SSR endpoints~~ — **moot as of 2026-07-21:** the
       SSR→SSG cleanup removed both form endpoints, so there are no SSR routes to
@@ -264,7 +280,12 @@ visit, it's free" as the soft first step → get involved → donate).
 - [ ] **Meet-the-team / "who we are" page** — trust + human connection for the
       involved-first goal. *Under discussion* (privacy/consent of volunteers, scope,
       page vs section). *(idea #4)*
-- [ ] **"We got you" + reduce single-point-of-failure intake** — set response
-      expectations after the WhatsApp/email buttons; consider a WhatsApp Business
-      auto-reply and/or a hosted fallback form → spreadsheet. *Under discussion.*
-      *(idea #7)*
+- [x] **"We got you" — response expectations.** *Done 2026-08-23.* New
+      `ResponseAssurance.astro` under the front-door buttons on `/contact` and
+      `/get-involved`: the real three-step intake sequence, an explicit "please nudge us"
+      permission slip, and a regional-contact fallback route. No backend. `responseTimeframe`
+      in `lib/contact.ts` is set to **within 2–3 days** (owner, 2026-08-23); the placeholder
+      fallback line remains in the component if it is ever blanked. *(idea #7, part 1)*
+- [ ] **Reduce single-point-of-failure intake** — WhatsApp Business auto-reply and/or a hosted
+      fallback form → spreadsheet. **Deferred by owner 2026-08-23** pending a conversation with
+      the main coordinator. *(idea #7, part 2)*

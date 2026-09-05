@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FrontDoorButtons from '../components/FrontDoorButtons.astro';
+import ResponseAssurance from '../components/ResponseAssurance.astro';
 import { DONATE_PATH } from '../lib/donate';
 ---
 
@@ -16,9 +17,7 @@ import { DONATE_PATH } from '../lib/donate';
         help with a local activity.]
       </p>
       <FrontDoorButtons class="mt-10" />
-      <p class="text-small text-ink-soft mt-6">
-        A member of the team will personally welcome you and take it from there.
-      </p>
+      <ResponseAssurance class="mx-auto mt-12 max-w-xl" />
     </div>
   </section>
 
