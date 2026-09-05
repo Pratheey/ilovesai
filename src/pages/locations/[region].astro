@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Carousel from '../../components/Carousel.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import EventCard from '../../components/EventCard.astro';
-import { locations, isPlaceholder, type Location } from '../../lib/locations';
+import { locations, isPlaceholder, telHref, type Location } from '../../lib/locations';
 import { projects } from '../../lib/projects';
 import { events } from '../../lib/events';
 import { getGalleryImages } from '../../lib/gallery';
@@ -42,10 +42,26 @@ const galleryImages = getGalleryImages(location.region);
   <section aria-labelledby="contact-heading" class="bg-cream py-12">
     <div class="px-gutter mx-auto max-w-2xl text-center">
       <h2 id="contact-heading" class="eyebrow">Local Contact</h2>
-      <p class="text-body text-ink mt-3 break-words">{location.contactName}</p>
+      {
+        location.contactName && !isPlaceholder(location.contactName) && (
+          <p class="text-body text-ink mt-3 break-words">{location.contactName}</p>
+        )
+      }
+      {
+        location.address && (
+          <address class="text-body text-ink-soft mt-3 not-italic">
+            {location.address.map((line) => (
+              <>
+                {line}
+                <br />
+              </>
+            ))}
+          </address>
+        )
+      }
       {
         location.email && (
-          <p class="text-body mt-1 break-words">
+          <p class="text-body mt-3 break-words">
             {isPlaceholder(location.email) ? (
               <span class="text-ink-soft">{location.email}</span>
             ) : (
@@ -62,7 +78,7 @@ const galleryImages = getGalleryImages(location.region);
             {isPlaceholder(location.phone) ? (
               <span class="text-ink-soft">{location.phone}</span>
             ) : (
-              <a href={`tel:${location.phone}`} class="text-kumkum hover:text-ember">
+              <a href={telHref(location.phone)} class="text-kumkum hover:text-ember">
                 {location.phone}
               </a>
             )}

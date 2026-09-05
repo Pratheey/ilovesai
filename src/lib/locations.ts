@@ -5,7 +5,10 @@ export interface Location {
   city: string;
   label: string;
   contactName?: string;
+  /** Postal address, one line per array entry, rendered as an <address> block. */
+  address?: string[];
   email?: string;
+  /** Display form, spaced for readability; telHref() normalises it for tel: links. */
   phone?: string;
   lat?: number;
   lng?: number;
@@ -15,29 +18,42 @@ export interface Location {
 export const locations: Location[] = [
   {
     region: 'India',
-    city: '[PLACEHOLDER: India city]',
+    city: 'Shirdi',
     label: 'India',
-    contactName: '[PLACEHOLDER: India contact name]',
-    email: '[PLACEHOLDER: India contact email]',
+    address: [
+      'I Love Sai',
+      'E-102, Sai Silver Oak Green View',
+      'Laxmibhai Shinde Complex',
+      'Pimpalwadi Road, Shirdi',
+    ],
+    email: 'india@ilovesai.com',
+    phone: '+91 735 050 4000',
   },
   {
     region: 'UK',
-    city: '[PLACEHOLDER: UK city]',
+    city: 'Harrow, London',
     label: 'UK',
-    contactName: '[PLACEHOLDER: UK contact name]',
-    email: '[PLACEHOLDER: UK contact email]',
+    address: ['I Love Sai', '42 Orchard Grove', 'Harrow', 'London HA3 9QS', 'United Kingdom'],
+    email: 'uk@ilovesai.com',
+    phone: '+44 785 382 4006',
   },
   {
     region: 'USA',
-    city: '[PLACEHOLDER: USA city]',
+    city: 'Livingston, New Jersey',
     label: 'USA',
-    contactName: '[PLACEHOLDER: USA contact name]',
-    email: '[PLACEHOLDER: USA contact email]',
+    address: ['I Love Sai', '16 Highland Drive', 'Livingston', 'New Jersey'],
+    email: 'usa@ilovesai.com',
+    phone: '+1 646 685 4575',
   },
 ];
 
 export function getLocation(region: Region): Location | undefined {
   return locations.find((location) => location.region === region);
+}
+
+/** tel: URIs must not carry spaces — strip everything but digits and a leading '+'. */
+export function telHref(phone: string): string {
+  return `tel:${phone.replace(/[^\d+]/g, '')}`;
 }
 
 // True for fields still carrying this project's standard bracketed
