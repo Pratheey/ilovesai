@@ -1,0 +1,69 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+import { getActiveSpecialEvent } from '../lib/specialEvent';
+
+const event = getActiveSpecialEvent();
+
+// Hardcoded 'en' for now — switch to the page's locale once i18n routing exists,
+// matching the approach in UpcomingEvents.astro and EventCard.astro.
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+// A range only needs the year once, on the end date.
+const rangeStartFormatter = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long' });
+
+const dateLabel = event
+  ? event.endDate
+    ? `${rangeStartFormatter.format(event.date)} – ${dateFormatter.format(event.endDate)}`
+    : dateFormatter.format(event.date)
+  : '';
+---
+
+{
+  event && (
+    <section
+      aria-labelledby="special-event-heading"
+      class="bg-sandal-deep border-brass/25 border-y py-12 sm:py-16"
+    >
+      <div class="px-gutter mx-auto max-w-6xl">
+        <div class="grid grid-cols-1 items-center gap-8 md:grid-cols-[5fr_7fr] md:gap-12">
+          <div class="aspect-[4/3] overflow-hidden rounded-lg">
+            {event.image ? (
+              <img
+                src={typeof event.image === 'string' ? event.image : event.image.src}
+                alt={event.imageAlt ?? ''}
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <PlaceholderImage label={event.imageAlt ?? event.title} />
+            )}
+          </div>
+
+          {/* Left-aligned rather than centred: this sits between two centred
+              bands, and a third centred block would flatten the page. */}
+          <div>
+            <p class="eyebrow">Special Event</p>
+            <h2 id="special-event-heading" class="text-h2 mt-2">
+              {event.title}
+            </h2>
+            <p class="text-lead text-brass-text mt-2 mb-0 ml-0">
+              <time datetime={event.date.toISOString().slice(0, 10)}>{dateLabel}</time>
+            </p>
+            <p class="text-body text-ink mt-4 ml-0">{event.description}</p>
+            {event.ctaHref && event.ctaLabel && (
+              <a
+                href={event.ctaHref}
+                class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-6 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+              >
+                {event.ctaLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

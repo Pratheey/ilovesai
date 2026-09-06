@@ -4,6 +4,7 @@ import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import CTACard from '../components/CTACard.astro';
 import ArathiSchedule from '../components/ArathiSchedule.astro';
+import SpecialEvent from '../components/SpecialEvent.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
 import { DONATE_PATH } from '../lib/donate';
 import { projects } from '../lib/projects';
@@ -54,6 +55,12 @@ const participateOptions = [
   >
     <ArathiSchedule slot="aside" />
   </Hero>
+
+  {
+    /* Directly under the hero — the first thing past the title. Renders nothing
+      at all when there's no active event (see lib/specialEvent.ts). */
+  }
+  <SpecialEvent />
 
   <section id="projects" aria-labelledby="projects-heading" class="bg-cream py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-6xl">
