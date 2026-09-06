@@ -89,6 +89,13 @@ const emailReady = !isPlaceholder(orgEmail);
           }
         </p>
         <p>
+          {
+            /* "Our Work" rather than "Our Seva": the route and the data keep the
+              word, but a well-wisher who found us through a food drive shouldn't
+              have to know it to find the record. */
+          }
+          <a href="/seva" class="text-sandal hover:text-marigold">Our Work</a>
+          {' · '}
           <a href="/contact" class="text-sandal hover:text-marigold">Contact</a>
         </p>
       </div>

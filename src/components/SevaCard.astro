@@ -1,0 +1,93 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+import { getLocation, type Region } from '../lib/locations';
+import { sevaCategoryLabels, type SevaCategory, type SevaImage } from '../lib/seva';
+
+interface Props {
+  title: string;
+  date: Date;
+  location: Region;
+  category: SevaCategory;
+  description: string;
+  images?: SevaImage[];
+  /** 'h3' under a year group's h2 — the archive's only current use. */
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { title, date, location, category, description, images, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+
+const locationLabel = getLocation(location)?.label;
+
+// Hardcoded 'en' for now — switch to the page's locale once i18n routing exists.
+//
+// Formatted in UTC deliberately. A seva date is a calendar day, not an instant,
+// and `new Date('2026-07-12')` parses as UTC midnight — formatting that in the
+// build machine's local zone renders it as 11 July anywhere west of Greenwich.
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+// A card is a record, not a link: there is no per-entry detail page, so this is a
+// <div>. At most three photos — the card is a summary, and a longer strip turns
+// the grid into a gallery.
+const shownImages = images?.slice(0, 3) ?? [];
+---
+
+<div
+  data-seva-card
+  data-category={category}
+  data-location={location}
+  class="border-brass/30 bg-sandal-deep shadow-soft flex flex-col overflow-hidden rounded-lg border"
+>
+  {
+    shownImages.length > 0 && (
+      // Columns follow the number of photos — a fixed 3-up leaves a dead cell
+      // showing the brass backing when an entry has only one or two.
+      <ul
+        class:list={[
+          'bg-brass/50 grid gap-px',
+          shownImages.length === 1 && 'grid-cols-1',
+          shownImages.length === 2 && 'grid-cols-2',
+          shownImages.length >= 3 && 'grid-cols-3',
+        ]}
+      >
+        {shownImages.map((item) => (
+          <li class="aspect-square">
+            {item.image ? (
+              <img
+                src={typeof item.image === 'string' ? item.image : item.image.src}
+                alt={item.imageAlt}
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <PlaceholderImage label={item.imageAlt} />
+            )}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="flex flex-1 flex-col p-5">
+    <p class="eyebrow">
+      <time datetime={date.toISOString().slice(0, 10)}>{dateFormatter.format(date)}</time>
+    </p>
+    <Heading class="text-h3 mt-1">{title}</Heading>
+    <p class="text-body text-ink mt-2 ml-0">{description}</p>
+
+    {
+      /* Category and place as quiet metadata at the foot of the card, not as
+        coloured chips competing with the marigold accent. */
+    }
+    <p class="text-small text-ink-soft mt-auto pt-4">
+      <span class="border-brass/40 text-brass-text mr-2 inline-block rounded-sm border px-2 py-0.5">
+        {sevaCategoryLabels[category]}
+      </span>
+      {locationLabel}
+    </p>
+  </div>
+</div>
