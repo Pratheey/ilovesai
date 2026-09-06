@@ -1,6 +1,8 @@
-# The site is fully static (every route is prerendered), so this `/*` block
-# applies to every response Cloudflare Pages serves. There is no SSR route and
-# no middleware to keep in sync anymore.
+# Every *page* is prerendered, so this `/*` block covers the static responses
+# Cloudflare Pages serves. The one exception is POST /api/contact, which renders
+# on demand: header rules apply to static assets, not to worker responses, so
+# that route sets its own Content-Type and Cache-Control in code. It returns
+# JSON or a redirect and never HTML, so nothing below is load-bearing for it.
 # The full script/style CSP is generated per-page by Astro's native security.csp
 # feature (astro.config.mjs) as a <meta> tag, because it must hash Astro's own
 # inlined scripts/styles — those hashes can't live in a static header.

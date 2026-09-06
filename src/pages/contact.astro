@@ -2,21 +2,30 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FrontDoorButtons from '../components/FrontDoorButtons.astro';
 import ResponseAssurance from '../components/ResponseAssurance.astro';
+import ArathiSchedule from '../components/ArathiSchedule.astro';
+import ContactForm from '../components/ContactForm.astro';
 import { locations, isPlaceholder, telHref } from '../lib/locations';
+
+// The form is only rendered once Turnstile is configured. Without a challenge in
+// front of it, a form posting to the org's inbox is a spam target — and the
+// WhatsApp and email buttons above it already work, so the page is never
+// left without a way through.
+const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 ---
 
 <BaseLayout
   title="Contact — I LOVE SAI"
-  description="Reach I LOVE SAI on WhatsApp or by email, or find your regional contact in India, the UK, or the USA."
+  description="Reach I LOVE SAI on WhatsApp, by email, or through the form — to ask a question, request an Aao Sai, or volunteer. Regional contacts in India, the UK, and the USA."
 >
   <section class="dhuni-glow bg-sandal py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-3xl text-center">
       <h1 class="text-display">Contact</h1>
       <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        [PLACEHOLDER: one line inviting visitors to reach out.]
+        [PLACEHOLDER: one warm line inviting visitors to reach out — to ask a question, request an
+        Aao Sai, volunteer, or help with a local activity.]
       </p>
       <FrontDoorButtons class="mt-10" />
-      <ResponseAssurance class="mx-auto mt-12 max-w-xl" showRegionalFallback={false} />
+      <ResponseAssurance class="mx-auto mt-12 max-w-xl" />
     </div>
   </section>
 
@@ -75,4 +84,76 @@ import { locations, isPlaceholder, telHref } from '../lib/locations';
       </div>
     </div>
   </section>
+
+  <section aria-labelledby="visit-heading" class="bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <h2 id="visit-heading" class="text-h2 text-center">Come and Visit</h2>
+      <div class="mx-auto mt-10 max-w-sm">
+        <ArathiSchedule />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="write-heading" class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-3xl">
+      <h2 id="write-heading" class="text-h2 text-center">Write to Us</h2>
+
+      {
+        /* Revealed by :target after a no-JS form post, and directly by the script
+          after a fetch submit. One message, both paths. */
+      }
+      <div
+        id="sent"
+        data-status-hidden
+        class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-center"
+      >
+        <p class="text-lead text-kumkum ml-0 font-semibold">
+          Thank you — your message is on its way.
+        </p>
+        <p class="text-body text-ink mt-2 ml-0">
+          Someone will reply to you by email. If it's urgent, WhatsApp is faster.
+        </p>
+      </div>
+
+      <div
+        id="send-failed"
+        data-status-hidden
+        class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-center"
+      >
+        <p class="text-lead text-kumkum ml-0 font-semibold">That message didn't send.</p>
+        <p class="text-body text-ink mt-2 ml-0">
+          Please try again below, or reach us on WhatsApp or by email — those always work.
+        </p>
+      </div>
+
+      {
+        formEnabled ? (
+          <div class="mt-8">
+            <ContactForm />
+          </div>
+        ) : (
+          <p class="text-body text-ink-soft mx-auto mt-8 max-w-[var(--measure)] text-center">
+            The message form is being set up. In the meantime, WhatsApp and email above reach us
+            just as well.
+          </p>
+        )
+      }
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  /* The no-JS path: the endpoint redirects to /contact#sent or #send-failed and
+     the fragment alone reveals the right message.
+     A `hidden` attribute can't be used for the resting state here — Tailwind's
+     preflight sets `[hidden] { display: none !important }`, which no plain
+     :target rule can override. Equal-specificity selectors, :target last, do the
+     job without anyone needing !important. The script toggles the same
+     attribute, so both paths drive one mechanism. */
+  .form-status[data-status-hidden] {
+    display: none;
+  }
+  .form-status:target {
+    display: block;
+  }
+</style>

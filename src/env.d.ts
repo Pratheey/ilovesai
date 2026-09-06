@@ -2,9 +2,33 @@
 // the TypeScript program via tsconfig.json's "include" — this just merges into
 // its `Cloudflare.Env` interface, no explicit reference needed.
 declare namespace Cloudflare {
-  // No server env vars are currently required — the site is fully static
-  // (front door = WhatsApp/email links; donations = outbound PayPal link).
-  // Re-add secrets here if a server-side integration returns.
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface Env {}
+  interface Env {
+    /** Cloudflare Turnstile secret, paired with PUBLIC_TURNSTILE_SITE_KEY. */
+    TURNSTILE_SECRET_KEY: string;
+    /** Resend API key used to deliver contact-form submissions. */
+    RESEND_API_KEY: string;
+    /** Verified sending address on the Resend account. */
+    CONTACT_FROM_EMAIL: string;
+    /** Where contact-form submissions land. */
+    CONTACT_TO_EMAIL: string;
+  }
+}
+
+interface ImportMetaEnv {
+  /** Turnstile site key. Public by design — it ships in the page. */
+  readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
+  /** Present only under `astro dev`; in production these live on the worker env. */
+  readonly TURNSTILE_SECRET_KEY?: string;
+  readonly RESEND_API_KEY?: string;
+  readonly CONTACT_FROM_EMAIL?: string;
+  readonly CONTACT_TO_EMAIL?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+interface Window {
+  /** Injected by the Turnstile script; absent until it loads, or if it's blocked. */
+  turnstile?: { reset: (widget?: string) => void };
 }

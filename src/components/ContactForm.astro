@@ -1,0 +1,189 @@
+---
+import { locations } from '../lib/locations';
+import { REQUEST_TYPES, DEFAULT_REQUEST_TYPE, UNSURE_REGION } from '../lib/contactForm';
+
+// Build-time. When it's absent the form isn't rendered at all — see the note in
+// contact.astro. Fail closed: a form with no challenge in front of the org's
+// inbox is worse than no form.
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+
+const fieldClass =
+  'border-brass/50 bg-cream text-body text-ink focus:border-ember mt-1 block w-full rounded-md border px-3 py-2.5';
+const labelClass = 'text-body text-ink block font-semibold';
+---
+
+<form
+  id="form"
+  method="post"
+  action="/api/contact"
+  data-contact-form
+  class="mx-auto max-w-xl text-left"
+>
+  <div class="grid grid-cols-1 gap-5">
+    <div>
+      <label class={labelClass} for="contact-name">Your name</label>
+      <input
+        class={fieldClass}
+        type="text"
+        id="contact-name"
+        name="name"
+        required
+        maxlength="100"
+        autocomplete="name"
+      />
+    </div>
+
+    <div>
+      <label class={labelClass} for="contact-email">Email</label>
+      <input
+        class={fieldClass}
+        type="email"
+        id="contact-email"
+        name="email"
+        required
+        maxlength="254"
+        autocomplete="email"
+      />
+    </div>
+
+    <div>
+      <label class={labelClass} for="contact-request-type">What is this about?</label>
+      <select class={fieldClass} id="contact-request-type" name="requestType" required>
+        {
+          REQUEST_TYPES.map((type) => (
+            <option value={type.value} selected={type.value === DEFAULT_REQUEST_TYPE}>
+              {type.label}
+            </option>
+          ))
+        }
+      </select>
+    </div>
+
+    <div>
+      <label class={labelClass} for="contact-region">Where are you?</label>
+      <select class={fieldClass} id="contact-region" name="region" required>
+        {locations.map((location) => <option value={location.region}>{location.label}</option>)}
+        <option value={UNSURE_REGION} selected>Somewhere else / not sure</option>
+      </select>
+    </div>
+
+    <div>
+      <label class={labelClass} for="contact-message">Your message</label>
+      <textarea
+        class={fieldClass}
+        id="contact-message"
+        name="message"
+        required
+        rows="6"
+        maxlength="2000"></textarea>
+    </div>
+  </div>
+
+  {
+    /* Honeypot. Off-screen rather than display:none — some bots skip hidden
+      fields — and taken out of the tab order and the accessibility tree so no
+      real person is ever asked to fill it in. */
+  }
+  <div class="honeypot" aria-hidden="true">
+    <label for="contact-website">Leave this field empty</label>
+    <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="cf-turnstile mt-6" data-sitekey={turnstileSiteKey}></div>
+
+  <p data-form-error hidden role="alert" class="text-body text-kumkum mt-4 ml-0 font-semibold"></p>
+
+  <button
+    type="submit"
+    class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-6 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+  >
+    Send message
+  </button>
+</form>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<style>
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  import { requestTypeFromHash } from '../lib/contactForm';
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const errorBox = form?.querySelector<HTMLElement>('[data-form-error]');
+
+  // Deep links from the project pages: /contact#aao-sai, /contact#volunteer.
+  function applyHash() {
+    const requestType = requestTypeFromHash(window.location.hash);
+    const select = document.getElementById('contact-request-type');
+    if (requestType && select instanceof HTMLSelectElement) select.value = requestType;
+  }
+  applyHash();
+  window.addEventListener('hashchange', applyHash);
+
+  // Without this the browser posts normally and the endpoint redirects back to
+  // a :target message — which works, but costs a full page load and loses what
+  // was typed if anything was wrong.
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (errorBox) errorBox.hidden = true;
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending…';
+    }
+
+    const restore = () => {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send message';
+      }
+    };
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'X-Requested-With': 'fetch' },
+      });
+      const result = (await response.json()) as { ok?: boolean; message?: string };
+
+      if (result.ok) {
+        // Replace the form outright: leaving a filled-in form under a success
+        // message invites a second, duplicate send.
+        const sent = document.getElementById('sent');
+        form.hidden = true;
+        if (sent) {
+          sent.removeAttribute('data-status-hidden');
+          sent.setAttribute('tabindex', '-1');
+          sent.focus();
+          sent.scrollIntoView({ block: 'center' });
+        }
+        return;
+      }
+
+      if (errorBox) {
+        errorBox.textContent = result.message ?? 'Something went wrong. Please try again.';
+        errorBox.hidden = false;
+      }
+      // The token is single-use; without a reset a second attempt always fails.
+      window.turnstile?.reset();
+      restore();
+    } catch {
+      if (errorBox) {
+        errorBox.textContent =
+          'We could not reach the server. Please check your connection, or message us on WhatsApp.';
+        errorBox.hidden = false;
+      }
+      window.turnstile?.reset();
+      restore();
+    }
+  });
+</script>
