@@ -1,5 +1,5 @@
 ---
-import { temples, formatArathiTime } from '../lib/arathi';
+import { temples, DAY_KEYS, dayLabel, formatArathiTime, toMinutes } from '../lib/arathi';
 
 const hasTabs = temples.length > 1;
 ---
@@ -7,14 +7,18 @@ const hasTabs = temples.length > 1;
 {
   temples.length > 0 && (
     <section
-      aria-label="Today's arathi timings"
+      aria-labelledby="arathi-schedule-heading"
       data-arathi-tabs
-      class="bg-kumkum-deep border-brass/25 rounded-xl border p-5 sm:p-6"
+      class="bg-kumkum-deep border-brass/25 rounded-lg border p-5 sm:p-6"
     >
-      <p class="text-marigold text-eyebrow font-semibold tracking-[0.18em] uppercase">
-        Today's Arathi
-      </p>
-      <p class="text-sandal mt-1 text-sm">Free and open to all.</p>
+      {/* A real heading, not a styled span: without one this whole widget is
+          invisible to anyone navigating by heading. `.eyebrow` carries the
+          uppercase/tracking so it doesn't drift from the rest of the site;
+          brass-text is only 2.08:1 on this fill, so the colour is overridden. */}
+      <h2 id="arathi-schedule-heading" class="eyebrow text-marigold">
+        Today at the Temple
+      </h2>
+      <p class="text-sandal text-small mt-1">Free and open to all.</p>
 
       {hasTabs && (
         <div
@@ -22,6 +26,9 @@ const hasTabs = temples.length > 1;
           aria-label="Choose a temple"
           class="arathi-tablist mt-4 flex gap-2 overflow-x-auto pb-1"
         >
+          {/* The pill border is an unselected tab's only visible boundary, so it
+              falls under the 3:1 non-text floor. brass/40 measured 1.75:1 on this
+              fill; brass/80 clears it. */}
           {temples.map((temple, i) => (
             <button
               type="button"
@@ -30,7 +37,7 @@ const hasTabs = temples.length > 1;
               aria-controls={`arathi-panel-${temple.id}`}
               aria-selected={i === 0 ? 'true' : 'false'}
               tabindex={i === 0 ? 0 : -1}
-              class="text-sandal border-brass/40 aria-selected:bg-marigold aria-selected:text-ink aria-selected:border-marigold hover:border-marigold inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm font-semibold whitespace-nowrap"
+              class="text-sandal border-brass/80 aria-selected:bg-marigold aria-selected:text-ink aria-selected:border-marigold hover:border-marigold text-small inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 font-semibold whitespace-nowrap"
             >
               {temple.name}
             </button>
@@ -41,39 +48,103 @@ const hasTabs = temples.length > 1;
       {temples.map((temple, i) => (
         <div
           id={`arathi-panel-${temple.id}`}
+          data-arathi-panel
+          data-timezone={temple.timezone}
           role={hasTabs ? 'tabpanel' : undefined}
           aria-labelledby={hasTabs ? `arathi-tab-${temple.id}` : undefined}
-          tabindex={hasTabs ? 0 : undefined}
           hidden={hasTabs && i !== 0}
           class="mt-4"
         >
-          {temple.location && (
-            <p class="text-sandal/80 text-eyebrow mb-2 tracking-wide uppercase">{temple.location}</p>
-          )}
-          <ul class="bg-brass/25 grid grid-cols-2 gap-px overflow-hidden rounded-lg">
-            {temple.arathis.map((arathi, i) => (
+          {temple.location && <p class="text-sandal/80 text-small">{temple.location}</p>}
+
+          {/* Every day is rendered and visible. With JS the script collapses this
+              to today (resolved in the temple's own timezone) and reveals the
+              toggle below; without it, a visitor gets the accurate full week
+              rather than one arbitrary weekday captioned "today". */}
+          <div class="border-brass/25 mt-2 border-b pb-3">
+            {DAY_KEYS.map((day) => (
+              <div data-day={day} class="mt-1 first:mt-0">
+                <p data-day-label class="font-display text-sandal leading-tight">
+                  {dayLabel(day)}
+                </p>
+                {temple.hours[day].map((block) => (
+                  <p class="text-sandal/85 text-body tabular-nums">
+                    {formatArathiTime(block.open)}
+                    {/* Most screen readers skip an en dash, announcing the two
+                        times as one unpunctuated run. */}
+                    <span class="sr-only"> to </span>
+                    <span aria-hidden="true"> – </span>
+                    {formatArathiTime(block.close)}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            data-week-toggle
+            hidden
+            aria-expanded="false"
+            class="text-sandal/80 hover:text-marigold text-small flex min-h-11 w-full items-center justify-between gap-2"
+          >
+            <span data-week-toggle-label>Opening hours, all week</span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              class="week-chevron h-4 w-4 shrink-0"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          {/* Tailwind's preflight sets list-style:none, which drops the list role
+              in Safari/VoiceOver — and with it the item count and anything
+              aria-current could attach to. The role is redundant in the abstract,
+              which is what the lint rule checks, but not once the CSS lands. */}
+          {/* eslint-disable-next-line astro/jsx-a11y/no-redundant-roles */}
+          <ul
+            role="list"
+            class="bg-brass/50 mt-2 grid grid-cols-2 gap-px overflow-hidden rounded-lg"
+          >
+            {temple.arathis.map((arathi, arathiIndex) => (
               <li
+                data-arathi
+                data-minutes={toMinutes(arathi.time)}
+                data-time={arathi.time}
+                data-minutes-thu={
+                  arathi.overrides?.thu ? toMinutes(arathi.overrides.thu) : undefined
+                }
+                data-time-thu={arathi.overrides?.thu}
                 class:list={[
                   'bg-kumkum-deep flex flex-col gap-0.5 px-4 py-3',
                   // An odd final cell would otherwise leave the brass backing
                   // showing as a solid block — span it across both columns.
                   temple.arathis.length % 2 === 1 &&
-                    i === temple.arathis.length - 1 &&
+                    arathiIndex === temple.arathis.length - 1 &&
                     'col-span-2',
                 ]}
               >
-                {arathi.note && (
-                  <span class="text-sandal/80 text-eyebrow font-semibold tracking-[0.14em] uppercase">
-                    {arathi.note}
-                  </span>
-                )}
+                <span data-upnext hidden class="eyebrow text-marigold">
+                  Up next
+                </span>
                 <span class="font-display text-sandal leading-tight">{arathi.name}</span>
-                <span class="text-marigold font-semibold tabular-nums">
+                <span class="text-marigold text-body font-semibold tabular-nums">
                   <time datetime={arathi.time}>{formatArathiTime(arathi.time)}</time>
                 </span>
               </li>
             ))}
           </ul>
+
+          {/* Once the day's last arathi has passed, an unmarked list reads as
+              broken rather than finished. */}
+          <p data-arathis-done hidden class="text-sandal/80 text-small mt-2">
+            Today's arathis have finished.
+          </p>
         </div>
       ))}
     </section>
@@ -89,16 +160,141 @@ const hasTabs = temples.length > 1;
   .arathi-tablist::-webkit-scrollbar {
     display: none;
   }
+
+  /* The next arathi still to come today. A marigold edge rather than a filled
+     cell: the grid stays calm and the accent reads as a marker, not a button. */
+  [data-arathi][aria-current='time'] {
+    box-shadow: inset 3px 0 0 var(--color-marigold);
+  }
+
+  /* The chevron is the disclosure's only state cue — `display: flex` on a
+     <summary> or a plain <button> gives no marker of its own. The reduced-motion
+     block in global.css already flattens this transition. */
+  .week-chevron {
+    transition: transform 150ms ease;
+  }
+  [aria-expanded='true'] .week-chevron {
+    transform: rotate(180deg);
+  }
 </style>
 
 <script>
+  import { dayKeyIn, dayLabel, minutesNowIn, formatArathiTime } from '../lib/arathi';
+
+  // ---------------------------------------------------------------------------
+  // Day + "up next", resolved in each temple's own timezone.
+  //
+  // The page is statically prerendered, so build time tells us nothing about the
+  // visitor's "now" — and the visitor's own clock is the wrong answer too: a
+  // devotee in London looking at a New Jersey temple must see New Jersey's day
+  // and its next arathi. Both come from Intl against the temple's IANA zone,
+  // which also handles DST without a calendar anywhere in the data.
+  // ---------------------------------------------------------------------------
+  function updatePanel(panel: HTMLElement) {
+    const timezone = panel.dataset.timezone;
+    if (!timezone) return;
+
+    const now = new Date();
+    const day = dayKeyIn(timezone, now);
+    const minutes = minutesNowIn(timezone, now);
+
+    const dayRows = Array.from(panel.querySelectorAll<HTMLElement>('[data-day]'));
+    const todayRow = panel.querySelector<HTMLElement>(`[data-day="${day}"]`);
+    // Unrecognised day key — leave the full week showing rather than hiding
+    // every row and reporting no hours at all.
+    if (!todayRow) return;
+
+    const toggle = panel.querySelector<HTMLElement>('[data-week-toggle]');
+    const expanded = toggle?.getAttribute('aria-expanded') === 'true';
+    dayRows.forEach((row) => {
+      row.hidden = !expanded && row !== todayRow;
+    });
+    // Only today's row claims to be today; the others keep their own names, so
+    // the expanded view still reads correctly.
+    dayRows.forEach((row) => {
+      const label = row.querySelector('[data-day-label]');
+      const key = row.dataset.day;
+      if (!label || !key) return;
+      label.textContent = row === todayRow ? `Today · ${dayLabel(day)}` : dayLabel(key as never);
+    });
+    if (toggle) toggle.hidden = false;
+
+    const items = Array.from(panel.querySelectorAll<HTMLElement>('[data-arathi]'));
+    let next: HTMLElement | null = null;
+
+    for (const item of items) {
+      item.removeAttribute('aria-current');
+      const badge = item.querySelector<HTMLElement>('[data-upnext]');
+      if (badge) badge.hidden = true;
+
+      // Reset to the base time first, then re-apply any override for today.
+      // Without the reset a tab left open from Thursday into Friday would go on
+      // showing Thursday's later Shej time for as long as it stayed open — the
+      // exact staleness the interval below exists to prevent.
+      const baseTime = item.dataset.time;
+      const time = item.querySelector('time');
+      let itemMinutes = Number(item.dataset.minutes);
+      if (time && baseTime) {
+        time.dateTime = baseTime;
+        time.textContent = formatArathiTime(baseTime);
+      }
+
+      const overrideMinutes = item.dataset.minutesThu;
+      const overrideTime = item.dataset.timeThu;
+      if (day === 'thu' && overrideMinutes && overrideTime) {
+        itemMinutes = Number(overrideMinutes);
+        if (time) {
+          time.dateTime = overrideTime;
+          time.textContent = formatArathiTime(overrideTime);
+        }
+      }
+
+      if (!next && itemMinutes > minutes) next = item;
+    }
+
+    if (next) {
+      // "time" is the exact token for the current item in a set of times;
+      // the stylesheet's marigold edge keys off this same value.
+      next.setAttribute('aria-current', 'time');
+      const badge = next.querySelector<HTMLElement>('[data-upnext]');
+      if (badge) badge.hidden = false;
+    }
+
+    const done = panel.querySelector<HTMLElement>('[data-arathis-done]');
+    if (done) done.hidden = next !== null;
+  }
+
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-arathi-panel]'));
+  panels.forEach(updatePanel);
+
+  // The toggle only exists for people with JS — without it every day is already
+  // on screen — so it's revealed by updatePanel rather than rendered visible.
+  panels.forEach((panel) => {
+    const toggle = panel.querySelector<HTMLElement>('[data-week-toggle]');
+    const label = toggle?.querySelector('[data-week-toggle-label]');
+    toggle?.addEventListener('click', () => {
+      const nowExpanded = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(nowExpanded));
+      if (label) label.textContent = nowExpanded ? 'Show today only' : 'Opening hours, all week';
+      updatePanel(panel);
+    });
+  });
+
+  // Keeps a tab left open overnight honest: "Up next" advances as the day goes
+  // on, and the day rolls over at the temple's midnight, not the visitor's.
+  if (panels.length > 0) {
+    setInterval(() => panels.forEach(updatePanel), 60_000);
+  }
+
+  // ---------------------------------------------------------------------------
   // Progressive enhancement: turn each [data-arathi-tabs] group into an accessible
   // tab widget. With JS off, the non-first panels stay `hidden` (set server-side),
   // so a no-JS visitor sees the primary temple. Single-temple groups are a no-op.
+  // ---------------------------------------------------------------------------
   document.querySelectorAll<HTMLElement>('[data-arathi-tabs]').forEach((root) => {
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
     if (tabs.length < 2) return;
-    const panels = tabs.map((tab) =>
+    const tabPanels = tabs.map((tab) =>
       document.getElementById(tab.getAttribute('aria-controls') ?? ''),
     );
 
@@ -107,7 +303,7 @@ const hasTabs = temples.length > 1;
         const selected = i === index;
         tab.setAttribute('aria-selected', selected ? 'true' : 'false');
         tab.tabIndex = selected ? 0 : -1;
-        const panel = panels[i];
+        const panel = tabPanels[i];
         if (panel) panel.hidden = !selected;
       });
       // Keep the chosen tab visible when the strip is scrolled (many temples).
@@ -121,7 +317,8 @@ const hasTabs = temples.length > 1;
         const last = tabs.length - 1;
         let next: number | null = null;
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = i === last ? 0 : i + 1;
-        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = i === 0 ? last : i - 1;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
+          next = i === 0 ? last : i - 1;
         else if (event.key === 'Home') next = 0;
         else if (event.key === 'End') next = last;
         if (next !== null) {
