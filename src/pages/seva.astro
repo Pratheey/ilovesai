@@ -35,24 +35,18 @@ const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
         <fieldset>
           <legend class="eyebrow mb-2">Category</legend>
           <div class="flex flex-wrap gap-x-4 gap-y-1">
-            <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
-              <input
-                type="radio"
-                name="category-filter"
-                value="all"
-                checked
-                class="accent-marigold"
-              />
+            <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
+              <input type="radio" name="category-filter" value="all" checked class="accent-ember" />
               All
             </label>
             {
               categories.map((category) => (
-                <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
+                <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
                   <input
                     type="radio"
                     name="category-filter"
                     value={category}
-                    class="accent-marigold"
+                    class="accent-ember"
                   />
                   {sevaCategoryLabels[category]}
                 </label>
@@ -64,24 +58,18 @@ const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
         <fieldset>
           <legend class="eyebrow mb-2">Location</legend>
           <div class="flex flex-wrap gap-x-4 gap-y-1">
-            <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
-              <input
-                type="radio"
-                name="location-filter"
-                value="all"
-                checked
-                class="accent-marigold"
-              />
+            <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
+              <input type="radio" name="location-filter" value="all" checked class="accent-ember" />
               All
             </label>
             {
               locations.map((location) => (
-                <label class="text-small text-ink flex min-h-11 items-center gap-1.5">
+                <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
                   <input
                     type="radio"
                     name="location-filter"
                     value={location.region}
-                    class="accent-marigold"
+                    class="accent-ember"
                   />
                   {location.label}
                 </label>
@@ -102,20 +90,27 @@ const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
           <div class="mt-12 flex flex-col gap-12">
             {groups.map((group) => (
               <div data-year-group>
-                <h3 class="text-h3">{group.year}</h3>
-                <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <h3 class="text-h2 border-brass/30 border-b pb-2">{group.year}</h3>
+                {/* Nothing in this grid is focusable, so list semantics are the only
+                    structure a screen reader can move by — and Tailwind's
+                    list-style reset drops them in Safari without the role. */}
+                {/* eslint-disable-next-line astro/jsx-a11y/no-redundant-roles */}
+                <ul role="list" class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {group.entries.map((entry) => (
-                    <SevaCard
-                      title={entry.title}
-                      date={entry.date}
-                      location={entry.location}
-                      category={entry.category}
-                      description={entry.description}
-                      images={entry.images}
-                      headingLevel="h4"
-                    />
+                    <li class="grid">
+                      <SevaCard
+                        id={entry.slug}
+                        title={entry.title}
+                        date={entry.date}
+                        location={entry.location}
+                        category={entry.category}
+                        description={entry.description}
+                        images={entry.images}
+                        headingLevel="h4"
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             ))}
           </div>
@@ -123,14 +118,18 @@ const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
       }
 
       <p id="seva-empty" hidden class="text-body text-ink-soft mt-12 text-center">
-        Nothing recorded for that combination yet.
+        No entries yet for that category and place.
       </p>
     </div>
   </section>
 </BaseLayout>
 
 <script>
-  const cards = document.querySelectorAll<HTMLElement>('[data-seva-card]');
+  // The card is inside an <li> now, so it's the list item that has to be hidden —
+  // hiding the card alone would leave an empty grid cell behind.
+  const entries = Array.from(document.querySelectorAll<HTMLElement>('[data-seva-card]')).map(
+    (card) => ({ card, item: card.closest('li') ?? card }),
+  );
   const yearGroups = document.querySelectorAll<HTMLElement>('[data-year-group]');
   const filterStatus = document.getElementById('seva-filter-status');
   const emptyMessage = document.getElementById('seva-empty');
@@ -144,15 +143,18 @@ const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
       'all';
 
     let visibleCount = 0;
-    cards.forEach((card) => {
+    entries.forEach(({ card, item }) => {
       const matchesCategory = activeCategory === 'all' || card.dataset.category === activeCategory;
       const matchesLocation = activeLocation === 'all' || card.dataset.location === activeLocation;
-      card.hidden = !(matchesCategory && matchesLocation);
-      if (!card.hidden) visibleCount += 1;
+      item.hidden = !(matchesCategory && matchesLocation);
+      if (!item.hidden) visibleCount += 1;
     });
 
     yearGroups.forEach((group) => {
-      group.hidden = group.querySelector('[data-seva-card]:not([hidden])') === null;
+      // Scoped to the group's own entry list: a bare `li` also matches the photo
+      // strips inside each card, which are never hidden, so a year holding any
+      // entry with photos would never count as empty.
+      group.hidden = group.querySelector(':scope > ul > li:not([hidden])') === null;
     });
 
     // A filter that hides everything must say so — otherwise the page just looks

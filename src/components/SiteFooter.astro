@@ -94,9 +94,18 @@ const emailReady = !isPlaceholder(orgEmail);
               word, but a well-wisher who found us through a food drive shouldn't
               have to know it to find the record. */
           }
-          <a href="/seva" class="text-sandal hover:text-marigold">Our Work</a>
+          {
+            /* inline-flex, not min-h-11 alone: height is ignored on an inline
+              element, so these would otherwise be ~28px tap targets. */
+          }
+          <a href="/seva" class="text-sandal hover:text-marigold inline-flex min-h-11 items-center"
+            >Our Work</a
+          >
           {' · '}
-          <a href="/contact" class="text-sandal hover:text-marigold">Contact</a>
+          <a
+            href="/contact"
+            class="text-sandal hover:text-marigold inline-flex min-h-11 items-center">Contact</a
+          >
         </p>
       </div>
     </div>
