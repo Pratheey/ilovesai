@@ -6,11 +6,13 @@ const navLinks = [
   { href: '/about', label: 'About' },
   { href: '/projects', label: 'Projects' },
   { href: '/events', label: 'Events' },
-  { href: '/get-involved', label: 'Get Involved' },
   { href: '/contact', label: 'Contact' },
 ];
 
-const quickLinks = [{ href: '/get-involved', label: 'Request Aao Sai' }];
+// Get Involved folded into /contact — one front door, not two pages asking for
+// the same message. Requesting an Aao Sai is now a request type on that form
+// (/contact#aao-sai), so it no longer needs its own header link.
+const quickLinks = [{ href: '/events', label: 'Events' }];
 ---
 
 <header class="border-brass/20 bg-sandal sticky top-0 z-20 border-b">

@@ -10,7 +10,12 @@
 /carpentersville-illinois/             /projects/carpentersville              301
 /walk-for-sai/                         /projects/walk-for-sai                 301
 /babanchi-shirdi-majhi-shirdi/         /projects/babanchi-shirdi-majhi-shirdi 301
-/get-involved/                         /get-involved                          301
-/organise-charitable-activities/       /get-involved                          301
 /contact-us/                           /contact                               301
-/registration/                         /get-involved                          301
+
+# Get Involved merged into /contact — one front door instead of two pages asking
+# for the same message. /get-involved shipped in an earlier build of this site,
+# so it needs a redirect of its own, not just the WordPress-era paths.
+/get-involved                          /contact                               301
+/get-involved/                         /contact                               301
+/organise-charitable-activities/       /contact#volunteer                     301
+/registration/                         /contact                               301

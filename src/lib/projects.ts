@@ -22,7 +22,7 @@ export interface Project {
   ctaLabel: string;
   ctaHref: string;
   /** True when ctaHref leaves the site — not set for projects whose CTA routes
-   * to an internal page like /get-involved or /donate. */
+   * to an internal page like /contact or /donate. */
   ctaExternal?: boolean;
   closingLine?: string;
 }
@@ -64,7 +64,7 @@ export const projects: Project[] = [
       'The team provides all pooja materials; you provide simple food for guests.',
     ],
     ctaLabel: 'Request Aao Sai',
-    ctaHref: '/get-involved',
+    ctaHref: '/contact#aao-sai',
     closingLine: 'Know Sai, Know Life — No Sai, No Life',
   },
   {
@@ -108,7 +108,7 @@ export const projects: Project[] = [
       'Watch for the announcement in your country, then register to take part.',
     ],
     ctaLabel: 'Join a Walk',
-    ctaHref: '/get-involved',
+    ctaHref: '/contact#volunteer',
   },
   {
     slug: 'babanchi-shirdi-majhi-shirdi',
