@@ -141,7 +141,15 @@ For each: temple name, and the city and country it's in. Two or three is ideal; 
 _Answer:_
 
 **5.2 ★ The daily arathi times for each temple.**
-The site currently assumes the four traditional arathis — Kakad (dawn), Madhyan (noon), Dhoop (evening), Shej (night). Correct the times per temple, and say if a temple does a different set.
+Temple 1 now carries the real set you gave — Kakad 8:30, Shiva Abhishekam 10:00, Baba Abhishekam 11:30, Madhyan 12:30, Dhoop 5:30, Shej 7:30 (8:00 on Thursdays). Temple 2 still assumes the four traditional arathis. Correct the times per temple, and say if a temple does a different set.
+_Answer:_
+
+**5.3 ★ Which country is each temple in?**
+Not for display — the site needs it to know whose clock the times are on. The schedule now works out today's day and the next arathi in the temple's *own* timezone, so a devotee in London sees New Jersey's real day rather than their own. Temple 1 currently assumes **USA / New Jersey** because the org's main inbox is the USA one. If that's wrong, it's a one-line correction, but it needs confirming.
+_Answer:_
+
+**5.4 The opening hours are now shown too, not just the arathis.**
+They're set to: Mon/Tue/Wed/Fri 8:30am–1:00pm then 5:30–8:00pm · Thursday 8:30am–9:30pm · Sat/Sun 8:30am–8:00pm. Confirm these, and say whether they're the same at every temple.
 _Answer:_
 
 ---
@@ -272,6 +280,33 @@ _Answer:_
 _Answer:_
 
 **11.10** Three one-line descriptions for the homepage cards: how donations are used; what volunteering involves; what organising a local activity means.
+_Answer:_
+
+---
+
+## 12. The record of charitable work ★
+
+There's now a page at `/seva` — shown in the footer as "Our Work" — that lists what I LOVE SAI has actually done: food distributions, cleaning drives, tree planting, community gatherings. It's the proof-of-work page, and for a charity it may be the most persuasive thing on the site. It's currently running on placeholder entries.
+
+**12.1 ★ A list of completed acts of seva.**
+For each one: what it was, the date, the city/country, and two or three sentences on what was done and who it reached. Six or eight to start is plenty — the page grows over time. Anything at all is better than the placeholders that are there now.
+_Answer:_
+
+**12.2 Photos from any of them.**
+Not required, but a record with photographs reads very differently from a record without. Up to three per entry, and each one needs a sentence describing what's in it (for people using screen readers).
+_Answer:_
+
+**12.3 Note on what belongs here.**
+Work that's part of a named project — Walk for Sai, Babanchi Shirdi, Carpentersville — stays on that project's own page. This page is for the one-off acts that nothing else on the site records.
+
+---
+
+## 13. Special events
+
+The homepage has a slot directly under the title for one thing that's happening soon — a festival, a big puja. It stays completely invisible when there's nothing on, so it costs nothing to leave empty.
+
+**13.1 Is there something coming up?**
+If so: the title, the date, two or three sentences describing it, and optionally a flyer image and a link.
 _Answer:_
 
 ---

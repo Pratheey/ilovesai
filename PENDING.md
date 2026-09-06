@@ -289,3 +289,75 @@ visit, it's free" as the soft first step → get involved → donate).
 - [ ] **Reduce single-point-of-failure intake** — WhatsApp Business auto-reply and/or a hosted
       fallback form → spreadsheet. **Deferred by owner 2026-08-23** pending a conversation with
       the main coordinator. *(idea #7, part 2)*
+---
+
+## M. Follow-ups from the 2026-09-06 session (schedule, events, nav merge, /seva, contact form)
+
+**Shipped & committed this session** (branch `wip-snapshot`, not yet pushed): the
+day-aware arathi schedule, the conditional special-events band, the Get Involved →
+Contact nav merge, `/seva`, and the `/contact` form. Design and security reviews run;
+fixes applied and verified under `wrangler dev`.
+
+### M1. §B1's "no backend" decision is superseded for /contact — [DECIDED 2026-09-06]
+
+B1 settled that the get-involved path would be **two buttons and no backend**. The owner
+asked for a real form on `/contact` this session and chose email-via-transactional-API for
+delivery, so that part of B1 no longer holds. What survives of B1 is the ordering: the
+WhatsApp and email buttons remain the **primary** front door, sit above the form on the
+page, and are what the form's own error copy falls back to. The form is an addition to the
+front door, not a replacement for it — B1's actual argument (don't reproduce the org's
+intake line) still stands.
+
+### M2. Deploy-time gates — the form must not go live without these
+
+- [ ] **Cloudflare Rate Limiting rule on `POST /api/contact`** (≈5 per 10 min per IP).
+      **Do this before the form is live.** The in-isolate limiter in the endpoint is a
+      best-effort stand-in only — Workers isolates are ephemeral and there are many, so
+      it stops a naive loop and nothing more. Without the edge rule, the only real cost
+      ceiling on the endpoint is Turnstile, and anyone paying a solving service can push
+      unbounded mail through the Resend account into the org's inbox.
+- [ ] **Turnstile keys.** Create the widget, then set `PUBLIC_TURNSTILE_SITE_KEY` as a
+      Cloudflare Pages **build** variable (not only a runtime one — `/contact` is
+      prerendered, so the key is baked in at build time; if it's missing at build the form
+      silently doesn't render) and `TURNSTILE_SECRET_KEY` as a secret. Restrict the
+      widget's hostname list to the real domain: the endpoint rejects tokens solved on a
+      different host, but the dashboard list is what stops `*.pages.dev` previews minting
+      them in the first place.
+- [ ] **Resend account** with a verified sending domain; set `RESEND_API_KEY`,
+      `CONTACT_FROM_EMAIL` (on the verified domain) and `CONTACT_TO_EMAIL`.
+
+Until all three are done the form is **fail-closed by design**: no site key means the form
+isn't rendered at all, and a missing secret or mail variable means the endpoint refuses the
+submission and points people at WhatsApp. Nothing is silently accepted and dropped.
+
+### M3. Content still needed from the owner
+
+- [ ] **Temple name, city and timezone** for the arathi schedule (`src/lib/arathi.ts`).
+      Temple 1 currently assumes `America/New_York` on the strength of the org's USA
+      inbox — it is a one-line swap, but it is a guess until confirmed. Temple 2 is
+      entirely placeholder.
+- [ ] **Real seva records** for `/seva` (`src/lib/seva.ts`) — title, date, location,
+      category, description, photos. The page ships with placeholder entries; an archive
+      of placeholders is the one page here that is worse than an empty one.
+- [ ] **Special-event copy** for the homepage band (`src/lib/specialEvent.ts`), plus
+      flipping `active` to `true` when there is something on.
+
+### M4. Noted, not acted on
+
+- [ ] **`--text-small` is 15px** (`src/styles/global.css`) while CLAUDE.md sets a 16px
+      floor for body text — a sitewide contradiction between the two source-of-truth
+      files, ~24 usages across 14 files. Either raise the token to `1rem` or amend
+      CLAUDE.md to scope the floor to prose and allow 15px for metadata. Not changed
+      unilaterally because it moves type on every page.
+- [ ] **`accent-marigold` on the `/events` filter radios** measures 2.44:1 against the
+      section background, under the 3:1 floor for a control's state. `/seva` now uses
+      `accent-ember` (4.33:1); `/events` was left alone as out of scope for this session.
+- [ ] **`npm audit` is not in CI** (`.github/workflows/ci.yml`) despite CLAUDE.md's
+      "keep `npm audit` clean". Dependencies are also caret-ranged rather than pinned;
+      the lockfile plus `npm ci` covers this in practice.
+- [ ] **CLAUDE.md says Astro 6; `package.json` has `astro: ^7.0.0`.** Doc drift worth
+      reconciling — it matters because the Astro 6→7 change removed
+      `Astro.locals.runtime.env`, which the contact endpoint had to work around.
+- [ ] **`/seva` and `/projects` don't cross-link.** `lib/seva.ts` deliberately splits
+      one-off acts from named projects, but nothing on either page points at the other,
+      and `/seva` is footer-only by the owner's choice.
