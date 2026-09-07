@@ -302,7 +302,7 @@ Secrets **never** reach the client — they're read through `cloudflare:workers`
   `<details>` disclosure TOC on mobile — shown only when a page has **≥3 `<h2>`s**
   (all three currently do).
 - **Implementation:** MDX content collection (`src/content/about/*.mdx`,
-  `src/content.config.ts`), `ArticleLayout.astro`, `PullQuote`, `Timeline`,
+  `src/content.config.ts`), `ArticleLayout.astro`, `Quote`, `Timeline`,
   `PlaceholderImage`. TOC is built from Astro's `render(entry)` `headings` (depth===2).
 - **Limitations:** **content is structure-only.** Every paragraph is `[PLACEHOLDER]`.
   Per an explicit rule, **no scripture, biography, Eleven Assurances wording, or
@@ -319,7 +319,7 @@ Secrets **never** reach the client — they're read through `cloudflare:workers`
   unconditional "Explore our other projects → /projects" link.
 - **Implementation:** `src/pages/projects/index.astro`, `src/pages/projects/[slug].astro`
   (single dynamic route over `projects`), `ProjectLayout.astro`, `ProjectCard`,
-  `PullQuote`, `PlaceholderImage`. Data: `src/lib/projects.ts`.
+  `Quote`, `PlaceholderImage`. Data: `src/lib/projects.ts`.
 - **The four real projects (real copy, sourced from the live site):**
   1. **Aao Sai** — free home devotional event; has the 3-step stepper (Before/During/After);
      CTA → `/get-involved?project=aao-sai#form`; closing line "Know Sai, Know Life — No Sai, No Life".
@@ -491,7 +491,7 @@ in the two that ship a `<script>`.
 | **CTACard** | `title`, `description`, `href`, `label`, `image?`, `imageAlt?`, `external?` | none | Home, /get-involved | `external` adds `target=_blank rel=noopener` + sr-only "(opens in a new tab)". |
 | **EventCard** | `title`, `summary`, `href`, `start`, `location`, `type`, `image?`, `imageAlt?`, `headingLevel?: 'h3'\|'h4'` | `Intl.DateTimeFormat` (hardcoded `'en'`) | /events, region pages | Exports `eventTypeLabels` map. `data-type`/`data-location` drive the filter script. |
 | **UpcomingEvents** | `count?` (default 5) | calls `getUpcomingEvents`, formats dates | /events (and intended for Home) | Compact list, not a card grid. Empty-state message. |
-| **PullQuote** | `text`, `attribution` | none | ProjectLayout, MDX | Marigold left-border blockquote; `<cite>` not italic (house style). |
+| **Quote** | `text`, `attribution`, `class` | none | ProjectLayout, About MDX | Satcharitra citations. Marcellus, generous leading, indented, a single brass petal mark from `PetalDivider`; citation in tracked Mukta. No card, no border box, no quote glyph. Replaced `PullQuote` in the Stage 2 styling pass. |
 | **Timeline** | `events[]` (`{year,label,body}`) | none | sai-baba.mdx | Vertical connected-dot timeline. Currently placeholder entries. |
 | **PlaceholderImage** | `label?` | none | everywhere images go | Brass-bordered cream box with a centered eyebrow label. The visible stand-in for all missing photography. |
 

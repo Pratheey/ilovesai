@@ -1,0 +1,215 @@
+---
+import { nextUid } from '../lib/uid';
+// Diya.astro — an oil lamp, lit or unlit, with an animated flame.
+//
+// A real diya: a shallow clay bowl with a pinched lip (where the wick rests)
+// and a slight foot, not a candle and not a generic flame glyph. See
+// styling-brief.md, "Devotional components to build" #1.
+interface Props {
+  /** Pixel height of the lamp. Width follows the artwork's own aspect ratio. */
+  size?: number;
+  /** An unlit lamp still shows the bowl and wick — no flame, no glow. Unlit
+   * lamps are meaningful too, so this is a real drawn state, not opacity 0. */
+  lit?: boolean;
+  /** false renders a lit but perfectly still flame. */
+  flicker?: boolean;
+  class?: string;
+}
+
+const { size = 28, lit = true, flicker = true, class: className = '' } = Astro.props;
+
+// The gradients below are referenced by `url(#id)`, and SVG id lookups resolve
+// against the whole document, not per <svg> root. Two Diyas on one page
+// sharing an id means the second one silently reuses (or clobbers) the
+// first's gradient — the classic "some diyas render unfilled" bug. Every
+// instance therefore mints its own ids at render time.
+// Gradient ids must be unique per instance or several diyas on one page share
+// one definition and all but the first render unfilled. See lib/uid.ts for why
+// this can't just be a counter declared here.
+const uid = nextUid('diya');
+const bowlGradientId = `${uid}-bowl`;
+const flameGradientId = `${uid}-flame`;
+const glowGradientId = `${uid}-glow`;
+
+const viewBoxWidth = 64;
+const viewBoxHeight = 80;
+const width = Math.round((size * viewBoxWidth) / viewBoxHeight);
+---
+
+<svg
+  width={width}
+  height={size}
+  viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <defs>
+    <linearGradient id={bowlGradientId} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-brass)"></stop>
+      <stop offset="100%" stop-color="var(--color-brass-text)"></stop>
+    </linearGradient>
+    {
+      lit && (
+        <>
+          <linearGradient id={flameGradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--color-ember)" />
+            <stop offset="100%" stop-color="var(--color-marigold)" />
+          </linearGradient>
+          <radialGradient id={glowGradientId} cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="var(--color-marigold)" stop-opacity="0.55" />
+            <stop offset="60%" stop-color="var(--color-ember)" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="var(--color-ember)" stop-opacity="0" />
+          </radialGradient>
+        </>
+      )
+    }
+  </defs>
+
+  {/* A slight foot the bowl rests on. */}
+  <ellipse cx="26" cy="73" rx="12" ry="3" fill="var(--color-brass-text)"></ellipse>
+
+  {
+    /* The bowl: a shallow, curved clay dish with a pinched lip rising to the
+      right, where the wick sits, then rounding back down into the body. */
+  }
+  <path
+    d="M6,60 C6,52 14,48 26,49 C34,49 40,46 48,40 C52,37 54,38 53,42 C51,48 46,52 40,56 C46,60 44,66 36,69 C28,72 14,71 8,66 C6,64 6,62 6,60 Z"
+    fill={`url(#${bowlGradientId})`}></path>
+
+  {/* The wick, emerging from the pinched lip. */}
+  <line
+    x1="50"
+    y1="40"
+    x2="47"
+    y2="26"
+    stroke="var(--color-ink)"
+    stroke-width="2.2"
+    stroke-linecap="round"></line>
+
+  {
+    lit && (
+      <>
+        <circle
+          class:list={['diya-glow', flicker && 'diya-glow--flicker']}
+          cx="46"
+          cy="16"
+          r="16"
+          fill={`url(#${glowGradientId})`}
+        />
+        <g transform="translate(46,18)">
+          <path
+            class:list={['diya-flame', flicker && 'diya-flame--flicker']}
+            d="M0,-13 C4,-8 7,-2 6,5 C5,11 2,13 0,13 C-2,13 -5,11 -6,5 C-7,-2 -4,-8 0,-13 Z"
+            fill={`url(#${flameGradientId})`}
+          />
+        </g>
+      </>
+    )
+  }
+</svg>
+
+<style>
+  /* transform-box: fill-box makes the percentage transform-origin below refer
+     to each shape's own bounding box, not the SVG viewport's — otherwise every
+     transform pivots around the viewBox origin and the flame swings from the
+     corner of the icon instead of breathing from its own base. */
+  .diya-flame,
+  .diya-glow {
+    transform-box: fill-box;
+  }
+  /* The flame pivots from its base, where it meets the wick — like a real
+     flame anchored to its fuel — not from its own centre. */
+  .diya-flame {
+    transform-origin: 50% 100%;
+  }
+  .diya-glow {
+    transform-origin: 50% 50%;
+  }
+
+  /* Three loops at durations with no shared short-window multiple (2.7s,
+     4.1s, 3.3s), each stepping through non-even keyframe stops (17/43/68/91).
+     The composite drift never visibly repeats, which is what reads as a real
+     flame rather than a loading spinner. Amplitude stays a few percent of
+     scale and a degree or two of skew: a flame breathing across a room, not a
+     flickering GIF. global.css snaps every animation to its 100% keyframe
+     under prefers-reduced-motion, so 100% below IS the plain resting state —
+     upright, full opacity, scale 1 — never a mid-flicker pose. */
+  .diya-flame--flicker {
+    animation:
+      diya-flame-move 2.7s ease-in-out infinite,
+      diya-flame-opacity 4.1s ease-in-out infinite;
+  }
+  .diya-glow--flicker {
+    animation: diya-glow-pulse 3.3s ease-in-out infinite;
+  }
+
+  @keyframes diya-flame-move {
+    0% {
+      transform: scale(1, 1) skewX(0deg);
+    }
+    17% {
+      transform: scale(1.03, 0.97) skewX(-1.4deg);
+    }
+    43% {
+      transform: scale(0.98, 1.02) skewX(1.6deg);
+    }
+    68% {
+      transform: scale(1.02, 0.985) skewX(-0.8deg);
+    }
+    91% {
+      transform: scale(0.99, 1.01) skewX(0.6deg);
+    }
+    100% {
+      transform: scale(1, 1) skewX(0deg);
+    }
+  }
+
+  @keyframes diya-flame-opacity {
+    0% {
+      opacity: 1;
+    }
+    17% {
+      opacity: 0.93;
+    }
+    43% {
+      opacity: 0.98;
+    }
+    68% {
+      opacity: 0.9;
+    }
+    91% {
+      opacity: 0.96;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes diya-glow-pulse {
+    0% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    17% {
+      opacity: 0.63;
+      transform: scale(1.04);
+    }
+    43% {
+      opacity: 0.48;
+      transform: scale(0.96);
+    }
+    68% {
+      opacity: 0.6;
+      transform: scale(1.03);
+    }
+    91% {
+      opacity: 0.52;
+      transform: scale(0.98);
+    }
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+  }
+</style>

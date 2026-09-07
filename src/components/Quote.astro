@@ -1,0 +1,27 @@
+---
+// Quote — the Satcharitra citations. These are the emotional spine of the
+// site, so they get real typographic weight (larger Marcellus, generous
+// leading, a true inset) rather than a grey card or a giant decorative
+// quotation mark.
+import PetalDivider from './PetalDivider.astro';
+
+interface Props {
+  text: string;
+  attribution: string;
+  class?: string;
+}
+
+const { text, attribution, class: className = '' } = Astro.props;
+---
+
+<figure class={`mx-auto max-w-[var(--measure)] ${className}`}>
+  <PetalDivider variant="single" class="mb-6" />
+  <blockquote class="pl-8 sm:pl-14">
+    <p class="font-display text-h3 text-ink mx-0 leading-relaxed sm:leading-loose">
+      {text}
+    </p>
+  </blockquote>
+  <figcaption class="text-small text-brass-text mt-5 pl-8 tracking-wide not-italic sm:pl-14">
+    {attribution}
+  </figcaption>
+</figure>

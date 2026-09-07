@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
-import PullQuote from '../components/PullQuote.astro';
+import Quote from '../components/Quote.astro';
 import { getLocation, type Region } from '../lib/locations';
 
 interface ProjectStep {
@@ -55,8 +55,8 @@ const locationLabel = location ? getLocation(location)?.label : undefined;
 // Alternate only across the sections that actually render. The CTA band and the
 // "more projects" nav are fixed (kumkum-deep, then cream) and always differ from
 // whatever precedes them, so they don't need to join the computation.
-let prevBg: 'sandal' | 'cream' = 'sandal'; // the hero above, fixed
-const nextBg = () => (prevBg = prevBg === 'sandal' ? 'cream' : 'sandal');
+let prevBg: 'bg-sandal' | 'bg-cream' = 'bg-sandal'; // the hero above, fixed
+const nextBg = () => (prevBg = prevBg === 'bg-sandal' ? 'bg-cream' : 'bg-sandal');
 const quoteBg = quote ? nextBg() : undefined;
 const stepsBg = steps && steps.length > 0 ? nextBg() : undefined;
 const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
@@ -90,8 +90,8 @@ const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
 
   {
     quote && (
-      <section aria-label="Quote" class={`bg-${quoteBg} px-gutter pb-16 sm:pb-24`}>
-        <PullQuote text={quote.text} attribution={quote.attribution} />
+      <section aria-label="Quote" class={`${quoteBg} px-gutter pb-16 sm:pb-24`}>
+        <Quote text={quote.text} attribution={quote.attribution} />
       </section>
     )
   }
@@ -101,7 +101,7 @@ const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
       <section
         id="how-it-works"
         aria-labelledby="how-it-works-heading"
-        class={`bg-${stepsBg} py-16 sm:py-24`}
+        class={`${stepsBg} py-16 sm:py-24`}
       >
         <div class="px-gutter mx-auto max-w-3xl">
           <h2 id="how-it-works-heading" class="text-h2 text-center">
@@ -130,7 +130,7 @@ const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
 
   {
     goodToKnow && goodToKnow.length > 0 && (
-      <section aria-labelledby="good-to-know-heading" class={`bg-${goodToKnowBg} py-16 sm:py-24`}>
+      <section aria-labelledby="good-to-know-heading" class={`${goodToKnowBg} py-16 sm:py-24`}>
         <div class="px-gutter mx-auto max-w-2xl">
           <h2 id="good-to-know-heading" class="text-h2 text-center">
             {goodToKnowHeading}

@@ -1,4 +1,5 @@
 ---
+import Diya from './Diya.astro';
 import { temples, DAY_KEYS, dayLabel, formatArathiTime, toMinutes } from '../lib/arathi';
 
 const hasMultipleTemples = temples.length > 1;
@@ -116,6 +117,7 @@ const hasMultipleTemples = temples.length > 1;
                 <span class="font-display text-sandal leading-tight">
                   {arathi.name}
                   <span data-upnext hidden class="eyebrow text-marigold block">
+                    <Diya lit size={16} class="mr-1 inline-block align-[-3px]" />
                     Up next
                   </span>
                 </span>

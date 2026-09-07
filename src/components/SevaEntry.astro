@@ -1,4 +1,5 @@
 ---
+import Diya from './Diya.astro';
 import PlaceholderImage from './PlaceholderImage.astro';
 import { getLocation, type Region } from '../lib/locations';
 import type { SevaImage } from '../lib/seva';
@@ -57,6 +58,13 @@ const restImages = images?.slice(1, 4) ?? [];
   }
 
   <p class="eyebrow mx-0 mt-4">
+    {
+      /* Small and still: this is an archive of many entries, and a row of
+        bright, flickering flames would read as noise rather than as a
+        record. flicker={false} keeps it a quiet marker, not another moving
+        element competing with the schedule's lit diya above. */
+    }
+    <Diya lit flicker={false} size={14} class="mr-1 inline-block align-[-2px]" />
     <time datetime={date.toISOString().slice(0, 10)}>{dateFormatter.format(date)}</time>
     {locationLabel && <> &middot; {locationLabel}</>}
   </p>

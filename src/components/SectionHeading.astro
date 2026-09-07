@@ -1,0 +1,22 @@
+---
+import Diya from './Diya.astro';
+
+// An MDX override for `##` headings on the About pages, so every section is
+// marked by a lamp. Passed to <Content components={{ h2: SectionHeading }} />
+// rather than written into the markdown, which keeps the prose clean and means
+// a new heading is marked automatically.
+//
+// Every prop is forwarded, `id` above all: Astro generates heading ids and the
+// table of contents links to them, so dropping props here would silently break
+// every anchor on the page.
+const props = Astro.props;
+---
+
+<h2 {...props}>
+  {
+    /* Still, not flickering: a page has several headings, and a column of
+      animated flames would compete with the one lit lamp that means something
+      on the schedule. */
+  }
+  <Diya size={16} flicker={false} class="mr-2 inline-block align-baseline" /><slot />
+</h2>

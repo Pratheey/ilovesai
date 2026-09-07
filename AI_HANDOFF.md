@@ -96,7 +96,7 @@ src/
   env.d.ts              ← merges secrets into Cloudflare.Env (prune as secrets drop)
   layouts/              ← BaseLayout (shell) + ArticleLayout (about) + ProjectLayout
   components/           ← Logo, SiteHeader, SiteFooter, Hero, Carousel, ProjectCard,
-                          CTACard, EventCard, UpcomingEvents, PullQuote, Timeline,
+                          CTACard, EventCard, UpcomingEvents, Quote, Timeline,
                           PlaceholderImage
   pages/                ← file-based routes
 public/                 ← favicons, logos, _headers, _redirects
@@ -212,7 +212,7 @@ extend `BaseLayout`. `Hero`→`Carousel`→`PlaceholderImage`. Cards: `ProjectCa
 (workhorse — projects, about, locations; optional `description`/`location`/`headingLevel`;
 renders `<a>` if `href`), `CTACard` (optional `external`), `EventCard` (exports
 `eventTypeLabels`; `data-type`/`data-location` drive the filter). `UpcomingEvents`,
-`PullQuote`, `Timeline`, `PlaceholderImage` (universal image stand-in). All props-in/
+`Quote`, `Timeline`, `PlaceholderImage` (universal image stand-in). All props-in/
 HTML-out; only `SiteHeader` + events page ship a script.
 
 ## 13. Workflow & commands

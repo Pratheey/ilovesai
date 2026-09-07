@@ -6,6 +6,7 @@ import CTACard from '../components/CTACard.astro';
 import ArathiSchedule from '../components/ArathiSchedule.astro';
 import SpecialEvent from '../components/SpecialEvent.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
+import PetalDivider from '../components/PetalDivider.astro';
 import { DONATE_PATH } from '../lib/donate';
 import { projects } from '../lib/projects';
 import { locations } from '../lib/locations';
@@ -94,7 +95,7 @@ const participateOptions = [
   </section>
 
   <div class="bg-cream pb-16 text-center sm:pb-24">
-    <div class="bg-marigold/30 mx-auto h-px w-24"></div>
+    <PetalDivider variant="short" />
     <p class="eyebrow mt-4">[PLACEHOLDER: e.g. "Shraddha &amp; Saburi" — faith &amp; patience]</p>
   </div>
 
