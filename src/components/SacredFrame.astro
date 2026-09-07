@@ -1,4 +1,5 @@
 ---
+import { ASPECT_CLASS } from '../lib/aspect';
 // SacredFrame.astro — the image treatment for Baba's portrait, shrine
 // photography, and project heroes (styling-brief.md, devotional component 3).
 //
@@ -18,12 +19,19 @@ interface Props {
 }
 
 const { aspect, class: className = '' } = Astro.props;
-const aspectStyle = aspect ? `aspect-ratio: ${aspect.replace(':', ' / ')};` : undefined;
+// Not an inline style attribute: this site's CSP hashes inline <style> tags but
+// not style="" attributes, so the browser blocks them outright and the ratio
+// silently never applies. ASPECT_CLASS holds literal Tailwind classes the JIT
+// scanner can see. An unknown ratio falls back to the parent's sizing.
+const aspectClass = aspect ? ASPECT_CLASS[aspect] : undefined;
 ---
 
 <div
-  class={`sacred-frame border-brass/80 relative overflow-hidden border ${className}`}
-  style={aspectStyle}
+  class:list={[
+    'sacred-frame border-brass/80 relative overflow-hidden border',
+    aspectClass,
+    className,
+  ]}
 >
   <slot />
   <div class="sacred-frame-vignette pointer-events-none absolute inset-0" aria-hidden="true"></div>
