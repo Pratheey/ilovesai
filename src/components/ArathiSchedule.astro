@@ -9,7 +9,7 @@ const hasMultipleTemples = temples.length > 1;
     <section
       aria-labelledby="arathi-schedule-heading"
       data-arathi-schedule
-      class="bg-kumkum-deep border-brass/25 rounded-lg border p-5 sm:p-6"
+      class="bg-kumkum-deep border-brass/80 rounded-md border p-5 sm:p-6"
     >
       {/* A real heading, not a styled span: without one this whole widget is
           invisible to anyone navigating by heading. `.eyebrow` carries the
@@ -28,7 +28,7 @@ const hasMultipleTemples = temples.length > 1;
           <select
             id="arathi-temple"
             data-arathi-select
-            class="bg-kumkum-deep text-sandal border-brass/80 text-small mt-1 block min-h-11 w-full rounded-md border px-3"
+            class="bg-kumkum-deep text-sandal border-brass/80 text-small mt-1 block min-h-11 w-full rounded-sm border px-3"
           >
             {temples.map((temple) => (
               <option value={temple.id}>{temple.name}</option>
@@ -51,7 +51,7 @@ const hasMultipleTemples = temples.length > 1;
               to today (resolved in the temple's own timezone) and reveals the
               toggle below; without it, a visitor gets the accurate full week
               rather than one arbitrary weekday captioned "today". */}
-          <div class="border-brass/25 mt-2 border-b pb-3">
+          <div class="border-brass/20 mt-2 border-b pb-3">
             {DAY_KEYS.map((day) => (
               <div data-day={day} class="mt-1 first:mt-0">
                 <p data-day-label class="font-display text-sandal leading-tight">
@@ -101,7 +101,7 @@ const hasMultipleTemples = temples.length > 1;
               aria-current could attach to. The role is redundant in the abstract,
               which is what the lint rule checks, but not once the CSS lands. */}
           {/* eslint-disable-next-line astro/jsx-a11y/no-redundant-roles */}
-          <ul role="list" class="divide-brass/40 border-brass/40 mt-3 divide-y rounded-lg border">
+          <ul role="list" class="divide-brass/20 border-brass/80 mt-3 divide-y rounded-md border">
             {temple.arathis.map((arathi) => (
               <li
                 data-arathi

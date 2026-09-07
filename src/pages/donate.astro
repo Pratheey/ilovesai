@@ -33,7 +33,7 @@ const supportedProjects = projects.filter((project) => project.ctaHref === DONAT
           givingOptions.map((option) => (
             <li
               id={option.id}
-              class="border-brass/30 bg-sandal flex flex-col gap-4 rounded-lg border p-6 sm:p-8"
+              class="border-brass/80 bg-sandal flex flex-col gap-4 rounded-md border p-6 sm:p-8"
             >
               <div>
                 <h3 class="text-h3">{option.title}</h3>
@@ -46,7 +46,7 @@ const supportedProjects = projects.filter((project) => project.ctaHref === DONAT
                 href={option.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center self-start rounded-md px-6 py-3 font-semibold"
+                class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift inline-flex min-h-11 items-center justify-center self-start rounded-sm px-6 py-3 font-semibold"
               >
                 {option.ctaLabel}
                 <span class="sr-only"> (opens in a new tab)</span>
@@ -77,10 +77,8 @@ const supportedProjects = projects.filter((project) => project.ctaHref === DONAT
 
           <div class="mt-10 grid gap-6 sm:grid-cols-2">
             {supportedProjects.map((project) => (
-              <div class="border-brass/30 bg-cream flex flex-col rounded-lg border p-6 sm:p-8">
-                {project.location && (
-                  <p class="eyebrow">{getLocation(project.location)?.label}</p>
-                )}
+              <div class="border-brass/80 bg-cream flex flex-col rounded-md border p-6 sm:p-8">
+                {project.location && <p class="eyebrow">{getLocation(project.location)?.label}</p>}
                 <h3 class="text-h3 mt-1">{project.title}</h3>
                 <p class="text-body text-ink mt-2">{project.essence}</p>
                 {project.goodToKnow && project.goodToKnow.length > 0 && (

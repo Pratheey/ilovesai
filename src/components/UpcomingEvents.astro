@@ -22,7 +22,7 @@ const timeFormatter = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '
   events.length === 0 ? (
     <p class="text-body text-ink-soft">No upcoming events right now — check back soon.</p>
   ) : (
-    <ul class="border-brass/20 divide-brass/20 divide-y rounded-lg border">
+    <ul class="border-brass/80 divide-brass/20 divide-y rounded-md border">
       {events.map((event) => (
         <li>
           <a

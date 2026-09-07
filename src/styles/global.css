@@ -117,6 +117,30 @@
     color: var(--color-kumkum);
   }
 
+  /* Warm paper/sandalwood grain — kills the flat-digital feel at ~3% opacity.
+     Fixed and non-interactive so it never scrolls or intercepts clicks; inline
+     data: URI because the CSP only allows img-src 'self' data: (an external
+     noise image would be blocked). Tinted brass, not neutral grey, so it reads
+     as sandalwood texture rather than dirt on a warm ground. */
+  /* Paper grain. It has to sit ABOVE the section backgrounds, not behind them:
+     every band on this site paints an opaque bg-* colour, and a negative
+     z-index ::before paints under in-flow backgrounds, so the texture was
+     invisible on every page. As an overlay it behaves the way grain physically
+     does — in the surface, over the ink — and it will also help the mismatched
+     photographs sit together once real ones land. pointer-events: none keeps it
+     out of the way; the mobile menu <dialog> renders in the top layer and so
+     stays above it. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.663 0 0 0 0 0.502 0 0 0 0 0.235 0.33 0.33 0.34 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
   /* The eyebrow label — a real structural device, used sparingly */
   .eyebrow {
     font-size: var(--text-eyebrow);

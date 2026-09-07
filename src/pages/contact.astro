@@ -43,7 +43,7 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
         <div
           id="sent"
           data-status-hidden
-          class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-left"
+          class="form-status border-brass/80 bg-sandal-deep mt-8 rounded-md border p-6 text-left"
         >
           <p class="text-lead text-kumkum ml-0 font-semibold">
             Thank you, your message is on its way.
@@ -56,7 +56,7 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
         <div
           id="send-failed"
           data-status-hidden
-          class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-left"
+          class="form-status border-brass/80 bg-sandal-deep mt-8 rounded-md border p-6 text-left"
         >
           <p class="text-lead text-kumkum ml-0 font-semibold">That message didn't send.</p>
           <p class="text-body text-ink mt-2 ml-0">
@@ -86,7 +86,7 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
       <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
         {
           locations.map((location) => (
-            <div class="border-brass/30 bg-sandal rounded-lg border p-6 text-center">
+            <div class="border-brass/80 bg-sandal rounded-md border p-6 text-center">
               <h3 class="text-h3">{location.label}</h3>
               {location.contactName && !isPlaceholder(location.contactName) && (
                 <p class="text-body text-ink mt-2 break-words">{location.contactName}</p>

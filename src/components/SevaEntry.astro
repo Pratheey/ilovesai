@@ -40,7 +40,7 @@ const restImages = images?.slice(1, 4) ?? [];
 <div id={id} class="seva-entry">
   {
     leadImage && (
-      <div class="aspect-[3/2] w-full overflow-hidden rounded-sm">
+      <div class="aspect-[3/2] w-full overflow-hidden rounded-lg">
         {leadImage.image ? (
           <img
             src={typeof leadImage.image === 'string' ? leadImage.image : leadImage.image.src}
@@ -68,7 +68,7 @@ const restImages = images?.slice(1, 4) ?? [];
       // eslint-disable-next-line astro/jsx-a11y/no-redundant-roles
       <ul role="list" class="mt-3 grid grid-cols-3 gap-2">
         {restImages.map((item) => (
-          <li class="aspect-square overflow-hidden rounded-sm">
+          <li class="aspect-square overflow-hidden rounded-lg">
             {item.image ? (
               <img
                 src={typeof item.image === 'string' ? item.image : item.image.src}

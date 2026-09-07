@@ -23,6 +23,19 @@ const regionEvents = events
   .filter((event) => event.location === location.region && event.start >= now)
   .sort((a, b) => a.start.getTime() - b.start.getTime());
 const galleryImages = getGalleryImages(location.region);
+
+// Gallery/projects/events are all optional depending on the region's data, so a
+// fixed sandal/cream/sandal pattern would sometimes stack two of the same colour
+// (e.g. no gallery, so "Regional Contacts"-style cream runs straight into a cream
+// projects grid). Alternate only across the sections that actually render, then
+// pick the closing nav's background to differ from whatever rendered last.
+const bgCycle: ('sandal' | 'cream')[] = ['cream', 'sandal']; // index 0 = the contact section above, fixed
+let bgIndex = 0;
+const nextBg = () => bgCycle[(bgIndex = (bgIndex + 1) % 2)];
+const galleryBg = galleryImages.length > 0 ? nextBg() : undefined;
+const regionProjectsBg = regionProjects.length > 0 ? nextBg() : undefined;
+const regionEventsBg = regionEvents.length > 0 ? nextBg() : undefined;
+const navBg = bgCycle[(bgIndex + 1) % 2];
 ---
 
 <BaseLayout
@@ -90,7 +103,7 @@ const galleryImages = getGalleryImages(location.region);
 
   {
     galleryImages.length > 0 && (
-      <section aria-labelledby="gallery-heading" class="bg-sandal py-16 sm:py-24">
+      <section aria-labelledby="gallery-heading" class={`bg-${galleryBg} py-16 sm:py-24`}>
         <div class="px-gutter mx-auto max-w-3xl">
           <h2 id="gallery-heading" class="text-h2 text-center">
             Photos from {location.label}
@@ -108,7 +121,7 @@ const galleryImages = getGalleryImages(location.region);
 
   {
     regionProjects.length > 0 && (
-      <section aria-labelledby="projects-heading" class="bg-cream py-16 sm:py-24">
+      <section aria-labelledby="projects-heading" class={`bg-${regionProjectsBg} py-16 sm:py-24`}>
         <div class="px-gutter mx-auto max-w-6xl">
           <h2 id="projects-heading" class="text-h2 text-center">
             Projects in {location.label}
@@ -130,7 +143,7 @@ const galleryImages = getGalleryImages(location.region);
 
   {
     regionEvents.length > 0 && (
-      <section aria-labelledby="events-heading" class="bg-sandal py-16 sm:py-24">
+      <section aria-labelledby="events-heading" class={`bg-${regionEventsBg} py-16 sm:py-24`}>
         <div class="px-gutter mx-auto max-w-6xl">
           <h2 id="events-heading" class="text-h2 text-center">
             Upcoming Events in {location.label}
@@ -155,7 +168,7 @@ const galleryImages = getGalleryImages(location.region);
     )
   }
 
-  <nav aria-label="More locations" class="bg-cream px-gutter py-12 text-center">
+  <nav aria-label="More locations" class={`bg-${navBg} px-gutter py-12 text-center`}>
     <a href="/locations" class="text-body text-ember hover:text-kumkum font-semibold">
       Explore other locations &rarr;
     </a>

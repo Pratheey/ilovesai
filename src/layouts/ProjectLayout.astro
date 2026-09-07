@@ -48,6 +48,18 @@ const {
 } = Astro.props;
 
 const locationLabel = location ? getLocation(location)?.label : undefined;
+
+// Quote/steps/goodToKnow are all optional per project, so a fixed sandal/cream
+// pattern would sometimes stack two of the same colour (e.g. a project with a
+// quote but no steps would run sandal hero straight into a sandal quote band).
+// Alternate only across the sections that actually render. The CTA band and the
+// "more projects" nav are fixed (kumkum-deep, then cream) and always differ from
+// whatever precedes them, so they don't need to join the computation.
+let prevBg: 'sandal' | 'cream' = 'sandal'; // the hero above, fixed
+const nextBg = () => (prevBg = prevBg === 'sandal' ? 'cream' : 'sandal');
+const quoteBg = quote ? nextBg() : undefined;
+const stepsBg = steps && steps.length > 0 ? nextBg() : undefined;
+const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
 ---
 
 <BaseLayout title={`${title} — I LOVE SAI`} description={essence}>
@@ -78,7 +90,7 @@ const locationLabel = location ? getLocation(location)?.label : undefined;
 
   {
     quote && (
-      <section aria-label="Quote" class="bg-sandal px-gutter pb-16 sm:pb-24">
+      <section aria-label="Quote" class={`bg-${quoteBg} px-gutter pb-16 sm:pb-24`}>
         <PullQuote text={quote.text} attribution={quote.attribution} />
       </section>
     )
@@ -89,7 +101,7 @@ const locationLabel = location ? getLocation(location)?.label : undefined;
       <section
         id="how-it-works"
         aria-labelledby="how-it-works-heading"
-        class="bg-cream py-16 sm:py-24"
+        class={`bg-${stepsBg} py-16 sm:py-24`}
       >
         <div class="px-gutter mx-auto max-w-3xl">
           <h2 id="how-it-works-heading" class="text-h2 text-center">
@@ -118,7 +130,7 @@ const locationLabel = location ? getLocation(location)?.label : undefined;
 
   {
     goodToKnow && goodToKnow.length > 0 && (
-      <section aria-labelledby="good-to-know-heading" class="bg-sandal py-16 sm:py-24">
+      <section aria-labelledby="good-to-know-heading" class={`bg-${goodToKnowBg} py-16 sm:py-24`}>
         <div class="px-gutter mx-auto max-w-2xl">
           <h2 id="good-to-know-heading" class="text-h2 text-center">
             {goodToKnowHeading}
@@ -151,7 +163,7 @@ const locationLabel = location ? getLocation(location)?.label : undefined;
             href={ctaHref}
             target={ctaExternal ? '_blank' : undefined}
             rel={ctaExternal ? 'noopener' : undefined}
-            class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+            class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-sm px-6 py-3 font-semibold"
           >
             {ctaLabel}
             {ctaExternal && <span class="sr-only"> (opens in a new tab)</span>}

@@ -35,14 +35,14 @@ const groups = sevaByYear();
           <div class="flex flex-col gap-12">
             {groups.map((group) => (
               <div>
-                <h2 class="text-h2 border-brass/30 border-b pb-2">{group.year}</h2>
+                <h2 class="text-h2 border-brass/20 border-b pb-2">{group.year}</h2>
                 {/* Nothing in this grid is focusable, so list semantics are the only
                     structure a screen reader can move by — and Tailwind's
                     list-style reset drops them in Safari without the role. */}
                 {/* eslint-disable-next-line astro/jsx-a11y/no-redundant-roles */}
                 <ul
                   role="list"
-                  class="md:divide-brass/30 mt-8 grid grid-cols-1 gap-y-12 md:grid-cols-2 md:divide-x"
+                  class="md:divide-brass/20 mt-8 grid grid-cols-1 gap-y-12 md:grid-cols-2 md:divide-x"
                 >
                   {group.entries.map((entry) => (
                     <li class="md:px-8 md:first:pl-0 md:last:pr-0">

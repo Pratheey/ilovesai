@@ -26,7 +26,7 @@ const dateLabel = event
   event && (
     <section
       aria-labelledby="special-event-heading"
-      class="bg-sandal-deep border-brass/25 border-y py-12 sm:py-16"
+      class="bg-sandal-deep border-brass/20 border-y py-12 sm:py-16"
     >
       <div class="px-gutter mx-auto max-w-6xl">
         <div class="grid grid-cols-1 items-center gap-8 md:grid-cols-[5fr_7fr] md:gap-12">
@@ -56,7 +56,7 @@ const dateLabel = event
             {event.ctaHref && event.ctaLabel && (
               <a
                 href={event.ctaHref}
-                class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-6 inline-flex min-h-11 items-center justify-center rounded-md px-6 py-3 font-semibold"
+                class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-6 inline-flex min-h-11 items-center justify-center rounded-sm px-6 py-3 font-semibold"
               >
                 {event.ctaLabel}
               </a>

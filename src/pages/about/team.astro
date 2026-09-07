@@ -8,7 +8,7 @@ import { team } from '../../lib/team';
   title="Meet the Team — I LOVE SAI"
   description="The people who serve behind I LOVE SAI."
 >
-  <section class="bg-cream py-16 sm:py-24">
+  <section class="bg-sandal py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-6xl">
       <div class="mx-auto max-w-[var(--measure)] text-center">
         <h1 class="text-display">Meet the Team</h1>
@@ -23,7 +23,7 @@ import { team } from '../../lib/team';
           <ul class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
             {team.map((member) => (
               <li class="text-center">
-                <div class="border-brass/20 mx-auto aspect-square max-w-[12rem] overflow-hidden rounded-lg border">
+                <div class="border-brass/80 mx-auto aspect-square max-w-[12rem] overflow-hidden rounded-lg border">
                   {member.image ? (
                     <img
                       src={typeof member.image === 'string' ? member.image : member.image.src}
