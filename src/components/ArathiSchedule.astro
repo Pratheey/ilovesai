@@ -92,16 +92,17 @@ const hasMultipleTemples = temples.length > 1;
             </svg>
           </button>
 
+          {/* One row per arathi, name left and time right, rather than a grid of
+              stacked cells. Beside the carousel the schedule has height but not
+              width, and the stacked version wrapped every long name onto two
+              lines and ran half again as tall as the photographs next to it. */}
           {/* Tailwind's preflight sets list-style:none, which drops the list role
-              in Safari/VoiceOver — and with it the item count and anything
+              in Safari/VoiceOver, and with it the item count and anything
               aria-current could attach to. The role is redundant in the abstract,
               which is what the lint rule checks, but not once the CSS lands. */}
           {/* eslint-disable-next-line astro/jsx-a11y/no-redundant-roles */}
-          <ul
-            role="list"
-            class="bg-brass/50 mt-2 grid grid-cols-2 gap-px overflow-hidden rounded-lg"
-          >
-            {temple.arathis.map((arathi, arathiIndex) => (
+          <ul role="list" class="divide-brass/40 border-brass/40 mt-3 divide-y rounded-lg border">
+            {temple.arathis.map((arathi) => (
               <li
                 data-arathi
                 data-minutes={toMinutes(arathi.time)}
@@ -110,20 +111,15 @@ const hasMultipleTemples = temples.length > 1;
                   arathi.overrides?.thu ? toMinutes(arathi.overrides.thu) : undefined
                 }
                 data-time-thu={arathi.overrides?.thu}
-                class:list={[
-                  'bg-kumkum-deep flex flex-col gap-0.5 px-4 py-3',
-                  // An odd final cell would otherwise leave the brass backing
-                  // showing as a solid block — span it across both columns.
-                  temple.arathis.length % 2 === 1 &&
-                    arathiIndex === temple.arathis.length - 1 &&
-                    'col-span-2',
-                ]}
+                class="flex items-baseline justify-between gap-3 px-3 py-2"
               >
-                <span data-upnext hidden class="eyebrow text-marigold">
-                  Up next
+                <span class="font-display text-sandal leading-tight">
+                  {arathi.name}
+                  <span data-upnext hidden class="eyebrow text-marigold block">
+                    Up next
+                  </span>
                 </span>
-                <span class="font-display text-sandal leading-tight">{arathi.name}</span>
-                <span class="text-marigold text-body font-semibold tabular-nums">
+                <span class="text-marigold text-body shrink-0 font-semibold tabular-nums">
                   <time datetime={arathi.time}>{formatArathiTime(arathi.time)}</time>
                 </span>
               </li>

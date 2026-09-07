@@ -25,7 +25,7 @@ const { slides, ariaLabel = 'Featured moments' } = Astro.props;
       slides.map((slide, i) => (
         <li id={`slide-${i + 1}`} class="scroll-ml-gutter w-full shrink-0 snap-start snap-always">
           <figure>
-            <div class="shadow-lift aspect-video overflow-hidden rounded-lg">
+            <div class="shadow-lift aspect-[4/3] overflow-hidden rounded-lg">
               {slide.image ? (
                 <img
                   src={typeof slide.image === 'string' ? slide.image : slide.image.src}

@@ -18,28 +18,22 @@ interface Props {
 
 const { eyebrow, heading, lead, ctaLabel, ctaHref, slides } = Astro.props;
 
-// When an `aside` slot is provided (e.g. the arathi table), the heading block stays
-// centered exactly as it does without one; the aside floats into the right margin on
-// wide screens (xl+, where there's room beside the centered text) and stacks directly
-// under the heading on smaller screens and mobile. Without an aside, nothing changes.
+// When an `aside` slot is provided (e.g. the arathi schedule), it shares a row with
+// the carousel below the heading rather than sitting in the right margin beside it.
+// Two reasons. The heading gets the full width back, so it reads as the page's one
+// clear statement. And the aside gets a real column instead of a 272px slot: as a
+// narrow strip the schedule ran 665px tall, the entire height of the hero, which is
+// what made the hero feel like a long thin box with a title on top.
 //
-// At xl the two blocks are stacked in a single grid cell rather than the aside being
-// taken out of flow with `absolute`. Visually identical — heading centred across the
-// full width, aside pinned top-right — but the cell is now as tall as its tallest
-// child, so an aside taller than the heading (the arathi schedule is) grows the hero
-// instead of spilling out of it. Absolute positioning couldn't do that: the container
-// ignored the aside's height entirely, which pushed it under the sticky header when
-// centred and over the carousel below when top-aligned.
-//
-// The aside's `xl:mx-0` is load-bearing: `margin-inline: auto` centres a grid item
-// within its area and beats `justify-self`, so without it the aside lands on top of
-// the heading rather than in the right margin.
+// The row is 3 columns at lg: the carousel takes two and the aside one. Below lg they
+// stack, carousel first, because on a phone the photographs are the invitation and
+// the times are the follow-up.
 const hasAside = Astro.slots.has('aside');
 ---
 
 <section class="dhuni-glow bg-sandal py-16 sm:py-24">
-  <div class:list={['px-gutter mx-auto max-w-6xl', hasAside && 'xl:grid xl:items-start']}>
-    <div class:list={['text-center', hasAside && 'mx-auto max-w-md xl:col-start-1 xl:row-start-1']}>
+  <div class="px-gutter mx-auto max-w-6xl">
+    <div class="mx-auto max-w-3xl text-center">
       {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
       <h1 class="text-display">{heading}</h1>
       {lead && <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">{lead}</p>}
@@ -54,17 +48,22 @@ const hasAside = Astro.slots.has('aside');
         )
       }
     </div>
+  </div>
 
+  <div class="px-gutter mx-auto mt-12 max-w-6xl">
     {
-      hasAside && (
-        <div class="mx-auto mt-10 w-full max-w-sm xl:col-start-1 xl:row-start-1 xl:mx-0 xl:mt-0 xl:max-w-[17rem] xl:justify-self-end">
+      hasAside ? (
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
+          <div class="lg:col-span-2">
+            <Carousel slides={slides} ariaLabel="Featured moments" />
+          </div>
           <slot name="aside" />
+        </div>
+      ) : (
+        <div class="mx-auto max-w-5xl">
+          <Carousel slides={slides} ariaLabel="Featured moments" />
         </div>
       )
     }
-  </div>
-
-  <div class="px-gutter mx-auto mt-12 max-w-5xl">
-    <Carousel slides={slides} ariaLabel="Featured moments" />
   </div>
 </section>
