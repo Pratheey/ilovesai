@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ImageBand from '../components/ImageBand.astro';
 import { givingOptions, DONATE_PATH } from '../lib/donate';
 import { projects } from '../lib/projects';
 import { getLocation } from '../lib/locations';
@@ -14,15 +15,13 @@ const supportedProjects = projects.filter((project) => project.ctaHref === DONAT
   title="Donate — I LOVE SAI"
   description="Support the seva and charitable work of I LOVE SAI through a secure donation."
 >
-  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-3xl text-center">
-      <h1 class="text-display">Donate</h1>
-      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        [PLACEHOLDER: one or two calm sentences on how giving sustains the seva — the events, the
-        care, and the work in Shirdi.]
-      </p>
-    </div>
-  </section>
+  <ImageBand photoDescription="Hands at the dhuni, or an offering being made">
+    <h1 class="text-display text-cream">Donate</h1>
+    <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">
+      [PLACEHOLDER: one or two calm sentences on how giving sustains the seva — the events, the
+      care, and the work in Shirdi.]
+    </p>
+  </ImageBand>
 
   <section aria-labelledby="ways-heading" class="bg-cream py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-2xl">

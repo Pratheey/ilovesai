@@ -13,8 +13,20 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
+
+// The Sai Baba exception (styling-brief.md, imagery direction): his portrait
+// never carries overlaid text, so that page alone uses the 'frame' treatment.
+// Every other About page uses the default full-bleed 'band' treatment.
+const imageTreatment = entry.id === 'sai-baba' ? 'frame' : 'band';
 ---
 
-<ArticleLayout title={entry.data.title} essence={entry.data.essence} headings={headings}>
+<ArticleLayout
+  title={entry.data.title}
+  essence={entry.data.essence}
+  headings={headings}
+  imageTreatment={imageTreatment}
+  heroPhoto={entry.data.heroPhoto}
+  heroImageAlt={entry.data.heroPhotoAlt}
+>
   <Content components={{ h2: SectionHeading }} />
 </ArticleLayout>

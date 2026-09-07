@@ -1,5 +1,5 @@
 ---
-import PlaceholderImage from './PlaceholderImage.astro';
+import PhotoNeeded from './PhotoNeeded.astro';
 import { getLocation, type Region } from '../lib/locations';
 
 interface Props {
@@ -42,7 +42,7 @@ const locationLabel = location ? getLocation(location)?.label : undefined;
           class="h-full w-full object-cover"
         />
       ) : (
-        <PlaceholderImage label={imageAlt ?? title} />
+        <PhotoNeeded description={imageAlt ?? title} aspect="4:3" />
       )
     }
   </div>

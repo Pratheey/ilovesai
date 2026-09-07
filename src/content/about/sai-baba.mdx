@@ -1,11 +1,14 @@
 ---
 title: 'Sai Baba'
 essence: '[PLACEHOLDER: one-line summary of who Sai Baba is and his significance]'
+heroPhoto: "Baba's portrait, high resolution, respectful framing"
+heroPhotoAlt: 'Portrait of Shri Shirdi Sai Baba'
 ---
 
 import Quote from '../../components/Quote.astro';
 import Timeline from '../../components/Timeline.astro';
-import PlaceholderImage from '../../components/PlaceholderImage.astro';
+import SacredFrame from '../../components/SacredFrame.astro';
+import PhotoNeeded from '../../components/PhotoNeeded.astro';
 
 ## Life in Shirdi
 
@@ -31,8 +34,13 @@ import PlaceholderImage from '../../components/PlaceholderImage.astro';
   ]}
 />
 
-<div class="my-8 aspect-[16/9]">
-  <PlaceholderImage label="[PLACEHOLDER: respectful photo of Sai Baba or a related shrine]" />
+<div class="dhuni-glow my-8">
+  <SacredFrame aspect="16:9">
+    <PhotoNeeded
+      description="A respectful photo of Sai Baba, or the Dwarkamai shrine"
+      aspect="16:9"
+    />
+  </SacredFrame>
 </div>
 
 ## Teachings

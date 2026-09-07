@@ -29,6 +29,7 @@
   --color-sandal-deep: #e7d8bc; /* secondary surface / cards                 */
   --color-marigold: #e58a1a; /* garland saffron — PRIMARY accent          */
   --color-ember: #c2520e; /* dhuni-flame burnt amber — hover / active  */
+  --color-ember-text: #7e3509; /* darkened ember — AA-safe on sandal/cream, for PHOTO NEEDED labels */
   --color-kumkum: #6b1e25; /* deep maroon — headings, footer, depth     */
   --color-kumkum-deep: #4a141a; /* darkest maroon — footer base              */
   --color-brass: #a9803c; /* temple brass — fine dividers & detail     */
@@ -179,7 +180,14 @@
     border-radius: var(--radius-sm);
   }
 
-  /* Signature: the dhuni ember glow. Apply .dhuni-glow to a hero wrapper. */
+  /* Signature: the dhuni ember glow — the warm light Baba's perpetual fire
+     casts ON REAL OBJECTS around it. It is never the subject and never spans
+     a whole section: apply .dhuni-glow to the image wrapper it should light
+     (a SacredFrame, an ImageBand's photo layer, a plain image box), not to a
+     <section>. A negative inset blooms the light a little beyond the framed
+     object's own edges, like light spilling past a lamp rather than a flat
+     wash filling the page. See styling-brief.md, "HARD RULE: no gradient
+     standing in for content". */
   .dhuni-glow {
     position: relative;
     isolation: isolate;
@@ -187,15 +195,21 @@
   .dhuni-glow::before {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -14%;
     z-index: -1;
     background: radial-gradient(
-      60% 55% at 50% 18%,
-      rgba(229, 138, 26, 0.22),
-      rgba(194, 82, 14, 0.1) 45%,
-      transparent 72%
+      60% 60% at 50% 45%,
+      rgba(229, 138, 26, 0.38),
+      rgba(194, 82, 14, 0.18) 50%,
+      transparent 76%
     );
     pointer-events: none;
+    /* Hooks for the hero's load sequence and post-sequence "breathe" loop
+       (Hero.astro), which tween these custom properties directly. Defaults
+       reproduce today's static glow exactly, so every other .dhuni-glow use
+       (ImageBand, etc.) is unaffected — only the hero ever sets them. */
+    opacity: var(--glow-opacity, 1);
+    transform: scale(var(--glow-scale, 1));
   }
 
   /* Honour reduced motion everywhere */

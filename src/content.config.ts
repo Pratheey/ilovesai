@@ -7,6 +7,12 @@ const about = defineCollection({
   schema: z.object({
     title: z.string(),
     essence: z.string(),
+    // The hero photo for this page's ImageBand/SacredFrame treatment (see
+    // ArticleLayout.astro). Until a real photo lands, `heroPhoto` is the shot
+    // description PhotoNeeded shows in its place — so bringing the real photo
+    // in later is a frontmatter change, not a code change.
+    heroPhoto: z.string().optional(),
+    heroPhotoAlt: z.string().optional(),
   }),
 });
 

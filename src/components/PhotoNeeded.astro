@@ -1,0 +1,107 @@
+---
+// PhotoNeeded.astro — the interim placeholder while real photography is being
+// collected. Replaces PlaceholderImage.astro.
+//
+// styling-brief.md is explicit that a quiet placeholder "has a way of quietly
+// becoming permanent": it must NOT be a gradient, stock imagery, or an
+// abstract pattern — those all read as finished content. This one is loud on
+// purpose: diagonal ember hatching, a dashed ember border, a tracked
+// "PHOTO NEEDED" label, the real shot description beneath it (drawn from the
+// brief's shot list at each call site), and the required aspect ratio in a
+// corner so whoever sources the photo knows what shape to bring back.
+//
+// The hatching is permitted under the "no gradient standing in for content"
+// rule because it announces an absence rather than standing in for one — it
+// could never be mistaken for finished art.
+import { ASPECT_CLASS } from '../lib/aspect';
+
+interface Props {
+  /** The real shot description this photo needs to satisfy, e.g. "Baba's
+   * portrait, high resolution, respectful framing" — not a generic label. */
+  description: string;
+  /** "w:h", e.g. "16:9", "4:3", "3:4", "1:1". Shown in the corner as the
+   * required aspect ratio. When the element already gets its size from a
+   * parent (the common pattern here — a wrapping div with its own aspect
+   * class), this is informational only; pass it whenever the ratio is known
+   * so the corner label is accurate. */
+  aspect?: string;
+  /** Where the label sits inside the block. 'center' is right for a normal
+   * image slot. ImageBand overlays its own heading across the middle of this
+   * block, so it passes 'start' to move the label into the top-left corner,
+   * out from under that text — otherwise the two collide and neither reads. */
+  align?: 'center' | 'start';
+  /** Stage 1 set a radius hierarchy (images rounded-lg, cards rounded-md,
+   * controls rounded-sm). Defaults on for the normal "image" case; set false
+   * where the block must be flush, e.g. ImageBand's full-bleed layer. */
+  rounded?: boolean;
+  class?: string;
+}
+
+const {
+  description,
+  aspect,
+  align = 'center',
+  rounded = true,
+  class: className = '',
+} = Astro.props;
+
+// Many call sites pass an imageAlt that still carries this project's bracketed
+// placeholder wrapper, e.g. "[PLACEHOLDER: photo of the dhuni]". Rendering that
+// verbatim under a heading that already shouts PHOTO NEEDED reads as noise and
+// makes the block look broken rather than deliberate. Strip the wrapper for
+// display only: the underlying data keeps it, so isPlaceholder() in
+// lib/locations.ts still detects unfilled content.
+const shotDescription = description
+  .replace(/^\s*\[PLACEHOLDER:\s*/i, '')
+  .replace(/\]\s*$/, '')
+  .trim();
+
+// Astro's CSP hashes inline <style> tags but not inline style="" attributes,
+// so aspect-ratio must ship as a literal Tailwind class (see src/lib/aspect.ts).
+// An unrecognised ratio falls back to whatever sizing the parent provides,
+// rather than crashing.
+const aspectClass = aspect ? ASPECT_CLASS[aspect] : undefined;
+---
+
+<div
+  class:list={[
+    'photo-needed border-ember bg-sandal-deep relative flex h-full min-h-32 w-full flex-col gap-2 overflow-hidden border-2 border-dashed p-6',
+    align === 'center'
+      ? 'items-center justify-center text-center'
+      : 'items-start justify-start text-left',
+    { 'rounded-lg': rounded },
+    aspectClass,
+    className,
+  ]}
+>
+  <span class="photo-needed-hatch" aria-hidden="true"></span>
+  <p class="text-eyebrow text-ember-text relative m-0 font-semibold tracking-[0.2em] uppercase">
+    Photo Needed
+  </p>
+  <p class="text-small text-ink-soft relative mx-0 mt-0 max-w-[32ch]">{shotDescription}</p>
+  {
+    aspect && (
+      <span class="border-ember text-ember-text bg-cream/80 absolute right-2 bottom-2 rounded-sm border px-1.5 py-0.5 text-[0.6875rem] font-semibold tracking-wide">
+        {aspect}
+      </span>
+    )
+  }
+</div>
+
+<style>
+  /* Diagonal hatching in ember at low opacity — an absence made conspicuous,
+     not a gradient standing in for content. Low opacity keeps any overlaid
+     text (e.g. ImageBand's heading) legible against it. */
+  .photo-needed-hatch {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(194, 82, 14, 0.16),
+      rgba(194, 82, 14, 0.16) 8px,
+      transparent 8px,
+      transparent 18px
+    );
+    pointer-events: none;
+  }
+</style>

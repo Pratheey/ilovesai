@@ -1,6 +1,7 @@
 ---
 import Carousel from './Carousel.astro';
 import Diya from './Diya.astro';
+import SacredFrame from './SacredFrame.astro';
 
 interface Slide {
   image?: ImageMetadata | string;
@@ -32,7 +33,7 @@ const { eyebrow, heading, lead, ctaLabel, ctaHref, slides } = Astro.props;
 const hasAside = Astro.slots.has('aside');
 ---
 
-<section class="dhuni-glow bg-sandal py-16 sm:py-24">
+<section class="bg-sandal py-16 sm:py-24" data-hero>
   <div class="px-gutter mx-auto max-w-6xl">
     <div class="relative mx-auto max-w-3xl text-center">
       {
@@ -40,24 +41,29 @@ const hasAside = Astro.slots.has('aside');
           they never affect its centring — the heading stays the page's one
           optically-centred statement regardless of whether these render.
           Only lg: and up have the margin to hold them; below that they're
-          hidden outright rather than shrunk into the gutters. */
+          hidden outright rather than shrunk into the gutters. `hero-diya` is
+          a pure JS hook for the load sequence below — it carries no styling
+          of its own. */
       }
       <Diya
         size={56}
-        class="hidden lg:absolute lg:top-1/2 lg:left-0 lg:block lg:-translate-x-[calc(100%+2rem)] lg:-translate-y-1/2"
+        class="hero-diya hidden lg:absolute lg:top-1/2 lg:left-0 lg:block lg:-translate-x-[calc(100%+2rem)] lg:-translate-y-1/2"
       />
       <Diya
         size={56}
-        class="hidden lg:absolute lg:top-1/2 lg:right-0 lg:block lg:translate-x-[calc(100%+2rem)] lg:-translate-y-1/2"
+        class="hero-diya hidden lg:absolute lg:top-1/2 lg:right-0 lg:block lg:translate-x-[calc(100%+2rem)] lg:-translate-y-1/2"
       />
 
       {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
-      <h1 class="text-display">{heading}</h1>
+      <h1 class="text-display" data-hero-heading>
+        {heading}
+      </h1>
       {lead && <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">{lead}</p>}
       {
         ctaLabel && ctaHref && (
           <a
             href={ctaHref}
+            data-hero-cta
             class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-sm px-6 py-3 font-semibold"
           >
             {ctaLabel}
@@ -71,16 +77,125 @@ const hasAside = Astro.slots.has('aside');
     {
       hasAside ? (
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
-          <div class="lg:col-span-2">
-            <Carousel slides={slides} ariaLabel="Featured moments" />
+          <div class="dhuni-glow lg:col-span-2" data-hero-glow>
+            <SacredFrame class="hero-image">
+              <Carousel slides={slides} ariaLabel="Featured moments" />
+            </SacredFrame>
           </div>
           <slot name="aside" />
         </div>
       ) : (
-        <div class="mx-auto max-w-5xl">
-          <Carousel slides={slides} ariaLabel="Featured moments" />
+        <div class="dhuni-glow mx-auto max-w-5xl" data-hero-glow>
+          <SacredFrame class="hero-image">
+            <Carousel slides={slides} ariaLabel="Featured moments" />
+          </SacredFrame>
         </div>
       )
     }
   </div>
 </section>
+
+<script>
+  // The hero dhuni sequence — styling-brief.md, "The signature moment: the
+  // dhuni". Runs once on load, never on scroll. GSAP is dynamically imported
+  // so it becomes its own chunk and no other page pays for it; it is the
+  // bundled npm package (never a CDN — the CSP's script-src only allows
+  // 'self' and Turnstile).
+  //
+  // Fail-safe by construction: every element renders fully visible by
+  // default (no CSS hides anything ahead of time). The pre-animation
+  // "hidden" state is only ever set from JS, and only after `import('gsap')`
+  // has actually resolved. So if prefers-reduced-motion is set, or the
+  // import is blocked/fails for any reason, this script does nothing further
+  // and the hero simply stays exactly as it rendered — fully visible, no
+  // animation. There is no code path where a blocked script leaves a blank
+  // or half-hidden hero.
+  const heroSection = document.querySelector<HTMLElement>('[data-hero]');
+
+  if (heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    runHeroSequence(heroSection);
+  }
+
+  async function runHeroSequence(root: HTMLElement) {
+    let gsap: typeof import('gsap').gsap;
+    try {
+      ({ gsap } = await import('gsap'));
+    } catch {
+      // Blocked, offline, or otherwise failed — nothing was ever hidden, so
+      // there is nothing to recover. The hero is already the correct
+      // fallback state.
+      return;
+    }
+
+    // The image is the subject and arrives first; the ember glow blooms
+    // around it; the two diyas ignite, staggered; then the headline, then
+    // the CTA last. Every target is optional — the aside-less hero variant
+    // has no `[data-hero-glow]` further down, and diyas don't exist below
+    // `lg` — so each step is guarded independently.
+    const image = root.querySelector<HTMLElement>('.hero-image');
+    const glow = root.querySelector<HTMLElement>('[data-hero-glow]');
+    const diyas = root.querySelectorAll<HTMLElement>('.hero-diya');
+    const heading = root.querySelector<HTMLElement>('[data-hero-heading]');
+    const cta = root.querySelector<HTMLElement>('[data-hero-cta]');
+
+    // Only now — with gsap actually loaded and ready to immediately animate
+    // back out of this state — do we hide anything.
+    if (image) gsap.set(image, { opacity: 0, y: 14, scale: 0.96 });
+    if (glow) gsap.set(glow, { '--glow-opacity': 0, '--glow-scale': 0.85 });
+    if (diyas.length) gsap.set(diyas, { opacity: 0, scale: 0.7 });
+    if (heading) gsap.set(heading, { opacity: 0, y: 10 });
+    if (cta) gsap.set(cta, { opacity: 0, y: 10 });
+
+    const tl = gsap.timeline({
+      defaults: { ease: 'power2.out' },
+      onComplete: () => {
+        if (glow) breatheGlow(gsap, glow);
+      },
+    });
+
+    if (image) tl.to(image, { opacity: 1, y: 0, scale: 1, duration: 0.55 }, 0);
+    if (glow) {
+      tl.to(
+        glow,
+        { '--glow-opacity': 1, '--glow-scale': 1, duration: 0.6, ease: 'sine.out' },
+        0.35,
+      );
+    }
+    if (diyas.length) {
+      tl.to(
+        diyas,
+        { opacity: 1, scale: 1, duration: 0.45, stagger: 0.18, ease: 'back.out(1.4)' },
+        0.75,
+      );
+    }
+    if (heading) tl.to(heading, { opacity: 1, y: 0, duration: 0.35 }, 1.05);
+    if (cta) tl.to(cta, { opacity: 1, y: 0, duration: 0.3 }, 1.3);
+  }
+
+  // The ember has been burning a long time: patient and irregular, never a
+  // symmetric pulse or shimmer. Two independent loops — different property,
+  // different duration range, different ease — each re-randomised on every
+  // repeat via repeatRefresh, so the composite drift never visibly repeats.
+  // This is the same irregularity recipe Diya.astro uses for its flame
+  // flicker (superimposed loops at durations with no shared short-window
+  // multiple), applied here with gsap instead of CSS keyframes since gsap is
+  // already loaded at this point.
+  function breatheGlow(gsap: typeof import('gsap').gsap, glow: HTMLElement) {
+    gsap.to(glow, {
+      '--glow-opacity': () => gsap.utils.random(0.82, 0.95),
+      duration: () => gsap.utils.random(3.1, 3.9),
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      repeatRefresh: true,
+    });
+    gsap.to(glow, {
+      '--glow-scale': () => gsap.utils.random(0.97, 1.05),
+      duration: () => gsap.utils.random(3.4, 4.2),
+      ease: 'power1.inOut',
+      repeat: -1,
+      yoyo: true,
+      repeatRefresh: true,
+    });
+  }
+</script>

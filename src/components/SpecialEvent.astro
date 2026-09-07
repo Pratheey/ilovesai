@@ -1,5 +1,5 @@
 ---
-import PlaceholderImage from './PlaceholderImage.astro';
+import PhotoNeeded from './PhotoNeeded.astro';
 import { getActiveSpecialEvent } from '../lib/specialEvent';
 
 const event = getActiveSpecialEvent();
@@ -38,7 +38,7 @@ const dateLabel = event
                 class="h-full w-full object-cover"
               />
             ) : (
-              <PlaceholderImage label={event.imageAlt ?? event.title} />
+              <PhotoNeeded description={event.imageAlt ?? event.title} aspect="4:3" />
             )}
           </div>
 

@@ -1,6 +1,6 @@
 ---
 import Diya from './Diya.astro';
-import PlaceholderImage from './PlaceholderImage.astro';
+import PhotoNeeded from './PhotoNeeded.astro';
 import { getLocation, type Region } from '../lib/locations';
 import type { SevaImage } from '../lib/seva';
 
@@ -51,7 +51,7 @@ const restImages = images?.slice(1, 4) ?? [];
             class="h-full w-full object-cover"
           />
         ) : (
-          <PlaceholderImage label={leadImage.imageAlt} />
+          <PhotoNeeded description={leadImage.imageAlt} aspect="3:2" />
         )}
       </div>
     )
@@ -86,7 +86,7 @@ const restImages = images?.slice(1, 4) ?? [];
                 class="h-full w-full object-cover"
               />
             ) : (
-              <PlaceholderImage label={item.imageAlt} />
+              <PhotoNeeded description={item.imageAlt} aspect="1:1" />
             )}
           </li>
         ))}

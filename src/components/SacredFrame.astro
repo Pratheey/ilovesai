@@ -1,0 +1,49 @@
+---
+// SacredFrame.astro — the image treatment for Baba's portrait, shrine
+// photography, and project heroes (styling-brief.md, devotional component 3).
+//
+// A restrained brass-line frame with softly arched top corners, echoing a
+// temple niche/mandir arch — subtle: a 1px brass rule and the arch
+// silhouette, nothing ornate — plus a soft warm inner vignette. NOT for
+// casual event or volunteer photos; those stay in a plain rounded-lg box.
+//
+// Wraps whatever is slotted in — a real <img>, a Carousel, or a PhotoNeeded
+// block — so the arch treatment reads the same whether the photo has arrived
+// or not.
+interface Props {
+  /** "w:h", e.g. "3:4" for a portrait. Omit to size to the slotted content
+   * (e.g. a Carousel, which already carries its own aspect per slide). */
+  aspect?: string;
+  class?: string;
+}
+
+const { aspect, class: className = '' } = Astro.props;
+const aspectStyle = aspect ? `aspect-ratio: ${aspect.replace(':', ' / ')};` : undefined;
+---
+
+<div
+  class={`sacred-frame border-brass/80 relative overflow-hidden border ${className}`}
+  style={aspectStyle}
+>
+  <slot />
+  <div class="sacred-frame-vignette pointer-events-none absolute inset-0" aria-hidden="true"></div>
+</div>
+
+<style>
+  /* The arch: rounded top corners echo a mandir niche; the bottom keeps the
+     site's ordinary "image" radius (Stage 1's radius hierarchy) so the shape
+     reads as an arch, not a full pill. Percentages scale the arch with the
+     frame's own size instead of looking flat on a large hero and overdone on
+     a small one. */
+  .sacred-frame {
+    border-radius: clamp(1.25rem, 10%, 3.5rem) clamp(1.25rem, 10%, 3.5rem) var(--radius-lg)
+      var(--radius-lg);
+  }
+
+  /* A soft warm inner vignette — depth, not decoration standing in for the
+     photo itself. Kumkum at low opacity, heaviest right at the frame's own
+     edge. */
+  .sacred-frame-vignette {
+    box-shadow: inset 0 0 2.5rem rgba(107, 30, 37, 0.14);
+  }
+</style>

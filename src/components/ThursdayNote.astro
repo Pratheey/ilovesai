@@ -1,0 +1,32 @@
+---
+import Diya from './Diya.astro';
+
+// ThursdayNote.astro — the observance cue for Guruvar, Baba's day.
+//
+// Rendered server-side and hidden by default: the page is statically
+// prerendered, so a build-time day check would freeze whichever day the site
+// happened to deploy on. The owning ArathiSchedule panel reveals this via its
+// existing updatePanel() script, which already resolves "today" in the
+// temple's own timezone — so a Kolkata temple can show this on Thursday while
+// a New Jersey temple (still on Wednesday) does not. See styling-brief.md,
+// "Devotional components to build" #6.
+interface Props {
+  /** The temple's own Thursday closing time, already formatted (e.g. "9:30 PM"),
+   * so this note can never drift from the schedule rendered above it. */
+  closesAt: string;
+  class?: string;
+}
+
+const { closesAt, class: className = '' } = Astro.props;
+---
+
+{
+  /* `mx-0` counters global.css's `p { max-width: 68ch; margin-inline: auto }` —
+    without it this row would centre itself instead of sitting flush left. */
+}
+<p data-thursday-note hidden class:list={['mx-0 flex items-center gap-2', className]}>
+  <Diya lit size={18} />
+  <span class="text-sandal/85 text-small">
+    Guruvar — Baba's day. The temple stays open late, until {closesAt}.
+  </span>
+</p>

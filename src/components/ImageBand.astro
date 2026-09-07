@@ -1,0 +1,138 @@
+---
+// ImageBand.astro — a full-bleed photograph carrying a section, per
+// styling-brief.md's HARD RULE: "a coloured or gradient background with a
+// headline on top is not a hero." This is the approved replacement for every
+// band that used to be a colour wash with text on it: donate, the location
+// pages, and two of the three About pages. One component so all of them share
+// one vignette and one contrast treatment instead of five near-copies.
+//
+// `.dhuni-glow` sits INSIDE the photo layer — light within the frame, never
+// the section-wide wash it used to be.
+//
+// 'overlay' (default): the heading/lead slot sits over the photo. A warm
+// vignette (kumkum, radial + a bottom-anchored linear falloff — never a flat
+// black scrim) sits between the photo and the text so it clears contrast; the
+// text is bottom-anchored so it lands where the vignette is heaviest.
+// 'side': the photo and the slot content sit in separate columns — used
+// where the text must NOT be over the photo (the homepage donate band).
+import PhotoNeeded from './PhotoNeeded.astro';
+import { ASPECT_CLASS } from '../lib/aspect';
+
+interface Props {
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  /** The real shot description PhotoNeeded shows while `image` is missing. */
+  photoDescription: string;
+  /** "w:h". Defaults to 21:9 for 'overlay' (the brief's hero ratio) and 4:3
+   * for 'side' (the brief's project-card ratio). */
+  aspect?: string;
+  layout?: 'overlay' | 'side';
+  id?: string;
+  'aria-labelledby'?: string;
+  class?: string;
+}
+
+const {
+  image,
+  imageAlt = '',
+  photoDescription,
+  aspect,
+  layout = 'overlay',
+  id,
+  'aria-labelledby': ariaLabelledby,
+  class: className = '',
+} = Astro.props;
+
+const resolvedAspect = aspect ?? (layout === 'overlay' ? '21:9' : '4:3');
+// Astro's CSP hashes inline <style> tags but not inline style="" attributes,
+// so aspect-ratio must ship as a literal Tailwind class (see src/lib/aspect.ts).
+// An unrecognised ratio falls back to whatever sizing the parent provides.
+const imageAspectClass = ASPECT_CLASS[resolvedAspect];
+---
+
+{
+  layout === 'side' ? (
+    <section
+      id={id}
+      aria-labelledby={ariaLabelledby}
+      class={`px-gutter py-16 sm:py-24 ${className}`}
+    >
+      <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2">
+        <div class:list={['dhuni-glow w-full', imageAspectClass]}>
+          {/* The glow lives on this outer box; the rounding/clipping is one
+              level deeper so it never clips the glow's own outward bloom. */}
+          <div class="h-full w-full overflow-hidden rounded-lg">
+            {image ? (
+              <img
+                src={typeof image === 'string' ? image : image.src}
+                alt={imageAlt}
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <PhotoNeeded
+                align="start"
+                description={photoDescription}
+                aspect={resolvedAspect}
+                rounded={false}
+              />
+            )}
+          </div>
+        </div>
+        <div>
+          <slot />
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section
+      id={id}
+      aria-labelledby={ariaLabelledby}
+      class={`image-band relative isolate overflow-hidden ${className}`}
+    >
+      <div class="dhuni-glow absolute inset-0" aria-hidden="true">
+        {image ? (
+          <img
+            src={typeof image === 'string' ? image : image.src}
+            alt=""
+            class="h-full w-full object-cover"
+          />
+        ) : (
+          <PhotoNeeded
+            align="start"
+            description={photoDescription}
+            aspect={resolvedAspect}
+            rounded={false}
+          />
+        )}
+        <div class="image-band-vignette absolute inset-0" />
+      </div>
+      <div class="px-gutter relative flex min-h-[26rem] items-end justify-center py-14 sm:min-h-[30rem] sm:py-20">
+        <div class="max-w-3xl pb-4 text-center">
+          <slot />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* Warm vignette: a radial fall-off (heavier at the edges, per the brief)
+     combined with a bottom-anchored linear layer so the overlaid text —
+     anchored to the bottom of the band — sits in the darkest, most legible
+     part of it. Kumkum-toned throughout; never a flat black scrim. */
+  .image-band-vignette {
+    background:
+      linear-gradient(
+        to top,
+        rgba(74, 20, 26, 0.82) 0%,
+        rgba(74, 20, 26, 0.4) 38%,
+        transparent 72%
+      ),
+      radial-gradient(
+        85% 85% at 50% 40%,
+        rgba(74, 20, 26, 0.08) 0%,
+        rgba(74, 20, 26, 0.32) 60%,
+        rgba(74, 20, 26, 0.6) 100%
+      );
+  }
+</style>

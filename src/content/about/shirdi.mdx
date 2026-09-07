@@ -1,9 +1,12 @@
 ---
 title: 'Shirdi'
 essence: '[PLACEHOLDER: one-line summary of Shirdi as a place and why devotees visit]'
+heroPhoto: 'The dhuni and Dwarkamai — the perpetual fire, the interior'
+heroPhotoAlt: 'The dhuni burning inside Dwarkamai'
 ---
 
-import PlaceholderImage from '../../components/PlaceholderImage.astro';
+import SacredFrame from '../../components/SacredFrame.astro';
+import PhotoNeeded from '../../components/PhotoNeeded.astro';
 import Quote from '../../components/Quote.astro';
 
 ## Dwarkamai
@@ -15,8 +18,13 @@ import Quote from '../../components/Quote.astro';
   attribution="Shri Sai Satcharitra, Chapter 5, Verses 38 & 39"
 />
 
-<div class="my-8 aspect-[16/9]">
-  <PlaceholderImage label="[PLACEHOLDER: photo of Dwarkamai]" />
+<div class="dhuni-glow my-8">
+  <SacredFrame aspect="16:9">
+    <PhotoNeeded
+      description="The dhuni and Dwarkamai — the perpetual fire, the interior"
+      aspect="16:9"
+    />
+  </SacredFrame>
 </div>
 
 ## The Perpetual Dhuni
@@ -27,8 +35,10 @@ import Quote from '../../components/Quote.astro';
 
 [PLACEHOLDER: description of the Samadhi Mandir]
 
-<div class="my-8 aspect-[16/9]">
-  <PlaceholderImage label="[PLACEHOLDER: photo of the Samadhi Mandir]" />
+<div class="dhuni-glow my-8">
+  <SacredFrame aspect="16:9">
+    <PhotoNeeded description="Samadhi Mandir and the Shirdi streets around it" aspect="16:9" />
+  </SacredFrame>
 </div>
 
 ## Visiting Shirdi

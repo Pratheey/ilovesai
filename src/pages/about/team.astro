@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PlaceholderImage from '../../components/PlaceholderImage.astro';
+import PhotoNeeded from '../../components/PhotoNeeded.astro';
 import { team } from '../../lib/team';
 ---
 
@@ -31,7 +31,10 @@ import { team } from '../../lib/team';
                       class="h-full w-full object-cover"
                     />
                   ) : (
-                    <PlaceholderImage label={member.imageAlt ?? member.name} />
+                    <PhotoNeeded
+                      description={member.imageAlt ?? `Portrait of ${member.name}`}
+                      aspect="1:1"
+                    />
                   )}
                 </div>
                 <h2 class="text-h3 mt-4">{member.name}</h2>

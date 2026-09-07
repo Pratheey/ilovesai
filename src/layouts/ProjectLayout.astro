@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import PlaceholderImage from '../components/PlaceholderImage.astro';
+import PhotoNeeded from '../components/PhotoNeeded.astro';
+import SacredFrame from '../components/SacredFrame.astro';
 import Quote from '../components/Quote.astro';
 import { getLocation, type Region } from '../lib/locations';
 
@@ -63,7 +64,7 @@ const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
 ---
 
 <BaseLayout title={`${title} — I LOVE SAI`} description={essence}>
-  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+  <section class="bg-sandal py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-6xl">
       <div class="mx-auto max-w-[var(--measure)] text-center">
         {locationLabel && <p class="eyebrow mb-4">{locationLabel}</p>}
@@ -72,18 +73,20 @@ const goodToKnowBg = goodToKnow && goodToKnow.length > 0 ? nextBg() : undefined;
         {intro?.map((paragraph) => <p class="text-body text-ink mt-4">{paragraph}</p>)}
       </div>
 
-      <div class="mx-auto mt-10 aspect-[16/9] max-w-4xl">
-        {
-          image ? (
-            <img
-              src={typeof image === 'string' ? image : image.src}
-              alt={imageAlt ?? ''}
-              class="h-full w-full rounded-lg object-cover"
-            />
-          ) : (
-            <PlaceholderImage label={imageAlt ?? title} />
-          )
-        }
+      <div class="dhuni-glow mx-auto mt-10 max-w-4xl">
+        <SacredFrame aspect="16:9">
+          {
+            image ? (
+              <img
+                src={typeof image === 'string' ? image : image.src}
+                alt={imageAlt ?? ''}
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <PhotoNeeded description={imageAlt ?? `Photo for ${title}`} aspect="16:9" />
+            )
+          }
+        </SacredFrame>
       </div>
     </div>
   </section>

@@ -5,16 +5,18 @@ import ProjectCard from '../components/ProjectCard.astro';
 import CTACard from '../components/CTACard.astro';
 import ArathiSchedule from '../components/ArathiSchedule.astro';
 import SpecialEvent from '../components/SpecialEvent.astro';
-import PlaceholderImage from '../components/PlaceholderImage.astro';
+import PhotoNeeded from '../components/PhotoNeeded.astro';
+import ImageBand from '../components/ImageBand.astro';
 import PetalDivider from '../components/PetalDivider.astro';
 import { DONATE_PATH } from '../lib/donate';
 import { projects } from '../lib/projects';
 import { locations } from '../lib/locations';
 
+// Shot list order 1–3 from styling-brief.md — these unblock the most.
 const heroSlides = [
-  { alt: '[PLACEHOLDER: devotees gathered at a Sai Baba temple]' },
-  { alt: "[PLACEHOLDER: the dhuni — Baba's sacred fire]" },
-  { alt: '[PLACEHOLDER: marigold garlands at a Thursday aarti]' },
+  { alt: 'Devotees gathered at a Sai Baba temple' },
+  { alt: 'The dhuni and Dwarkamai — the perpetual fire, the interior' },
+  { alt: 'Marigold garlands at a Thursday aarti' },
 ];
 
 const participateOptions = [
@@ -85,7 +87,10 @@ const participateOptions = [
   <section id="vision" aria-labelledby="vision-heading" class="bg-sandal py-16 sm:py-24">
     <div class="px-gutter mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2">
       <div class="aspect-[4/3]">
-        <PlaceholderImage label="[PLACEHOLDER: photo conveying the movement's vision]" />
+        <PhotoNeeded
+          description="Devotees, garlands, and aarti — the warmth the vision is built on"
+          aspect="4:3"
+        />
       </div>
       <div>
         <h2 id="vision-heading" class="text-h2">Our Vision</h2>
@@ -143,18 +148,26 @@ const participateOptions = [
     </div>
   </section>
 
-  <section id="donate" aria-labelledby="donate-heading" class="bg-kumkum py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-2xl text-center">
-      <h2 id="donate-heading" class="text-h2 text-cream">
-        [PLACEHOLDER: e.g. "Support the Mission"]
-      </h2>
-      <p class="text-sandal mt-3">[PLACEHOLDER: one line on where funds go]</p>
-      <a
-        href={DONATE_PATH}
-        class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-sm px-6 py-3 font-semibold"
-      >
-        Donate Now
-      </a>
-    </div>
-  </section>
+  {
+    /* A photograph of the work the gift funds, beside the ask — not a flat
+      colour wash with a headline on it (styling-brief.md, HARD RULE). */
+  }
+  <ImageBand
+    id="donate"
+    aria-labelledby="donate-heading"
+    layout="side"
+    photoDescription="Aao Sai: Baba's photo installed in a family's home, clay lamps, prayers underway"
+    class="bg-kumkum"
+  >
+    <h2 id="donate-heading" class="text-h2 text-cream">
+      [PLACEHOLDER: e.g. "Support the Mission"]
+    </h2>
+    <p class="text-sandal mt-3">[PLACEHOLDER: one line on where funds go]</p>
+    <a
+      href={DONATE_PATH}
+      class="bg-marigold text-body text-ink shadow-soft hover:shadow-lift mt-8 inline-flex min-h-11 items-center justify-center rounded-sm px-6 py-3 font-semibold"
+    >
+      Donate Now
+    </a>
+  </ImageBand>
 </BaseLayout>

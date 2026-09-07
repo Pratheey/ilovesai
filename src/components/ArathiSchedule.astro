@@ -1,5 +1,6 @@
 ---
 import Diya from './Diya.astro';
+import ThursdayNote from './ThursdayNote.astro';
 import { temples, DAY_KEYS, dayLabel, formatArathiTime, toMinutes } from '../lib/arathi';
 
 const hasMultipleTemples = temples.length > 1;
@@ -93,6 +94,19 @@ const hasMultipleTemples = temples.length > 1;
             </svg>
           </button>
 
+          {/* Guruvar note: hidden server-side (the page is prerendered, so a
+              build-time day check would freeze whichever day the site deployed
+              on) and revealed per-panel by updatePanel() below, which already
+              resolves "today" in this temple's own timezone. The closing time
+              comes straight from this temple's own Thursday hours, so it can
+              never drift from the schedule below. */}
+          {temple.hours.thu.at(-1)?.close && (
+            <ThursdayNote
+              closesAt={formatArathiTime(temple.hours.thu.at(-1)!.close)}
+              class="mt-3"
+            />
+          )}
+
           {/* One row per arathi, name left and time right, rather than a grid of
               stacked cells. Beside the carousel the schedule has height but not
               width, and the stacked version wrapped every long name onto two
@@ -112,7 +126,7 @@ const hasMultipleTemples = temples.length > 1;
                   arathi.overrides?.thu ? toMinutes(arathi.overrides.thu) : undefined
                 }
                 data-time-thu={arathi.overrides?.thu}
-                class="flex items-baseline justify-between gap-3 px-3 py-2"
+                class="flex items-baseline justify-between gap-4 px-3 py-4 sm:py-5"
               >
                 <span class="font-display text-sandal leading-tight">
                   {arathi.name}
@@ -141,9 +155,34 @@ const hasMultipleTemples = temples.length > 1;
 
 <style>
   /* The next arathi still to come today. A marigold edge rather than a filled
-     cell: the grid stays calm and the accent reads as a marker, not a button. */
+     cell: the grid stays calm and the accent reads as a marker, not a button.
+     The ember wash reads as firelight falling across the row from that edge —
+     a soft gradient, not a solid fill, fading out by 70% of the row's width.
+     Worst case (right at the marigold edge, ember at 22% over kumkum-deep
+     #4a141a) the panel's own sandal/marigold text still holds ~9.8:1, well
+     clear of the row-dimming floor below, let alone AA. */
   [data-arathi][aria-current='time'] {
     box-shadow: inset 3px 0 0 var(--color-marigold);
+    background-image: linear-gradient(
+      to right,
+      rgb(194 82 14 / 0.22),
+      rgb(194 82 14 / 0.06) 45%,
+      transparent 70%
+    );
+  }
+
+  /* Aartis already finished today fade toward the panel's dark ground; the
+     current and upcoming rows stay full contrast. A flat `opacity` was tried
+     first and rejected: it would also wash out the marigold time text, and
+     marigold at 60% opacity on kumkum-deep (#4a141a) measures only ~2.95:1 —
+     well under AA. Recolouring both the name and time to the same dimmed
+     sandal instead keeps a single, legible "past" tone: rgb(243 234 216 /
+     0.6) — i.e. sandal at 60% — on kumkum-deep measures ~5.3:1, clearing the
+     4.5:1 floor with room to spare. `ink-soft` (#5a4d42) is deliberately not
+     used here — it's a *dark* token meant for text on light surfaces, and
+     would fail badly on this dark panel. */
+  [data-arathi][data-past] > span {
+    color: rgb(243 234 216 / 0.6);
   }
 
   /* The chevron is the disclosure's only state cue — `display: flex` on a
@@ -198,6 +237,12 @@ const hasMultipleTemples = temples.length > 1;
     });
     if (toggle) toggle.hidden = false;
 
+    // Guruvar note: shown only when this panel's own resolved day is Thursday.
+    // Reuses `day` from above rather than a second day calculation, so a
+    // Kolkata panel and a New Jersey panel in the same page can disagree.
+    const thursdayNote = panel.querySelector<HTMLElement>('[data-thursday-note]');
+    if (thursdayNote) thursdayNote.hidden = day !== 'thu';
+
     const items = Array.from(panel.querySelectorAll<HTMLElement>('[data-arathi]'));
     let next: HTMLElement | null = null;
 
@@ -226,6 +271,18 @@ const hasMultipleTemples = temples.length > 1;
           time.dateTime = overrideTime;
           time.textContent = formatArathiTime(overrideTime);
         }
+      }
+
+      // Past aartis dim toward the panel's dark ground (see the stylesheet).
+      // Re-derived from scratch every run, exactly like aria-current above, so
+      // it stays correct across the 60-second interval and every temple
+      // switch — never accumulated, always cleared first. Compared against
+      // the same `itemMinutes` used for "up next" above, so a Thursday Shej
+      // at 8:00 PM (its override) doesn't dim early off the base 7:30 time.
+      if (itemMinutes < minutes) {
+        item.setAttribute('data-past', '');
+      } else {
+        item.removeAttribute('data-past');
       }
 
       if (!next && itemMinutes > minutes) next = item;

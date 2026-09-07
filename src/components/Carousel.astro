@@ -1,5 +1,5 @@
 ---
-import PlaceholderImage from './PlaceholderImage.astro';
+import PhotoNeeded from './PhotoNeeded.astro';
 
 interface Slide {
   image?: ImageMetadata | string;
@@ -33,7 +33,7 @@ const { slides, ariaLabel = 'Featured moments' } = Astro.props;
                   class="h-full w-full object-cover"
                 />
               ) : (
-                <PlaceholderImage label={slide.alt} />
+                <PhotoNeeded description={slide.alt} aspect="4:3" />
               )}
             </div>
             {slide.caption && (
