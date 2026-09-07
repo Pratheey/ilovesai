@@ -1,8 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PhotoNeeded from '../../components/PhotoNeeded.astro';
+import SacredFrame from '../../components/SacredFrame.astro';
 import { getCollection } from 'astro:content';
 
+// No cards here at all. This page and /projects were the same uniform grid
+// under a different title; each now has its own structure. /projects is an
+// editorial feature plus an index of rows. This is three alternating
+// full-width bands — image left, then right, then left — so the page reads as
+// three subjects introduced in turn rather than three equivalent tiles.
+//
+// The photograph in each band is that article's own hero shot (heroPhoto in
+// the entry's frontmatter), so the hub and the page it leads to show the same
+// picture and the link is recognisable when you arrive.
 const order = ['movement', 'sai-baba', 'shirdi'];
 const entries = await getCollection('about');
 const sorted = order
@@ -14,31 +25,80 @@ const sorted = order
   title="About — I LOVE SAI"
   description="The mission, Sai Baba, and Shirdi — an introduction for newcomers."
 >
-  <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl">
-      <div class="mx-auto max-w-[var(--measure)] text-center">
-        <h1 class="text-display">About</h1>
-        <p class="text-lead text-ink-soft mt-4">[PLACEHOLDER: intro line for the About hub]</p>
-      </div>
+  <PageHeader
+    title="About"
+    lead="[PLACEHOLDER: intro line for the About hub]"
+    photoDescription="Samadhi Mandir at Shirdi, the shrine the whole movement gathers around — exterior, wide, early light"
+  />
 
-      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-        {
-          sorted.map((entry) => (
-            <ProjectCard
-              title={entry.data.title}
-              description={entry.data.essence}
-              href={`/about/${entry.id}`}
-              headingLevel="h2"
-            />
-          ))
-        }
-      </div>
+  {
+    sorted.map((entry, i) => {
+      // Alternating sides, and alternating grounds with them, so each band has
+      // an edge against the one before it.
+      const imageLeft = i % 2 === 0;
 
-      <p class="mt-12 text-center">
-        <a href="/about/team" class="text-body text-ember hover:text-kumkum font-semibold">
-          Meet the people behind I Love Sai &rarr;
-        </a>
-      </p>
+      // The Sai Baba exception, same rule ArticleLayout follows: his portrait
+      // is a portrait, and styling-brief.md gives it the SacredFrame arch and
+      // room around it rather than the plain landscape box the other two get.
+      // It also breaks the rhythm of the bands at the one point where the
+      // subject earns it.
+      const isBaba = entry.id === 'sai-baba';
+
+      return (
+        <section
+          aria-labelledby={`${entry.id}-heading`}
+          class={imageLeft ? 'bg-cream py-16 sm:py-24' : 'bg-sandal py-16 sm:py-24'}
+        >
+          <div class="px-gutter mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div
+              class:list={[
+                'dhuni-glow',
+                imageLeft ? 'lg:order-1' : 'lg:order-2',
+                // A 3:4 portrait across half of max-w-6xl would stand nearly
+                // 770px tall; capped, it stays a portrait rather than a wall.
+                isBaba && 'mx-auto w-full max-w-sm',
+              ]}
+            >
+              {isBaba ? (
+                <SacredFrame aspect="3:4">
+                  <PhotoNeeded
+                    description={entry.data.heroPhoto ?? entry.data.title}
+                    aspect="3:4"
+                    rounded={false}
+                  />
+                </SacredFrame>
+              ) : (
+                <PhotoNeeded description={entry.data.heroPhoto ?? entry.data.title} aspect="4:3" />
+              )}
+            </div>
+
+            <div class={imageLeft ? 'lg:order-2' : 'lg:order-1'}>
+              <h2 id={`${entry.id}-heading`} class="text-h1">
+                {entry.data.title}
+              </h2>
+              <p class="text-lead text-ink-soft mx-0 mt-4">{entry.data.essence}</p>
+              <a
+                href={`/about/${entry.id}`}
+                class="text-body text-kumkum hover:text-ember-text mt-6 inline-block font-semibold"
+              >
+                Read more &rarr;
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+
+  {
+    /* Closing strip on a third ground, so it reads as a footnote to the three
+      bands rather than a fourth one. */
+  }
+  <section class="bg-sandal-deep py-12">
+    <div class="px-gutter mx-auto max-w-6xl text-center">
+      <a href="/about/team" class="text-body text-kumkum hover:text-ember-text font-semibold">
+        Meet the people behind I Love Sai &rarr;
+      </a>
     </div>
   </section>
 </BaseLayout>

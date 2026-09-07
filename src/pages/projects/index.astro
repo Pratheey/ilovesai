@@ -1,40 +1,52 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProjectRow, { type ProjectRowVariant } from '../../components/ProjectRow.astro';
 import { projects } from '../../lib/projects';
+
+// Every project gets a whole row. The variation is in the image treatment, not
+// in size, so the page has rhythm without ranking the projects against each
+// other — see ProjectRow.astro for the four shapes.
+//
+// Cycled by position rather than stored on each project, so the data model
+// stays about the projects and a fifth project picks up a shape automatically.
+// Reordering lib/projects.ts reshuffles the treatments; that's the intended
+// control.
+const VARIANTS: ProjectRowVariant[] = ['feature', 'pair', 'overlay', 'portrait'];
+
+// Grounds alternate around the full-bleed row, which supplies its own.
+const GROUNDS = ['bg-cream', 'bg-sandal', 'bg-cream', 'bg-cream'];
 ---
 
 <BaseLayout
   title="Our Projects — I LOVE SAI"
   description="Ongoing projects and charitable activities from the I LOVE SAI community."
 >
-  <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl">
-      <div class="mx-auto max-w-[var(--measure)] text-center">
-        <h1 class="text-display">Our Projects</h1>
-        <p class="text-lead text-ink-soft mt-4">[PLACEHOLDER: intro line for the Projects index]</p>
-        <p class="text-body text-ink-soft mt-2">
-          For a record of what has actually been done, see <a
-            href="/seva"
-            class="text-ink underline underline-offset-2">Our Work</a
-          >.
-        </p>
-      </div>
+  <PageHeader
+    title="Our Projects"
+    lead="[PLACEHOLDER: intro line for the Projects index]"
+    photoDescription="Volunteers mid-work on a food distribution — hands, trays, a queue of people"
+  />
 
-      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          projects.map((project) => (
-            <ProjectCard
-              title={project.title}
-              description={project.cardDescription}
-              href={`/projects/${project.slug}`}
-              imageAlt={project.imageAlt}
-              location={project.location}
-              headingLevel="h2"
-            />
-          ))
-        }
-      </div>
+  {
+    projects.map((project, i) => (
+      <ProjectRow
+        project={project}
+        variant={VARIANTS[i % VARIANTS.length]}
+        background={GROUNDS[i % GROUNDS.length]}
+      />
+    ))
+  }
+
+  <section class="bg-sandal-deep py-12">
+    <div class="px-gutter mx-auto max-w-6xl text-center">
+      <p class="text-body text-ink">
+        For a record of what has actually been done, see <a
+          href="/seva"
+          class="text-kumkum hover:text-ember-text font-semibold underline underline-offset-2"
+          >Our Work</a
+        >.
+      </p>
     </div>
   </section>
 </BaseLayout>

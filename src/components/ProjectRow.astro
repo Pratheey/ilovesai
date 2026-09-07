@@ -1,0 +1,122 @@
+---
+// ProjectRow.astro — one project, given a whole row of the page.
+//
+// The projects index used to be a feature plus three thumbnail rows, which
+// still ranked the projects against each other: one mattered, three were
+// listed. Every project now gets a full row, and the variation comes from the
+// image treatment instead of from size — so the page has rhythm without
+// implying a hierarchy that isn't real.
+//
+// Four shapes, cycled by position in lib/projects.ts (see the index page):
+//
+//   feature   large 3:2 photograph left, text right on a 7/5 split
+//   pair      text left, TWO photographs right, staggered — for projects
+//             where one frame can't carry it (a building and its interior,
+//             a street before and during the work)
+//   overlay   full-bleed: the photograph is the section, text sits on it in
+//             ImageBand's warm vignette, nothing contained
+//   portrait  a narrow 3:4 photograph right, text given the wider 8 columns
+//
+// Sides alternate across the four, and no two adjacent rows share a shape.
+import PhotoNeeded from './PhotoNeeded.astro';
+import ImageBand from './ImageBand.astro';
+import { getLocation } from '../lib/locations';
+import type { Project } from '../lib/projects';
+
+export type ProjectRowVariant = 'feature' | 'pair' | 'overlay' | 'portrait';
+
+interface Props {
+  project: Project;
+  variant: ProjectRowVariant;
+  /** Section ground. Ignored by 'overlay', where the photograph IS the ground. */
+  background?: string;
+}
+
+const { project, variant, background = 'bg-cream' } = Astro.props;
+
+const href = `/projects/${project.slug}`;
+const locationLabel = project.location ? getLocation(project.location)?.label : undefined;
+const headingId = `${project.slug}-heading`;
+
+// `essence` is the one-line version of each project; `cardDescription` is a
+// paragraph and would drown a row.
+const summary = project.essence;
+
+// The 'pair' variant needs a second shot the data model doesn't carry, so it
+// asks for one in terms of the project itself. Deliberately open — whoever
+// sources it picks the frame that actually complements the first.
+const secondShot = `${project.title} — a second view: the work underway, or a detail of the place`;
+---
+
+{
+  variant === 'overlay' ? (
+    <ImageBand photoDescription={project.imageAlt ?? project.title}>
+      {locationLabel && <p class="eyebrow text-cream/80 mb-3">{locationLabel}</p>}
+      <h2 id={headingId} class="text-h1 text-cream">
+        {project.title}
+      </h2>
+      <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">{summary}</p>
+      {/* A real link, not a span: unlike the other three variants the band
+          isn't wrapped in one anchor, because ImageBand owns the section. */}
+      <a
+        href={href}
+        class="text-body hover:text-sandal-deep text-cream mt-6 inline-block font-semibold underline underline-offset-4"
+      >
+        Read more &rarr;
+      </a>
+    </ImageBand>
+  ) : (
+    <section aria-labelledby={headingId} class:list={[background, 'py-16 sm:py-24']}>
+      <div class="px-gutter mx-auto max-w-6xl">
+        <a href={href} class="group grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-14">
+          {variant === 'feature' && (
+            <div class="dhuni-glow lg:col-span-7">
+              <PhotoNeeded description={project.imageAlt ?? project.title} aspect="3:2" />
+            </div>
+          )}
+
+          {/* 'pair' stacks below sm: two frames side by side on a phone leave
+              each about 160px wide, too narrow to hold the shot description.
+              The stagger comes back with the two-column layout — set level,
+              two photographs read as a gallery widget; offset, they read as a
+              spread. */}
+          {variant === 'pair' && (
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:order-2 lg:col-span-7">
+              <div class="dhuni-glow">
+                <PhotoNeeded description={project.imageAlt ?? project.title} aspect="3:4" />
+              </div>
+              <div class="dhuni-glow sm:mt-14">
+                <PhotoNeeded description={secondShot} aspect="4:3" />
+              </div>
+            </div>
+          )}
+
+          {variant === 'portrait' && (
+            <div class="dhuni-glow mx-auto w-full max-w-xs lg:order-2 lg:col-span-4 lg:max-w-none">
+              <PhotoNeeded description={project.imageAlt ?? project.title} aspect="3:4" />
+            </div>
+          )}
+
+          <div
+            class:list={[
+              variant === 'feature' && 'lg:col-span-5',
+              variant === 'pair' && 'lg:order-1 lg:col-span-5',
+              variant === 'portrait' && 'lg:order-1 lg:col-span-8',
+            ]}
+          >
+            {locationLabel && <p class="eyebrow mb-3">{locationLabel}</p>}
+            <h2 id={headingId} class="text-h1 group-hover:text-ember-text">
+              {project.title}
+            </h2>
+            <p class="text-lead text-ink-soft mx-0 mt-4">{summary}</p>
+            {/* A span, not a link — the row is already one anchor, and nesting a
+                second would be invalid and give two tab stops for one destination. */}
+            <span class="text-body text-kumkum group-hover:text-ember-text mt-6 inline-block font-semibold">
+              Read more &rarr;
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+  )
+}
