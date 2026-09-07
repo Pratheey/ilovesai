@@ -14,14 +14,14 @@ const navLinks = [
 const quickLinks = [{ href: '/seva', label: 'Our Work' }];
 ---
 
-<header class="border-brass/20 bg-sandal sticky top-0 z-20 border-b">
+<header class="border-marigold/50 bg-sandal sticky top-0 z-20 border-b-2">
   <div class="px-gutter mx-auto flex max-w-6xl items-center justify-between gap-4 py-4">
     <Logo />
 
     <nav aria-label="Primary" class="hidden items-center gap-6 lg:flex">
       {
         navLinks.map((link) => (
-          <a href={link.href} class="text-body text-ink hover:text-ember">
+          <a href={link.href} class="text-body text-ink hover:text-ember-text">
             {link.label}
           </a>
         ))
@@ -31,7 +31,7 @@ const quickLinks = [{ href: '/seva', label: 'Our Work' }];
     <div class="hidden items-center gap-5 lg:flex">
       {
         quickLinks.map((link) => (
-          <a href={link.href} class="text-small text-ink-soft hover:text-ember">
+          <a href={link.href} class="text-small text-ink-soft hover:text-ember-text">
             {link.label}
           </a>
         ))
@@ -94,7 +94,7 @@ const quickLinks = [{ href: '/seva', label: 'Our Work' }];
         navLinks.map((link) => (
           <a
             href={link.href}
-            class="text-h3 text-ink hover:text-ember flex min-h-11 items-center rounded-sm px-2 py-3"
+            class="text-h3 text-ink hover:text-ember-text flex min-h-11 items-center rounded-sm px-2 py-3"
           >
             {link.label}
           </a>
@@ -105,7 +105,7 @@ const quickLinks = [{ href: '/seva', label: 'Our Work' }];
     <div class="px-gutter border-brass/20 mt-2 flex flex-col gap-3 border-t py-6">
       {
         quickLinks.map((link) => (
-          <a href={link.href} class="text-body text-ink-soft hover:text-ember">
+          <a href={link.href} class="text-body text-ink-soft hover:text-ember-text">
             {link.label}
           </a>
         ))

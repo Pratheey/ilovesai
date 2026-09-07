@@ -73,7 +73,12 @@ const hasAside = Astro.slots.has('aside');
     </div>
   </div>
 
-  <div class="px-gutter mx-auto mt-12 max-w-6xl">
+  {
+    /* Wider than the max-w-6xl the rest of the page uses: this is the one
+      photograph the whole site is built around, and it was sitting at just
+      over half the width of a laptop screen. */
+  }
+  <div class="px-gutter mx-auto mt-12 max-w-[92rem]">
     {
       hasAside ? (
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">

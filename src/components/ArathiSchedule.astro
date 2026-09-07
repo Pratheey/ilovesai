@@ -176,13 +176,18 @@ const hasMultipleTemples = temples.length > 1;
      first and rejected: it would also wash out the marigold time text, and
      marigold at 60% opacity on kumkum-deep (#4a141a) measures only ~2.95:1 —
      well under AA. Recolouring both the name and time to the same dimmed
-     sandal instead keeps a single, legible "past" tone: rgb(243 234 216 /
-     0.6) — i.e. sandal at 60% — on kumkum-deep measures ~5.3:1, clearing the
-     4.5:1 floor with room to spare. `ink-soft` (#5a4d42) is deliberately not
-     used here — it's a *dark* token meant for text on light surfaces, and
-     would fail badly on this dark panel. */
+     sandal instead keeps a single, legible "past" tone: sandal at 60% on
+     kumkum-deep measures ~4.9:1, clearing the 4.5:1 floor. `ink-soft`
+     (#5a4d42) is deliberately not used here — it's a *dark* token meant for
+     text on light surfaces, and would fail badly on this dark panel.
+
+     Via color-mix off the token, NOT a literal. This was `rgb(243 234 216 /
+     0.6)`, sandal's value copied in by hand, which silently stopped tracking
+     the palette the moment the grounds were deepened — it kept rendering the
+     old, lighter sandal. A hardcoded copy of a token is a token that only
+     looks maintained. */
   [data-arathi][data-past] > span {
-    color: rgb(243 234 216 / 0.6);
+    color: color-mix(in srgb, var(--color-sandal) 60%, transparent);
   }
 
   /* The chevron is the disclosure's only state cue — `display: flex` on a

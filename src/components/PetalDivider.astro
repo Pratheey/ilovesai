@@ -1,8 +1,12 @@
 ---
 // PetalDivider — replaces plain horizontal rules with a fine marigold-petal
-// garland line in brass, at low opacity. Marigold garlands are what actually
-// adorn Baba's shrine, so this draws a real petal shape (an almond/teardrop),
-// not a circle or diamond standing in for one.
+// garland line. Marigold garlands are what actually adorn Baba's shrine, so
+// this draws a real petal shape (an almond/teardrop), not a circle or diamond
+// standing in for one — and the petals are marigold, which is both the more
+// truthful colour and the one that actually carries across a room. They were
+// brass at 40%, which on the old near-white ground amounted to a grey smudge:
+// a divider nobody could see is an ornament nobody asked for. The rule behind
+// them stays brass, so the garland reads as petals strung on a wire.
 //
 // The petal is tiled via a native SVG <pattern> defined in absolute (pixel)
 // user units with no viewBox on the root <svg> — so the coordinate system is
@@ -34,7 +38,7 @@ const patternId = `petal-${Math.random().toString(36).slice(2, 9)}`;
       class={`mx-auto block h-4 w-4 ${className}`}
       viewBox="0 0 16 16"
     >
-      <path d={petalPath} class="fill-brass/50" />
+      <path d={petalPath} class="fill-marigold/80" />
     </svg>
   ) : (
     <svg
@@ -49,10 +53,10 @@ const patternId = `petal-${Math.random().toString(36).slice(2, 9)}`;
     >
       <defs>
         <pattern id={patternId} width="28" height="16" patternUnits="userSpaceOnUse">
-          <path d={petalPath} class="fill-brass/40" transform="translate(6 0) scale(0.75)" />
+          <path d={petalPath} class="fill-marigold/75" transform="translate(6 0) scale(0.75)" />
         </pattern>
       </defs>
-      <line x1="0" y1="8" x2="100%" y2="8" class="stroke-brass/25" stroke-width="1" />
+      <line x1="0" y1="8" x2="100%" y2="8" class="stroke-brass/50" stroke-width="1" />
       <rect x="0" y="0" width="100%" height="16" fill={`url(#${patternId})`} />
     </svg>
   )

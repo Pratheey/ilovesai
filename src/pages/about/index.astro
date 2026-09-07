@@ -7,9 +7,14 @@ import { getCollection } from 'astro:content';
 
 // No cards here at all. This page and /projects were the same uniform grid
 // under a different title; each now has its own structure. /projects is an
-// editorial feature plus an index of rows. This is three alternating
-// full-width bands — image left, then right, then left — so the page reads as
-// three subjects introduced in turn rather than three equivalent tiles.
+// editorial run of full-width rows. This is three alternating bands — image
+// left, then right, then left — so the page reads as three subjects introduced
+// in turn rather than three equivalent tiles.
+//
+// The photographs run to the edge of the viewport rather than sitting in a
+// contained box: each band is a two-column grid at full width, so the image
+// column simply IS its half of the screen, top to bottom, with no gutter and
+// no rounding. No negative margins involved — the grid does it.
 //
 // The photograph in each band is that article's own hero shot (heroPhoto in
 // the entry's frontmatter), so the hub and the page it leads to show the same
@@ -39,24 +44,33 @@ const sorted = order
 
       // The Sai Baba exception, same rule ArticleLayout follows: his portrait
       // is a portrait, and styling-brief.md gives it the SacredFrame arch and
-      // room around it rather than the plain landscape box the other two get.
-      // It also breaks the rhythm of the bands at the one point where the
-      // subject earns it.
+      // room around it rather than running it off the edge of the screen. It
+      // also breaks the rhythm at the one point where the subject earns it —
+      // two bands bleed, the one in the middle is framed and set back.
       const isBaba = entry.id === 'sai-baba';
 
       return (
         <section
           aria-labelledby={`${entry.id}-heading`}
-          class={imageLeft ? 'bg-cream py-16 sm:py-24' : 'bg-sandal py-16 sm:py-24'}
+          class:list={[
+            imageLeft ? 'bg-cream' : 'bg-sandal',
+            // The dhuni-glow blooms 18% past its box in every direction.
+            // Unclipped that means a horizontal scrollbar at the viewport edge
+            // AND light leaking up and down into the neighbouring bands, which
+            // muddies the edge between them. Clipping the section keeps the
+            // spill where it belongs — inward, across the photograph's own
+            // band. `clip` rather than `hidden` so it never becomes a scroll
+            // container.
+            'overflow-clip',
+            isBaba && 'py-16 sm:py-24',
+          ]}
         >
-          <div class="px-gutter mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div class="grid grid-cols-1 items-center lg:grid-cols-2">
             <div
               class:list={[
                 'dhuni-glow',
                 imageLeft ? 'lg:order-1' : 'lg:order-2',
-                // A 3:4 portrait across half of max-w-6xl would stand nearly
-                // 770px tall; capped, it stays a portrait rather than a wall.
-                isBaba && 'mx-auto w-full max-w-sm',
+                isBaba && 'px-gutter mx-auto w-full max-w-sm',
               ]}
             >
               {isBaba ? (
@@ -68,21 +82,32 @@ const sorted = order
                   />
                 </SacredFrame>
               ) : (
-                <PhotoNeeded description={entry.data.heroPhoto ?? entry.data.title} aspect="4:3" />
+                <PhotoNeeded
+                  description={entry.data.heroPhoto ?? entry.data.title}
+                  aspect="4:3"
+                  rounded={false}
+                />
               )}
             </div>
 
-            <div class={imageLeft ? 'lg:order-2' : 'lg:order-1'}>
-              <h2 id={`${entry.id}-heading`} class="text-h1">
-                {entry.data.title}
-              </h2>
-              <p class="text-lead text-ink-soft mx-0 mt-4">{entry.data.essence}</p>
-              <a
-                href={`/about/${entry.id}`}
-                class="text-body text-kumkum hover:text-ember-text mt-6 inline-block font-semibold"
-              >
-                Read more &rarr;
-              </a>
+            <div
+              class:list={[
+                'px-gutter py-14 lg:px-12 lg:py-20 xl:px-20',
+                imageLeft ? 'lg:order-2' : 'lg:order-1',
+              ]}
+            >
+              <div class="max-w-xl">
+                <h2 id={`${entry.id}-heading`} class="text-h1">
+                  {entry.data.title}
+                </h2>
+                <p class="text-lead text-ink-soft mx-0 mt-4">{entry.data.essence}</p>
+                <a
+                  href={`/about/${entry.id}`}
+                  class="text-body text-kumkum hover:text-ember-text mt-6 inline-block font-semibold"
+                >
+                  Read more &rarr;
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -91,12 +116,19 @@ const sorted = order
   }
 
   {
-    /* Closing strip on a third ground, so it reads as a footnote to the three
-      bands rather than a fourth one. */
+    /* Closing strip on the deepest warm ground, so it reads as a footnote to
+      the three bands rather than a fourth one. */
   }
-  <section class="bg-sandal-deep py-12">
+  <section class="bg-ember-deep py-12">
     <div class="px-gutter mx-auto max-w-6xl text-center">
-      <a href="/about/team" class="text-body text-kumkum hover:text-ember-text font-semibold">
+      {
+        /* sandal-deep on hover, not marigold: marigold on ember-deep is 2.9:1
+          and fails AA even though the underline keeps the affordance. */
+      }
+      <a
+        href="/about/team"
+        class="text-body hover:text-sandal-deep text-cream font-semibold underline underline-offset-4"
+      >
         Meet the people behind I Love Sai &rarr;
       </a>
     </div>

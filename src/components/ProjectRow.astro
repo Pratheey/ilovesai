@@ -9,13 +9,19 @@
 //
 // Four shapes, cycled by position in lib/projects.ts (see the index page):
 //
-//   feature   large 3:2 photograph left, text right on a 7/5 split
-//   pair      text left, TWO photographs right, staggered — for projects
-//             where one frame can't carry it (a building and its interior,
-//             a street before and during the work)
-//   overlay   full-bleed: the photograph is the section, text sits on it in
-//             ImageBand's warm vignette, nothing contained
-//   portrait  a narrow 3:4 photograph right, text given the wider 8 columns
+//   feature   a 3:2 photograph running off the LEFT edge of the screen on a
+//             7/5 split, text set in from the right
+//   pair      text left, TWO photographs right, staggered and contained — for
+//             projects one frame can't carry (a building and its interior, a
+//             street before and during the work). The one shape that does not
+//             bleed, so the run has somewhere to breathe.
+//   overlay   full-bleed both ways: the photograph is the section, text sits
+//             on it in ImageBand's warm vignette
+//   portrait  a narrow 3:4 photograph off the RIGHT edge, text given 8fr
+//
+// Three of the four run to the viewport edge. The columns do that on their
+// own — each is a full-width grid whose image cell simply IS its share of the
+// screen — so there are no negative margins anywhere.
 //
 // Sides alternate across the four, and no two adjacent rows share a shape.
 import PhotoNeeded from './PhotoNeeded.astro';
@@ -66,12 +72,35 @@ const secondShot = `${project.title} — a second view: the work underway, or a 
       </a>
     </ImageBand>
   ) : (
-    <section aria-labelledby={headingId} class:list={[background, 'py-16 sm:py-24']}>
-      <div class="px-gutter mx-auto max-w-6xl">
-        <a href={href} class="group grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-14">
+    <section
+      aria-labelledby={headingId}
+      class:list={[
+        background,
+        // The dhuni-glow blooms 18% past its box in every direction.
+        // Unclipped that means a horizontal scrollbar at the viewport edge AND
+        // light leaking into the bands above and below. `clip`, not `hidden`,
+        // so it never becomes a scroll container.
+        'overflow-clip',
+        variant === 'pair' && 'py-16 sm:py-24',
+      ]}
+    >
+      <div class:list={[variant === 'pair' && 'px-gutter mx-auto max-w-6xl']}>
+        <a
+          href={href}
+          class:list={[
+            'group grid grid-cols-1 items-center',
+            variant === 'pair' && 'gap-8 lg:grid-cols-12 lg:gap-14',
+            variant === 'feature' && 'lg:grid-cols-[7fr_5fr]',
+            variant === 'portrait' && 'lg:grid-cols-[8fr_4fr]',
+          ]}
+        >
           {variant === 'feature' && (
-            <div class="dhuni-glow lg:col-span-7">
-              <PhotoNeeded description={project.imageAlt ?? project.title} aspect="3:2" />
+            <div class="dhuni-glow lg:order-1">
+              <PhotoNeeded
+                description={project.imageAlt ?? project.title}
+                aspect="3:2"
+                rounded={false}
+              />
             </div>
           )}
 
@@ -92,28 +121,37 @@ const secondShot = `${project.title} — a second view: the work underway, or a 
           )}
 
           {variant === 'portrait' && (
-            <div class="dhuni-glow mx-auto w-full max-w-xs lg:order-2 lg:col-span-4 lg:max-w-none">
-              <PhotoNeeded description={project.imageAlt ?? project.title} aspect="3:4" />
+            <div class="dhuni-glow lg:order-2">
+              <PhotoNeeded
+                description={project.imageAlt ?? project.title}
+                aspect="3:4"
+                rounded={false}
+              />
             </div>
           )}
 
+          {/* The bleeding variants carry their own padding, since the section
+              no longer has any — the photograph runs the full height of the
+              band and the text is inset against it. */}
           <div
             class:list={[
-              variant === 'feature' && 'lg:col-span-5',
               variant === 'pair' && 'lg:order-1 lg:col-span-5',
-              variant === 'portrait' && 'lg:order-1 lg:col-span-8',
+              variant === 'feature' && 'px-gutter py-14 lg:order-2 lg:px-12 lg:py-20 xl:px-20',
+              variant === 'portrait' && 'px-gutter py-14 lg:order-1 lg:px-12 lg:py-20 xl:px-20',
             ]}
           >
-            {locationLabel && <p class="eyebrow mb-3">{locationLabel}</p>}
-            <h2 id={headingId} class="text-h1 group-hover:text-ember-text">
-              {project.title}
-            </h2>
-            <p class="text-lead text-ink-soft mx-0 mt-4">{summary}</p>
-            {/* A span, not a link — the row is already one anchor, and nesting a
+            <div class:list={[variant !== 'pair' && 'max-w-xl']}>
+              {locationLabel && <p class="eyebrow mb-3">{locationLabel}</p>}
+              <h2 id={headingId} class="text-h1 group-hover:text-ember-text">
+                {project.title}
+              </h2>
+              <p class="text-lead text-ink-soft mx-0 mt-4">{summary}</p>
+              {/* A span, not a link — the row is already one anchor, and nesting a
                 second would be invalid and give two tab stops for one destination. */}
-            <span class="text-body text-kumkum group-hover:text-ember-text mt-6 inline-block font-semibold">
-              Read more &rarr;
-            </span>
+              <span class="text-body text-kumkum group-hover:text-ember-text mt-6 inline-block font-semibold">
+                Read more &rarr;
+              </span>
+            </div>
           </div>
         </a>
       </div>

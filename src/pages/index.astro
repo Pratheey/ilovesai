@@ -5,7 +5,6 @@ import ProjectCard from '../components/ProjectCard.astro';
 import CTACard from '../components/CTACard.astro';
 import ArathiSchedule from '../components/ArathiSchedule.astro';
 import SpecialEvent from '../components/SpecialEvent.astro';
-import PhotoNeeded from '../components/PhotoNeeded.astro';
 import ImageBand from '../components/ImageBand.astro';
 import PetalDivider from '../components/PetalDivider.astro';
 import { DONATE_PATH } from '../lib/donate';
@@ -84,20 +83,22 @@ const participateOptions = [
     </div>
   </section>
 
-  <section id="vision" aria-labelledby="vision-heading" class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2">
-      <div class="aspect-[4/3]">
-        <PhotoNeeded
-          description="Devotees, garlands, and aarti — the warmth the vision is built on"
-          aspect="4:3"
-        />
-      </div>
-      <div>
-        <h2 id="vision-heading" class="text-h2">Our Vision</h2>
-        <p class="text-lead text-ink-soft mt-3">[PLACEHOLDER: one line vision statement]</p>
-      </div>
-    </div>
-  </section>
+  {
+    /* The vision was a contained 4:3 beside a paragraph on a colour ground.
+      It is the one statement on the page about why any of this exists, so it
+      gets the full width of the screen and the words sit on the photograph
+      rather than next to it. */
+  }
+  <ImageBand
+    id="vision"
+    aria-labelledby="vision-heading"
+    photoDescription="Devotees, garlands, and aarti — the warmth the vision is built on"
+  >
+    <h2 id="vision-heading" class="text-h1 text-cream">Our Vision</h2>
+    <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">
+      [PLACEHOLDER: one line vision statement]
+    </p>
+  </ImageBand>
 
   <div class="bg-cream pb-16 text-center sm:pb-24">
     <PetalDivider variant="short" />
@@ -137,7 +138,7 @@ const participateOptions = [
               {i > 0 && ' · '}
               <a
                 href={`/locations/${location.region.toLowerCase()}`}
-                class="text-ink hover:text-ember"
+                class="text-ink hover:text-ember-text"
               >
                 {location.label}
               </a>
@@ -157,7 +158,7 @@ const participateOptions = [
     aria-labelledby="donate-heading"
     layout="side"
     photoDescription="Aao Sai: Baba's photo installed in a family's home, clay lamps, prayers underway"
-    class="bg-kumkum"
+    class="bg-ember-deep"
   >
     <h2 id="donate-heading" class="text-h2 text-cream">
       [PLACEHOLDER: e.g. "Support the Mission"]

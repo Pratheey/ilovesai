@@ -25,18 +25,26 @@
 
 @theme {
   /* ---- Colour: the materials of Shirdi worship ------------------------- */
-  --color-sandal: #f3ead8; /* sandalwood-paste base / page background   */
-  --color-sandal-deep: #e7d8bc; /* secondary surface / cards                 */
+  /* The grounds are pitched at dusk, not daylight. They were near-white
+     (#fbf6ec / #f3ead8), which read as a white page with a warm tint rather
+     than as sandalwood paste seen by lamplight; every one has been taken down
+     in lightness and up in saturation so the page has a colour of its own
+     before a single photograph lands on it. Contrast ratios against `ink`
+     stay enormous — 13.4:1 on cream, 11.7:1 on sandal, 9.8:1 on sandal-deep —
+     so this costs nothing at the accessibility floor. */
+  --color-sandal: #efdec2; /* sandalwood-paste base / page background   */
+  --color-sandal-deep: #e2cba3; /* secondary surface / cards                 */
   --color-marigold: #e58a1a; /* garland saffron — PRIMARY accent          */
   --color-ember: #c2520e; /* dhuni-flame burnt amber — hover / active  */
+  --color-ember-deep: #8f3a08; /* banked dhuni coal — warm DARK ground; cream on it is 6.6:1 */
   --color-ember-text: #7e3509; /* darkened ember — AA-safe on sandal/cream, for PHOTO NEEDED labels */
   --color-kumkum: #6b1e25; /* deep maroon — headings, footer, depth     */
   --color-kumkum-deep: #4a141a; /* darkest maroon — footer base              */
   --color-brass: #a9803c; /* temple brass — fine dividers & detail     */
-  --color-brass-text: #6e5327; /* darkened brass — AA-safe on sandal/cream  */
+  --color-brass-text: #614721; /* darkened brass — 5.5:1 even on sandal-deep */
   --color-ink: #2a211b; /* warm near-black — body text (NOT #000)    */
   --color-ink-soft: #5a4d42; /* secondary text / captions                 */
-  --color-cream: #fbf6ec; /* lightest surface / panels on sandal       */
+  --color-cream: #f8eeda; /* lightest surface / panels on sandal       */
 
   /* ---- Type ------------------------------------------------------------ */
   --font-display: 'Marcellus', Georgia, serif; /* inscriptional, calm */
@@ -109,8 +117,12 @@
     margin-inline: auto;
   }
 
+  /* ember-text, not ember: raw ember as a resting link colour is ~4.3:1 on
+     cream and ~3:1 on sandal-deep, i.e. under AA, and deepening the grounds
+     widened the gap. ember-text is the AA-safe darkening of the same hue, so
+     links stay the colour of the fire and still pass. */
   a {
-    color: var(--color-ember);
+    color: var(--color-ember-text);
     text-underline-offset: 0.18em;
     text-decoration-thickness: 1px;
   }
@@ -137,17 +149,21 @@
     inset: 0;
     z-index: 100;
     pointer-events: none;
-    opacity: 0.03;
+    opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.663 0 0 0 0 0.502 0 0 0 0 0.235 0.33 0.33 0.34 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
     background-repeat: repeat;
   }
 
-  /* The eyebrow label — a real structural device, used sparingly */
+  /* The eyebrow label — a real structural device, used sparingly.
+     Ember rather than brass: the eyebrow is the small warm mark that recurs
+     on nearly every section, so it is the cheapest place to get the dhuni's
+     colour onto a page repeatedly without adding an ornament. ember-text is
+     the AA-safe darkening of ember — 6.7:1 on sandal, 5.6:1 on sandal-deep. */
   .eyebrow {
     font-size: var(--text-eyebrow);
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: var(--color-brass-text);
+    color: var(--color-ember-text);
     font-weight: 600;
   }
 
@@ -195,13 +211,13 @@
   .dhuni-glow::before {
     content: '';
     position: absolute;
-    inset: -14%;
+    inset: -18%;
     z-index: -1;
     background: radial-gradient(
-      60% 60% at 50% 45%,
-      rgba(229, 138, 26, 0.38),
-      rgba(194, 82, 14, 0.18) 50%,
-      transparent 76%
+      62% 62% at 50% 45%,
+      rgba(229, 138, 26, 0.62),
+      rgba(194, 82, 14, 0.34) 48%,
+      transparent 80%
     );
     pointer-events: none;
     /* Hooks for the hero's load sequence and post-sequence "breathe" loop

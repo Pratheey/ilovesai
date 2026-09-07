@@ -20,7 +20,7 @@ const { title, description, href, label, image, imageAlt, external } = Astro.pro
   href={href}
   target={external ? '_blank' : undefined}
   rel={external ? 'noopener' : undefined}
-  class="border-brass/80 bg-cream hover:shadow-lift flex flex-col overflow-hidden rounded-md border transition-shadow"
+  class="border-brass/50 bg-cream hover:shadow-lift hover:border-marigold border-t-marigold flex flex-col overflow-hidden rounded-md border border-t-4 transition-shadow"
 >
   <div class="aspect-[4/3]">
     {
@@ -38,7 +38,7 @@ const { title, description, href, label, image, imageAlt, external } = Astro.pro
   <div class="flex flex-1 flex-col p-5">
     <h3 class="text-h3">{title}</h3>
     <p class="text-body text-ink mt-1 flex-1">{description}</p>
-    <span class="text-small text-kumkum mt-4 font-semibold">
+    <span class="text-small text-ember-text mt-4 font-semibold">
       {label} &rarr;
       {external && <span class="sr-only"> (opens in a new tab)</span>}
     </span>

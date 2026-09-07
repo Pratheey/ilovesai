@@ -107,7 +107,7 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
                   ) : (
                     <a
                       href={`mailto:${location.email}`}
-                      class="text-body text-kumkum hover:text-ember"
+                      class="text-body text-kumkum hover:text-ember-text"
                     >
                       {location.email}
                     </a>
@@ -121,7 +121,7 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
                   ) : (
                     <a
                       href={telHref(location.phone)}
-                      class="text-body text-kumkum hover:text-ember"
+                      class="text-body text-kumkum hover:text-ember-text"
                     >
                       {location.phone}
                     </a>

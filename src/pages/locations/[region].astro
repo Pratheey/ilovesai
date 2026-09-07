@@ -76,7 +76,7 @@ const navBg = bgCycle[(bgIndex + 1) % 2];
             {isPlaceholder(location.email) ? (
               <span class="text-ink-soft">{location.email}</span>
             ) : (
-              <a href={`mailto:${location.email}`} class="text-kumkum hover:text-ember">
+              <a href={`mailto:${location.email}`} class="text-kumkum hover:text-ember-text">
                 {location.email}
               </a>
             )}
@@ -89,7 +89,7 @@ const navBg = bgCycle[(bgIndex + 1) % 2];
             {isPlaceholder(location.phone) ? (
               <span class="text-ink-soft">{location.phone}</span>
             ) : (
-              <a href={telHref(location.phone)} class="text-kumkum hover:text-ember">
+              <a href={telHref(location.phone)} class="text-kumkum hover:text-ember-text">
                 {location.phone}
               </a>
             )}
@@ -167,7 +167,7 @@ const navBg = bgCycle[(bgIndex + 1) % 2];
   }
 
   <nav aria-label="More locations" class={`${navBg} px-gutter py-12 text-center`}>
-    <a href="/locations" class="text-body text-ember hover:text-kumkum font-semibold">
+    <a href="/locations" class="text-body text-ember-text hover:text-kumkum font-semibold">
       Explore other locations &rarr;
     </a>
   </nav>

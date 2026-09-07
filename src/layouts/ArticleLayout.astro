@@ -84,7 +84,10 @@ const showToc = tocItems.length >= 3;
                 <ul class="flex flex-col gap-2">
                   {tocItems.map((item) => (
                     <li>
-                      <a href={`#${item.slug}`} class="text-body text-ink-soft hover:text-ember">
+                      <a
+                        href={`#${item.slug}`}
+                        class="text-body text-ink-soft hover:text-ember-text"
+                      >
                         {item.text}
                       </a>
                     </li>
@@ -98,7 +101,10 @@ const showToc = tocItems.length >= 3;
               <ul class="border-brass/20 flex flex-col gap-2 border-l pl-4">
                 {tocItems.map((item) => (
                   <li>
-                    <a href={`#${item.slug}`} class="text-small text-ink-soft hover:text-ember">
+                    <a
+                      href={`#${item.slug}`}
+                      class="text-small text-ink-soft hover:text-ember-text"
+                    >
                       {item.text}
                     </a>
                   </li>
