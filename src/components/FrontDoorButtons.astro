@@ -10,11 +10,19 @@ const email = mailtoHref();
 interface Props {
   /** Optional extra classes on the wrapper (spacing from context). */
   class?: string;
+  /** 'row' (default) matches existing callers; 'column' keeps buttons stacked at every breakpoint. */
+  direction?: 'row' | 'column';
 }
-const { class: className } = Astro.props;
+const { class: className, direction = 'row' } = Astro.props;
 ---
 
-<div class:list={['flex flex-col items-center gap-4 sm:flex-row sm:justify-center', className]}>
+<div
+  class:list={[
+    'flex flex-col gap-4',
+    direction === 'row' ? 'items-center sm:flex-row sm:justify-center' : 'items-stretch',
+    className,
+  ]}
+>
   <a
     href={whatsapp}
     target="_blank"

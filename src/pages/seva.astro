@@ -1,112 +1,58 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SevaCard from '../components/SevaCard.astro';
-import { sevaByYear, sevaCategoryLabels, type SevaCategory } from '../lib/seva';
-import { locations } from '../lib/locations';
+import SevaEntry from '../components/SevaEntry.astro';
+import { sevaByYear } from '../lib/seva';
 
 const groups = sevaByYear();
-const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
 ---
 
 <BaseLayout
   title="Our Work — I LOVE SAI"
   description="A record of the charitable work carried out by I LOVE SAI — food distributions, cleaning and planting drives, and community gatherings in India, the UK, and the USA."
 >
-  <section class="dhuni-glow bg-sandal py-16 sm:py-24">
+  <section class="bg-sandal py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-3xl text-center">
-      <h1 class="text-display">Our Work</h1>
+      <h1 class="text-h1">Our Work</h1>
       <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        A record of the seva — selfless service — carried out by I LOVE SAI volunteers: food
-        distributions, cleaning and planting drives, and gatherings held for the communities around
-        us.
+        Everything I LOVE SAI has done, set down as it happened. Food distributions, cleaning
+        drives, tree planting, and days spent with the communities around us. The ongoing work has{
+          ' '
+        }
+        <a href="/projects" class="text-ink underline underline-offset-2">its own pages</a>; this is
+        the record of the individual days.
       </p>
     </div>
   </section>
 
-  <section aria-labelledby="record-heading" class="bg-cream py-16 sm:py-24">
+  <section aria-label="The record, by year" class="bg-cream py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-6xl">
-      <h2 id="record-heading" class="text-h2 text-center">The Record</h2>
-
-      {
-        /* Same filter mechanism as the events index: radio fieldsets driving
-          data-attribute matching, so it needs no JS to show everything. */
-      }
-      <div class="mx-auto mt-10 flex max-w-3xl flex-col gap-6 sm:flex-row sm:gap-10">
-        <fieldset>
-          <legend class="eyebrow mb-2">Category</legend>
-          <div class="flex flex-wrap gap-x-4 gap-y-1">
-            <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
-              <input type="radio" name="category-filter" value="all" checked class="accent-ember" />
-              All
-            </label>
-            {
-              categories.map((category) => (
-                <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
-                  <input
-                    type="radio"
-                    name="category-filter"
-                    value={category}
-                    class="accent-ember"
-                  />
-                  {sevaCategoryLabels[category]}
-                </label>
-              ))
-            }
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend class="eyebrow mb-2">Location</legend>
-          <div class="flex flex-wrap gap-x-4 gap-y-1">
-            <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
-              <input type="radio" name="location-filter" value="all" checked class="accent-ember" />
-              All
-            </label>
-            {
-              locations.map((location) => (
-                <label class="text-body text-ink flex min-h-11 items-center gap-1.5 px-1.5">
-                  <input
-                    type="radio"
-                    name="location-filter"
-                    value={location.region}
-                    class="accent-ember"
-                  />
-                  {location.label}
-                </label>
-              ))
-            }
-          </div>
-        </fieldset>
-      </div>
-
-      <p id="seva-filter-status" class="sr-only" role="status" aria-live="polite"></p>
-
       {
         groups.length === 0 ? (
           <p class="text-body text-ink-soft mx-auto mt-12 max-w-[var(--measure)] text-center">
-            The record is being gathered — check back soon.
+            The record is being gathered. Check back soon.
           </p>
         ) : (
-          <div class="mt-12 flex flex-col gap-12">
+          <div class="flex flex-col gap-12">
             {groups.map((group) => (
-              <div data-year-group>
-                <h3 class="text-h2 border-brass/30 border-b pb-2">{group.year}</h3>
+              <div>
+                <h2 class="text-h2 border-brass/30 border-b pb-2">{group.year}</h2>
                 {/* Nothing in this grid is focusable, so list semantics are the only
                     structure a screen reader can move by — and Tailwind's
                     list-style reset drops them in Safari without the role. */}
                 {/* eslint-disable-next-line astro/jsx-a11y/no-redundant-roles */}
-                <ul role="list" class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <ul
+                  role="list"
+                  class="md:divide-brass/30 mt-8 grid grid-cols-1 gap-y-12 md:grid-cols-2 md:divide-x"
+                >
                   {group.entries.map((entry) => (
-                    <li class="grid">
-                      <SevaCard
+                    <li class="md:px-8 md:first:pl-0 md:last:pr-0">
+                      <SevaEntry
                         id={entry.slug}
                         title={entry.title}
                         date={entry.date}
                         location={entry.location}
-                        category={entry.category}
                         description={entry.description}
                         images={entry.images}
-                        headingLevel="h4"
                       />
                     </li>
                   ))}
@@ -116,60 +62,6 @@ const categories = Object.keys(sevaCategoryLabels) as SevaCategory[];
           </div>
         )
       }
-
-      <p id="seva-empty" hidden class="text-body text-ink-soft mt-12 text-center">
-        No entries yet for that category and place.
-      </p>
     </div>
   </section>
 </BaseLayout>
-
-<script>
-  // The card is inside an <li> now, so it's the list item that has to be hidden —
-  // hiding the card alone would leave an empty grid cell behind.
-  const entries = Array.from(document.querySelectorAll<HTMLElement>('[data-seva-card]')).map(
-    (card) => ({ card, item: card.closest('li') ?? card }),
-  );
-  const yearGroups = document.querySelectorAll<HTMLElement>('[data-year-group]');
-  const filterStatus = document.getElementById('seva-filter-status');
-  const emptyMessage = document.getElementById('seva-empty');
-
-  function applyFilters() {
-    const activeCategory =
-      document.querySelector<HTMLInputElement>('input[name="category-filter"]:checked')?.value ??
-      'all';
-    const activeLocation =
-      document.querySelector<HTMLInputElement>('input[name="location-filter"]:checked')?.value ??
-      'all';
-
-    let visibleCount = 0;
-    entries.forEach(({ card, item }) => {
-      const matchesCategory = activeCategory === 'all' || card.dataset.category === activeCategory;
-      const matchesLocation = activeLocation === 'all' || card.dataset.location === activeLocation;
-      item.hidden = !(matchesCategory && matchesLocation);
-      if (!item.hidden) visibleCount += 1;
-    });
-
-    yearGroups.forEach((group) => {
-      // Scoped to the group's own entry list: a bare `li` also matches the photo
-      // strips inside each card, which are never hidden, so a year holding any
-      // entry with photos would never count as empty.
-      group.hidden = group.querySelector(':scope > ul > li:not([hidden])') === null;
-    });
-
-    // A filter that hides everything must say so — otherwise the page just looks
-    // broken. The events index has no equivalent because its filters run over a
-    // list that always has an "upcoming" fallback message.
-    if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
-
-    if (filterStatus) {
-      filterStatus.textContent = `${visibleCount} ${visibleCount === 1 ? 'entry' : 'entries'} shown`;
-    }
-  }
-
-  document
-    .querySelectorAll<HTMLInputElement>(
-      'input[name="category-filter"], input[name="location-filter"]',
-    )
-    .forEach((radio) => radio.addEventListener('change', applyFilters));
-</script>

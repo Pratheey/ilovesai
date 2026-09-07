@@ -1,20 +1,17 @@
 import type { Region } from './locations';
 
-export type SevaCategory = 'food' | 'environment' | 'community' | 'spiritual';
-
 export interface SevaImage {
   image?: ImageMetadata | string;
   imageAlt: string;
 }
 
 export interface SevaEntry {
-  /** Stable slug — used as the element key and the filter anchor. Keep it unique. */
+  /** Stable slug — used as the element key and the entry anchor. Keep it unique. */
   slug: string;
   title: string;
   /** When it happened. Every entry here is in the past — this is a record. */
   date: Date;
   location: Region;
-  category: SevaCategory;
   description: string;
   /** Photos from the day, if any. Omitted entirely when there are none. */
   images?: SevaImage[];
@@ -40,11 +37,11 @@ export const sevaEntries: SevaEntry[] = [
     title: '[PLACEHOLDER: food distribution title]',
     date: new Date('2026-07-12'),
     location: 'USA',
-    category: 'food',
     description: '[PLACEHOLDER: two or three sentences on what was done and who it reached.]',
     images: [
       { imageAlt: '[PLACEHOLDER: photo from the distribution]' },
       { imageAlt: '[PLACEHOLDER: second photo from the distribution]' },
+      { imageAlt: '[PLACEHOLDER: third photo from the distribution]' },
     ],
   },
   {
@@ -52,49 +49,52 @@ export const sevaEntries: SevaEntry[] = [
     title: '[PLACEHOLDER: street cleaning drive title]',
     date: new Date('2026-03-08'),
     location: 'India',
-    category: 'environment',
     description: '[PLACEHOLDER: two or three sentences on what was done and who it reached.]',
+    images: [
+      { imageAlt: '[PLACEHOLDER: photo from the cleaning drive]' },
+      { imageAlt: '[PLACEHOLDER: second photo from the cleaning drive]' },
+    ],
   },
   {
     slug: 'placeholder-community-2025',
     title: '[PLACEHOLDER: community event title]',
     date: new Date('2025-11-22'),
     location: 'UK',
-    category: 'community',
     description: '[PLACEHOLDER: two or three sentences on what was done and who it reached.]',
+    images: [{ imageAlt: '[PLACEHOLDER: photo from the community event]' }],
   },
   {
     slug: 'placeholder-planting-2025',
     title: '[PLACEHOLDER: tree planting title]',
     date: new Date('2025-06-05'),
     location: 'India',
-    category: 'environment',
     description: '[PLACEHOLDER: two or three sentences on what was done and who it reached.]',
+    images: [
+      { imageAlt: '[PLACEHOLDER: photo from the planting day]' },
+      { imageAlt: '[PLACEHOLDER: second photo from the planting day]' },
+      { imageAlt: '[PLACEHOLDER: third photo from the planting day]' },
+    ],
   },
   {
     slug: 'placeholder-spiritual-2024',
     title: '[PLACEHOLDER: devotional gathering title]',
     date: new Date('2024-10-19'),
     location: 'USA',
-    category: 'spiritual',
     description: '[PLACEHOLDER: two or three sentences on what was done and who it reached.]',
+    images: [{ imageAlt: '[PLACEHOLDER: photo from the devotional gathering]' }],
   },
   {
     slug: 'placeholder-food-2024',
     title: '[PLACEHOLDER: winter food drive title]',
     date: new Date('2024-01-27'),
     location: 'UK',
-    category: 'food',
     description: '[PLACEHOLDER: two or three sentences on what was done and who it reached.]',
+    images: [
+      { imageAlt: '[PLACEHOLDER: photo from the winter food drive]' },
+      { imageAlt: '[PLACEHOLDER: second photo from the winter food drive]' },
+    ],
   },
 ];
-
-export const sevaCategoryLabels: Record<SevaCategory, string> = {
-  food: 'Food',
-  environment: 'Environment',
-  community: 'Community',
-  spiritual: 'Spiritual',
-};
 
 /**
  * Entries grouped by calendar year, newest year first and newest entry first

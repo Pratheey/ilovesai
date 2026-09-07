@@ -1,14 +1,14 @@
 ---
 import { temples, DAY_KEYS, dayLabel, formatArathiTime, toMinutes } from '../lib/arathi';
 
-const hasTabs = temples.length > 1;
+const hasMultipleTemples = temples.length > 1;
 ---
 
 {
   temples.length > 0 && (
     <section
       aria-labelledby="arathi-schedule-heading"
-      data-arathi-tabs
+      data-arathi-schedule
       class="bg-kumkum-deep border-brass/25 rounded-lg border p-5 sm:p-6"
     >
       {/* A real heading, not a styled span: without one this whole widget is
@@ -20,28 +20,20 @@ const hasTabs = temples.length > 1;
       </h2>
       <p class="text-sandal text-small mt-1">Free and open to all.</p>
 
-      {hasTabs && (
-        <div
-          role="tablist"
-          aria-label="Choose a temple"
-          class="arathi-tablist mt-4 flex gap-2 overflow-x-auto pb-1"
-        >
-          {/* The pill border is an unselected tab's only visible boundary, so it
-              falls under the 3:1 non-text floor. brass/40 measured 1.75:1 on this
-              fill; brass/80 clears it. */}
-          {temples.map((temple, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`arathi-tab-${temple.id}`}
-              aria-controls={`arathi-panel-${temple.id}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              tabindex={i === 0 ? 0 : -1}
-              class="text-sandal border-brass/80 aria-selected:bg-marigold aria-selected:text-ink aria-selected:border-marigold hover:border-marigold text-small inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 font-semibold whitespace-nowrap"
-            >
-              {temple.name}
-            </button>
-          ))}
+      {hasMultipleTemples && (
+        <div class="mt-4">
+          <label for="arathi-temple" class="eyebrow text-marigold">
+            Temple
+          </label>
+          <select
+            id="arathi-temple"
+            data-arathi-select
+            class="bg-kumkum-deep text-sandal border-brass/80 text-small mt-1 block min-h-11 w-full rounded-md border px-3"
+          >
+            {temples.map((temple) => (
+              <option value={temple.id}>{temple.name}</option>
+            ))}
+          </select>
         </div>
       )}
 
@@ -50,9 +42,7 @@ const hasTabs = temples.length > 1;
           id={`arathi-panel-${temple.id}`}
           data-arathi-panel
           data-timezone={temple.timezone}
-          role={hasTabs ? 'tabpanel' : undefined}
-          aria-labelledby={hasTabs ? `arathi-tab-${temple.id}` : undefined}
-          hidden={hasTabs && i !== 0}
+          hidden={hasMultipleTemples && i !== 0}
           class="mt-4"
         >
           {temple.location && <p class="text-sandal/80 text-small">{temple.location}</p>}
@@ -152,15 +142,6 @@ const hasTabs = temples.length > 1;
 }
 
 <style>
-  /* Scrollable tab strip without a visible scrollbar — the clipped edge of the
-     next tab hints that the row scrolls. */
-  .arathi-tablist {
-    scrollbar-width: none;
-  }
-  .arathi-tablist::-webkit-scrollbar {
-    display: none;
-  }
-
   /* The next arathi still to come today. A marigold edge rather than a filled
      cell: the grid stays calm and the accent reads as a marker, not a button. */
   [data-arathi][aria-current='time'] {
@@ -287,44 +268,17 @@ const hasTabs = temples.length > 1;
   }
 
   // ---------------------------------------------------------------------------
-  // Progressive enhancement: turn each [data-arathi-tabs] group into an accessible
-  // tab widget. With JS off, the non-first panels stay `hidden` (set server-side),
-  // so a no-JS visitor sees the primary temple. Single-temple groups are a no-op.
+  // Progressive enhancement: wire up the temple <select>. With JS off, the
+  // non-first panels stay `hidden` (set server-side), so a no-JS visitor sees
+  // the primary temple. Single-temple groups render no select at all.
   // ---------------------------------------------------------------------------
-  document.querySelectorAll<HTMLElement>('[data-arathi-tabs]').forEach((root) => {
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
-    if (tabs.length < 2) return;
-    const tabPanels = tabs.map((tab) =>
-      document.getElementById(tab.getAttribute('aria-controls') ?? ''),
-    );
-
-    const select = (index: number, focus = true) => {
-      tabs.forEach((tab, i) => {
-        const selected = i === index;
-        tab.setAttribute('aria-selected', selected ? 'true' : 'false');
-        tab.tabIndex = selected ? 0 : -1;
-        const panel = tabPanels[i];
-        if (panel) panel.hidden = !selected;
-      });
-      // Keep the chosen tab visible when the strip is scrolled (many temples).
-      tabs[index].scrollIntoView({ inline: 'nearest', block: 'nearest' });
-      if (focus) tabs[index].focus();
-    };
-
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => select(i, false));
-      tab.addEventListener('keydown', (event: KeyboardEvent) => {
-        const last = tabs.length - 1;
-        let next: number | null = null;
-        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = i === last ? 0 : i + 1;
-        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
-          next = i === 0 ? last : i - 1;
-        else if (event.key === 'Home') next = 0;
-        else if (event.key === 'End') next = last;
-        if (next !== null) {
-          event.preventDefault();
-          select(next);
-        }
+  // `querySelectorAll<HTMLSelectElement>` doesn't resolve in this project's
+  // TS setup; narrowing with instanceof gets the same type for free.
+  document.querySelectorAll('[data-arathi-select]').forEach((select) => {
+    if (!(select instanceof HTMLSelectElement)) return;
+    select.addEventListener('change', () => {
+      document.querySelectorAll<HTMLElement>('[data-arathi-panel]').forEach((panel) => {
+        panel.hidden = panel.id !== `arathi-panel-${select.value}`;
       });
     });
   });

@@ -361,3 +361,34 @@ submission and points people at WhatsApp. Nothing is silently accepted and dropp
 - [ ] **`/seva` and `/projects` don't cross-link.** `lib/seva.ts` deliberately splits
       one-off acts from named projects, but nothing on either page points at the other,
       and `/seva` is footer-only by the owner's choice.
+
+### M5. Stylistic pass, later the same day (2026-09-06)
+
+Owner review of the built pages. All shipped:
+
+- **Header quick-actions**: "Our Work" replaces the duplicated "Events". `/seva` is
+  now reachable from the header rather than the footer alone, which resolves the
+  discoverability note in M4.
+- **`/contact` restructured**: the WhatsApp/email buttons and the form now share the
+  top of the page, buttons left and form right, with regional contacts moved
+  underneath. On mobile the buttons come first in DOM order so nobody scrolls past a
+  form to reach a person.
+- **"Come and Visit" removed from `/contact`.** Putting the arathi schedule there was
+  my call in the previous plan and it didn't belong on a contact page. The schedule
+  lives on the homepage only.
+- **`ResponseAssurance` deleted** (owner decision), so idea #7 part 1 in §L is no
+  longer in the product. `responseTimeframe` stays in `lib/contact.ts` with a note:
+  the value is the org's, and the next thing that promises a reply time should read
+  it from there rather than inventing a second answer.
+- **Temple switcher is a `<select>`.** It was a scrolling tab strip in a 272px column
+  with the scrollbar hidden, so the second temple sat off-screen with nothing
+  indicating it existed. It read as a missing feature and was a bug.
+- **`/seva` reworked**: filters and all client JS removed, entries are photo-led in
+  two ruled columns grouped by year, categories dropped from the data model since the
+  filter was their only consumer, and the intro rewritten. `/projects` and `/seva`
+  now cross-link, so the split between ongoing initiatives and the record of
+  individual days is legible from both sides.
+
+Note: page `<title>`s across the site use the "Page — I LOVE SAI" pattern with an em
+dash. The "no em dashes" instruction was applied to body copy, not to that separator,
+so the pattern is still consistent across all 25 pages.

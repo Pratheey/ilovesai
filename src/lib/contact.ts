@@ -23,8 +23,12 @@ export const orgEmail = 'usa@ilovesai.com';
 // How long a newcomer should expect to wait for a human reply. This is a promise
 // made on the org's behalf, so it must be a real, comfortably achievable window
 // set by the coordinator — never a guess. Phrase it to slot into "We usually
-// reply …", e.g. 'within two or three days'. While it's a placeholder the page
-// falls back to a warm line that promises nothing (see ResponseAssurance.astro).
+// reply …", e.g. 'within two or three days'.
+//
+// Currently unused: the ResponseAssurance block that displayed it was removed
+// from /contact by the owner. Kept because the value is the org's, not the
+// component's, and the next place that promises a reply time should read it from
+// here rather than hard-coding a second answer.
 export const responseTimeframe = 'within 2–3 days';
 
 /** Click-to-chat link to the coordinator with the greeting pre-filled. */

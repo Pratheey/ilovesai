@@ -1,0 +1,88 @@
+---
+import PlaceholderImage from './PlaceholderImage.astro';
+import { getLocation, type Region } from '../lib/locations';
+import type { SevaImage } from '../lib/seva';
+
+interface Props {
+  /** Anchor id, so an entry can be linked to directly: /seva#winter-food-drive. */
+  id: string;
+  title: string;
+  date: Date;
+  location: Region;
+  description: string;
+  images?: SevaImage[];
+}
+
+const { id, title, date, location, description, images } = Astro.props;
+
+// The city, not the region: a dateline reads "SHIRDI" or "LIVINGSTON, NEW JERSEY",
+// not "INDIA". Falls back to the region label if a location has no city set.
+const place = getLocation(location);
+const locationLabel = place?.city ?? place?.label;
+
+// Hardcoded 'en' for now — switch to the page's locale once i18n routing exists.
+//
+// Formatted in UTC deliberately. A seva date is a calendar day, not an instant,
+// and `new Date('2026-07-12')` parses as UTC midnight — formatting that in the
+// build machine's local zone renders it as 11 July anywhere west of Greenwich.
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+const leadImage = images?.[0];
+// Up to three more, laid out as a thumbnail row under the body copy.
+const restImages = images?.slice(1, 4) ?? [];
+---
+
+<div id={id} class="seva-entry">
+  {
+    leadImage && (
+      <div class="aspect-[3/2] w-full overflow-hidden rounded-sm">
+        {leadImage.image ? (
+          <img
+            src={typeof leadImage.image === 'string' ? leadImage.image : leadImage.image.src}
+            alt={leadImage.imageAlt}
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        ) : (
+          <PlaceholderImage label={leadImage.imageAlt} />
+        )}
+      </div>
+    )
+  }
+
+  <p class="eyebrow mx-0 mt-4">
+    <time datetime={date.toISOString().slice(0, 10)}>{dateFormatter.format(date)}</time>
+    {locationLabel && <> &middot; {locationLabel}</>}
+  </p>
+  <h3 class="text-h3 mt-1">{title}</h3>
+  <p class="text-body text-ink mx-0 mt-2">{description}</p>
+
+  {
+    restImages.length > 0 && (
+      // eslint-disable-next-line astro/jsx-a11y/no-redundant-roles
+      <ul role="list" class="mt-3 grid grid-cols-3 gap-2">
+        {restImages.map((item) => (
+          <li class="aspect-square overflow-hidden rounded-sm">
+            {item.image ? (
+              <img
+                src={typeof item.image === 'string' ? item.image : item.image.src}
+                alt={item.imageAlt}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <PlaceholderImage label={item.imageAlt} />
+            )}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</div>

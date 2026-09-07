@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FrontDoorButtons from '../components/FrontDoorButtons.astro';
-import ResponseAssurance from '../components/ResponseAssurance.astro';
-import ArathiSchedule from '../components/ArathiSchedule.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { locations, isPlaceholder, telHref } from '../lib/locations';
 
@@ -15,17 +13,70 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 
 <BaseLayout
   title="Contact — I LOVE SAI"
-  description="Reach I LOVE SAI on WhatsApp, by email, or through the form — to ask a question, request an Aao Sai, or volunteer. Regional contacts in India, the UK, and the USA."
+  description="Reach I LOVE SAI on WhatsApp, by email, or through the form, to ask a question, request an Aao Sai, or volunteer. Regional contacts in India, the UK, and the USA."
 >
   <section class="dhuni-glow bg-sandal py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-3xl text-center">
       <h1 class="text-display">Contact</h1>
       <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        [PLACEHOLDER: one warm line inviting visitors to reach out — to ask a question, request an
+        [PLACEHOLDER: one warm line inviting visitors to reach out, to ask a question, request an
         Aao Sai, volunteer, or help with a local activity.]
       </p>
-      <FrontDoorButtons class="mt-10" />
-      <ResponseAssurance class="mx-auto mt-12 max-w-xl" />
+    </div>
+
+    <div class="px-gutter mx-auto mt-14 grid max-w-5xl grid-cols-1 gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="text-h2">Reach us now</h2>
+        <FrontDoorButtons direction="column" class="mt-6 max-w-sm" />
+        <p class="text-body text-ink-soft mx-0 mt-4">
+          The fastest way to reach a person on the team, not an inbox.
+        </p>
+      </div>
+
+      <div class="max-w-xl">
+        <h2 class="text-h2">Write to us</h2>
+
+        {
+          /* Revealed by :target after a no-JS form post, and directly by the script
+            after a fetch submit. One message, both paths. */
+        }
+        <div
+          id="sent"
+          data-status-hidden
+          class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-left"
+        >
+          <p class="text-lead text-kumkum ml-0 font-semibold">
+            Thank you, your message is on its way.
+          </p>
+          <p class="text-body text-ink mt-2 ml-0">
+            Someone will reply to you by email. If it's urgent, WhatsApp is faster.
+          </p>
+        </div>
+
+        <div
+          id="send-failed"
+          data-status-hidden
+          class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-left"
+        >
+          <p class="text-lead text-kumkum ml-0 font-semibold">That message didn't send.</p>
+          <p class="text-body text-ink mt-2 ml-0">
+            Please try again below, or reach us on WhatsApp or by email, those always work.
+          </p>
+        </div>
+
+        {
+          formEnabled ? (
+            <div class="mt-8">
+              <ContactForm />
+            </div>
+          ) : (
+            <p class="text-body text-ink-soft mx-0 mt-8">
+              The message form is being set up. In the meantime, WhatsApp and email on the left
+              reach us just as well.
+            </p>
+          )
+        }
+      </div>
     </div>
   </section>
 
@@ -82,62 +133,6 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
           ))
         }
       </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="visit-heading" class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl">
-      <h2 id="visit-heading" class="text-h2 text-center">Come and Visit</h2>
-      <div class="mx-auto mt-10 max-w-sm">
-        <ArathiSchedule />
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="write-heading" class="bg-cream py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-3xl">
-      <h2 id="write-heading" class="text-h2 text-center">Write to Us</h2>
-
-      {
-        /* Revealed by :target after a no-JS form post, and directly by the script
-          after a fetch submit. One message, both paths. */
-      }
-      <div
-        id="sent"
-        data-status-hidden
-        class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-center"
-      >
-        <p class="text-lead text-kumkum ml-0 font-semibold">
-          Thank you — your message is on its way.
-        </p>
-        <p class="text-body text-ink mt-2 ml-0">
-          Someone will reply to you by email. If it's urgent, WhatsApp is faster.
-        </p>
-      </div>
-
-      <div
-        id="send-failed"
-        data-status-hidden
-        class="form-status border-brass/40 bg-sandal-deep mt-8 rounded-lg border p-6 text-center"
-      >
-        <p class="text-lead text-kumkum ml-0 font-semibold">That message didn't send.</p>
-        <p class="text-body text-ink mt-2 ml-0">
-          Please try again below, or reach us on WhatsApp or by email — those always work.
-        </p>
-      </div>
-
-      {
-        formEnabled ? (
-          <div class="mt-8">
-            <ContactForm />
-          </div>
-        ) : (
-          <p class="text-body text-ink-soft mx-auto mt-8 max-w-[var(--measure)] text-center">
-            The message form is being set up. In the meantime, WhatsApp and email above reach us
-            just as well.
-          </p>
-        )
-      }
     </div>
   </section>
 </BaseLayout>
