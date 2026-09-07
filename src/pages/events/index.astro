@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import UpcomingEvents from '../../components/UpcomingEvents.astro';
 import EventCard, { eventTypeLabels } from '../../components/EventCard.astro';
 import { events, type Event, type EventType } from '../../lib/events';
@@ -30,12 +31,14 @@ const eventTypes = Object.keys(eventTypeLabels) as EventType[];
   title="Events — I LOVE SAI"
   description="Upcoming aartis, satsangs, festivals, and charity events."
 >
+  <PageHeader
+    title="Events"
+    photoDescription="A festival gathering at its peak — the hall full, people standing shoulder to shoulder"
+  />
+
   <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl text-center">
-      <h1 class="text-display">Events</h1>
-      <div class="mx-auto mt-12 max-w-3xl text-left">
-        <UpcomingEvents />
-      </div>
+    <div class="px-gutter mx-auto max-w-3xl">
+      <UpcomingEvents />
     </div>
   </section>
 

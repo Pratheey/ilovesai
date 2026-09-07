@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { locations, type Region } from '../../lib/locations';
 import { projects } from '../../lib/projects';
@@ -26,14 +27,15 @@ function describeRegion(region: Region) {
   title="Where We Are — I LOVE SAI"
   description="I LOVE SAI's projects and events across India, the UK, and the USA."
 >
-  <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl">
-      <div class="mx-auto max-w-[var(--measure)] text-center">
-        <h1 class="text-display">Where We Are</h1>
-        <p class="text-lead text-ink-soft mt-4">[PLACEHOLDER: intro line for the Locations hub]</p>
-      </div>
+  <PageHeader
+    title="Where We Are"
+    lead="[PLACEHOLDER: intro line for the Locations hub]"
+    photoDescription="Devotees who have travelled from different countries, together at Shirdi"
+  />
 
-      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+  <section class="bg-cream py-16 sm:py-24">
+    <div class="px-gutter mx-auto max-w-6xl">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
         {
           locations.map((location) => (
             <ProjectCard

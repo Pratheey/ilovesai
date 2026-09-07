@@ -1,6 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import ImageBand from '../components/ImageBand.astro';
+import PageHeader from '../components/PageHeader.astro';
 import SacredFrame from '../components/SacredFrame.astro';
 import PhotoNeeded from '../components/PhotoNeeded.astro';
 
@@ -14,8 +14,8 @@ interface Props {
   title: string;
   essence: string;
   headings: Heading[];
-  /** 'band' (default): the HARD RULE treatment — a full-bleed photo carries
-   * the section, heading and essence over it in ImageBand's warm vignette.
+  /** 'band' (default): the HARD RULE treatment — the shared PageHeader, a
+   * full-bleed photo carrying the title and essence over its warm scrim.
    * 'frame': the Sai Baba exception — styling-brief.md's imagery direction
    * says Baba's portrait must never carry overlaid text, so it sits in
    * SacredFrame with the essence beneath it instead. */
@@ -63,14 +63,13 @@ const showToc = tocItems.length >= 3;
         </div>
       </section>
     ) : (
-      <ImageBand
+      <PageHeader
+        title={title}
+        lead={essence}
         image={heroImage}
         imageAlt={heroImageAlt}
         photoDescription={heroPhoto ?? 'Photo needed'}
-      >
-        <h1 class="text-display text-cream">{title}</h1>
-        <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">{essence}</p>
-      </ImageBand>
+      />
     )
   }
 

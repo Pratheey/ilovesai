@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
 import FrontDoorButtons from '../components/FrontDoorButtons.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { locations, isPlaceholder, telHref } from '../lib/locations';
@@ -15,16 +16,14 @@ const formEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
   title="Contact — I LOVE SAI"
   description="Reach I LOVE SAI on WhatsApp, by email, or through the form, to ask a question, request an Aao Sai, or volunteer. Regional contacts in India, the UK, and the USA."
 >
-  <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-3xl text-center">
-      <h1 class="text-display">Contact</h1>
-      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        [PLACEHOLDER: one warm line inviting visitors to reach out, to ask a question, request an
-        Aao Sai, volunteer, or help with a local activity.]
-      </p>
-    </div>
+  <PageHeader
+    title="Contact"
+    lead="[PLACEHOLDER: one warm line inviting visitors to reach out, to ask a question, request an Aao Sai, volunteer, or help with a local activity.]"
+    photoDescription="Devotees talking together after aarti — the welcome someone gets when they reach out"
+  />
 
-    <div class="px-gutter mx-auto mt-14 grid max-w-5xl grid-cols-1 gap-10 lg:grid-cols-2">
+  <section class="bg-sandal py-16 sm:py-24">
+    <div class="px-gutter mx-auto grid max-w-5xl grid-cols-1 gap-10 lg:grid-cols-2">
       <div>
         <h2 class="text-h2">Reach us now</h2>
         <FrontDoorButtons direction="column" class="mt-6 max-w-sm" />

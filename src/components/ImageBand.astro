@@ -23,10 +23,17 @@ interface Props {
   imageAlt?: string;
   /** The real shot description PhotoNeeded shows while `image` is missing. */
   photoDescription: string;
-  /** "w:h". Defaults to 21:9 for 'overlay' (the brief's hero ratio) and 4:3
-   * for 'side' (the brief's project-card ratio). */
+  /** "w:h". Defaults to 21:9 for a mid-page 'overlay' band, 16:9 for an
+   * 'overlay' used as a page header (taller box, so the source needs vertical
+   * room to crop into), and 4:3 for 'side' (the brief's project-card ratio). */
   aspect?: string;
   layout?: 'overlay' | 'side';
+  /** 'band' (default): a mid-page section. 'page': the arrival header at the
+   * top of a page — noticeably taller, and darkened by a bottom-anchored
+   * gradient alone rather than the band's radial vignette, so the top of the
+   * photograph stays open. See PageHeader.astro, which is the only intended
+   * caller. Ignored by layout="side". */
+  size?: 'band' | 'page';
   id?: string;
   'aria-labelledby'?: string;
   class?: string;
@@ -38,12 +45,25 @@ const {
   photoDescription,
   aspect,
   layout = 'overlay',
+  size = 'band',
   id,
   'aria-labelledby': ariaLabelledby,
   class: className = '',
 } = Astro.props;
 
-const resolvedAspect = aspect ?? (layout === 'overlay' ? '21:9' : '4:3');
+const isPageHeader = layout === 'overlay' && size === 'page';
+
+const resolvedAspect = aspect ?? (layout === 'side' ? '4:3' : isPageHeader ? '16:9' : '21:9');
+
+// Written as whole literal class strings because Tailwind's scanner only sees
+// literals — the same constraint that produced src/lib/aspect.ts.
+//
+// The page header's height is one clamp so it needs no breakpoints: a 26rem
+// floor keeps it substantial on a small phone, 58vh makes it an arrival on a
+// laptop, and a 40rem cap stops it swallowing a tall desktop viewport.
+const overlayBoxClass = isPageHeader
+  ? 'min-h-[clamp(26rem,58vh,40rem)] py-16 sm:py-20'
+  : 'min-h-[26rem] py-14 sm:min-h-[30rem] sm:py-20';
 // Astro's CSP hashes inline <style> tags but not inline style="" attributes,
 // so aspect-ratio must ship as a literal Tailwind class (see src/lib/aspect.ts).
 // An unrecognised ratio falls back to whatever sizing the parent provides.
@@ -104,9 +124,14 @@ const imageAspectClass = ASPECT_CLASS[resolvedAspect];
             rounded={false}
           />
         )}
-        <div class="image-band-vignette absolute inset-0" />
+        <div
+          class:list={[
+            'absolute inset-0',
+            isPageHeader ? 'image-band-scrim' : 'image-band-vignette',
+          ]}
+        />
       </div>
-      <div class="px-gutter relative flex min-h-[26rem] items-end justify-center py-14 sm:min-h-[30rem] sm:py-20">
+      <div class:list={['px-gutter relative flex items-end justify-center', overlayBoxClass]}>
         <div class="max-w-3xl pb-4 text-center">
           <slot />
         </div>
@@ -134,5 +159,30 @@ const imageAspectClass = ASPECT_CLASS[resolvedAspect];
         rgba(74, 20, 26, 0.32) 60%,
         rgba(74, 20, 26, 0.6) 100%
       );
+  }
+
+  /* size="page": a bottom-anchored warm gradient ONLY — no radial layer.
+     Two reasons it differs from the band vignette above.
+     1. A page header is up to 40rem tall, so the band's edge-heavy radial
+        would dim the whole upper half of the photograph, which is the part
+        doing the work of making the page feel like somewhere.
+     2. While photos are still being sourced these headers are carrying a
+        PhotoNeeded block, whose label sits top-left. Leaving the top ~20%
+        clear keeps that label conspicuous instead of burying it under maroon,
+        which is the entire point of the placeholder.
+
+     The stops are set from the contrast requirement, not by eye. The text is
+     bottom-anchored and roughly the bottom 45% of the box at the largest
+     type sizes, so alpha has to stay near 0.78 that far up: cream on kumkum-
+     deep at 0.78 over a WHITE pixel is ~7:1, which clears AA even if the
+     photograph behind it is blown out. Above the text it falls away fast. */
+  .image-band-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(74, 20, 26, 0.9) 0%,
+      rgba(74, 20, 26, 0.78) 45%,
+      rgba(74, 20, 26, 0.3) 66%,
+      transparent 80%
+    );
   }
 </style>

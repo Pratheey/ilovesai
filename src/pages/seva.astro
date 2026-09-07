@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
 import SevaEntry from '../components/SevaEntry.astro';
 import { sevaByYear } from '../lib/seva';
 
@@ -10,19 +11,25 @@ const groups = sevaByYear();
   title="Our Work — I LOVE SAI"
   description="A record of the charitable work carried out by I LOVE SAI — food distributions, cleaning and planting drives, and community gatherings in India, the UK, and the USA."
 >
-  <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-3xl text-center">
-      <h1 class="text-h1">Our Work</h1>
-      <p class="text-lead text-ink-soft mx-auto mt-4 max-w-[var(--measure)]">
-        Everything I LOVE SAI has done, set down as it happened. Food distributions, cleaning
-        drives, tree planting, and days spent with the communities around us. The ongoing work has{
-          ' '
-        }
-        <a href="/projects" class="text-ink underline underline-offset-2">its own pages</a>; this is
-        the record of the individual days.
-      </p>
-    </div>
-  </section>
+  {
+    /* The standing copy carries a link, which the `lead` prop (a plain string)
+      can't hold — so it goes through the slot instead, restyled for the dark
+      ground. The link stays underlined, so colour is never the only thing
+      marking it, and sandal-deep on hover clears AA against the scrim where
+      marigold would not. */
+  }
+  <PageHeader
+    title="Our Work"
+    photoDescription="A cleaning drive underway in the Shirdi streets — brooms, bags, volunteers mid-work"
+  >
+    <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">
+      Everything I LOVE SAI has done, set down as it happened. Food distributions, cleaning drives,
+      tree planting, and days spent with the communities around us. The ongoing work has{' '}
+      <a href="/projects" class="hover:text-sandal-deep text-cream underline underline-offset-2"
+        >its own pages</a
+      >; this is the record of the individual days.
+    </p>
+  </PageHeader>
 
   <section aria-label="The record, by year" class="bg-cream py-16 sm:py-24">
     <div class="px-gutter mx-auto max-w-6xl">

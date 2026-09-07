@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ImageBand from '../../components/ImageBand.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import Carousel from '../../components/Carousel.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import EventCard from '../../components/EventCard.astro';
@@ -43,15 +43,12 @@ const navBg = bgCycle[(bgIndex + 1) % 2];
   title={`${location.label} — I LOVE SAI`}
   description={`I LOVE SAI's projects, events, and local contact in ${location.label}.`}
 >
-  <ImageBand
+  <PageHeader
+    eyebrow={location.city}
+    title={location.label}
+    lead={`[PLACEHOLDER: one line about I LOVE SAI's work in ${location.label}]`}
     photoDescription={`A street, landmark, or gathering that represents ${location.label}`}
-  >
-    <p class="eyebrow text-cream/80 mb-4">{location.city}</p>
-    <h1 class="text-display text-cream">{location.label}</h1>
-    <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">
-      [PLACEHOLDER: one line about I LOVE SAI's work in {location.label}]
-    </p>
-  </ImageBand>
+  />
 
   <section aria-labelledby="contact-heading" class="bg-cream py-12">
     <div class="px-gutter mx-auto max-w-2xl text-center">

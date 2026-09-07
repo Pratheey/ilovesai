@@ -1,0 +1,57 @@
+---
+// PageHeader.astro — the arrival header at the top of a page: a full-bleed
+// photograph filling the width, the title over it, and a warm dark gradient
+// rising from the bottom to carry the text.
+//
+// It exists so every page opens the same way. Before this, the hub pages
+// (About, Projects, Events, Contact, Locations, Our Work) each opened with a
+// `bg-sandal` band and a centred title — a colour wash with a headline on it,
+// which styling-brief.md's HARD RULE rules out — while the pages that already
+// used ImageBand (Donate, the location pages, the About articles) opened with
+// a photograph. Two different front doors depending on which link you clicked.
+// Now there is one, and it is the photographic one.
+//
+// This is deliberately a thin wrapper over ImageBand rather than a second
+// implementation of the same layer stack: ImageBand still owns the image
+// layer, the .dhuni-glow, and the scrim. What PageHeader adds is the fixed
+// eyebrow/title/lead type stack, so the call sites can't drift apart.
+//
+// Every caller passes a DIFFERENT photoDescription. A header is the first
+// thing a visitor sees, and the fastest way to make a site feel templated is
+// for six pages to arrive on the same picture.
+import ImageBand from './ImageBand.astro';
+
+interface Props {
+  /** The page's <h1>. */
+  title: string;
+  /** Small tracked label above the title — a region, a category. Optional. */
+  eyebrow?: string;
+  /** One line under the title. Keep it to a sentence; this is an arrival, not
+   * an introduction. */
+  lead?: string;
+  /** The real shot description PhotoNeeded shows until `image` lands. Write
+   * the actual photograph wanted, not a generic label, and make it specific to
+   * this page — see the shot list in styling-brief.md. */
+  photoDescription: string;
+  image?: ImageMetadata | string;
+  /** Decorative here: the header image sits behind the title and adds nothing
+   * a screen reader needs, so ImageBand renders it alt="". Kept as a prop so
+   * the value travels with the image for whoever swaps it in later. */
+  imageAlt?: string;
+}
+
+const { title, eyebrow, lead, photoDescription, image, imageAlt } = Astro.props;
+---
+
+<ImageBand
+  layout="overlay"
+  size="page"
+  image={image}
+  imageAlt={imageAlt}
+  photoDescription={photoDescription}
+>
+  {eyebrow && <p class="eyebrow text-cream/80 mb-4">{eyebrow}</p>}
+  <h1 class="text-display text-cream">{title}</h1>
+  {lead && <p class="text-lead text-cream/90 mx-auto mt-4 max-w-[var(--measure)]">{lead}</p>}
+  <slot />
+</ImageBand>

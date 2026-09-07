@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import PhotoNeeded from '../../components/PhotoNeeded.astro';
 import { team } from '../../lib/team';
 ---
@@ -8,19 +9,21 @@ import { team } from '../../lib/team';
   title="Meet the Team — I LOVE SAI"
   description="The people who serve behind I LOVE SAI."
 >
-  <section class="bg-sandal py-16 sm:py-24">
-    <div class="px-gutter mx-auto max-w-6xl">
-      <div class="mx-auto max-w-[var(--measure)] text-center">
-        <h1 class="text-display">Meet the Team</h1>
-        <p class="text-lead text-ink-soft mt-4">
-          [PLACEHOLDER: one warm line about the people who serve — who you'll meet when you get
-          involved.]
-        </p>
-      </div>
+  <PageHeader
+    title="Meet the Team"
+    lead="[PLACEHOLDER: one warm line about the people who serve — who you'll meet when you get involved.]"
+    photoDescription="The team together at the end of a seva day — candid, faces visible, not a posed line-up"
+  />
 
-      {
-        team.length > 0 && (
-          <ul class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+  {
+    /* The guard moved outside the section: the title now lives in the header
+      above, so an empty team would otherwise leave a bare cream strip here. */
+  }
+  {
+    team.length > 0 && (
+      <section class="bg-cream py-16 sm:py-24">
+        <div class="px-gutter mx-auto max-w-6xl">
+          <ul class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
             {team.map((member) => (
               <li class="text-center">
                 <div class="border-brass/80 mx-auto aspect-square max-w-[12rem] overflow-hidden rounded-lg border">
@@ -42,8 +45,8 @@ import { team } from '../../lib/team';
               </li>
             ))}
           </ul>
-        )
-      }
-    </div>
-  </section>
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
